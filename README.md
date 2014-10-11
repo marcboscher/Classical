@@ -46,7 +46,7 @@ Binding:
   source.value = 1; //target.value === 1
 
 Classical.Html: 
-A module containing a declarative, statically typed DOM api.
+A module containing a declarative, statically typed DOM API.
 It provides MVVM style binding on POJOs completely in JavaScript -
 No loosey-goosey HTML DSLs to memorize
 
@@ -54,9 +54,5 @@ Ultimately we want to hear what you want.
 So give us a bit of time to get it implemented, documented and polished.
 Then we can all see what we'll be able to accomplish with a powerful set of tools.
 
-
-
-  
-  
-
-
+If you're a TypeScript wonk like we are, open up the bin, give the type declarations a once over and get started. 
+And ping us if you have any questions.
