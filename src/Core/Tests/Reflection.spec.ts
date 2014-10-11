@@ -335,8 +335,8 @@ module Classical.Reflection.Spec {
                     it('should return public and private methods correctly.', () => {
                         var reflectionTest = new ReflectionTest(),
                             reflectionTestType = reflectionTest.getType(),
-                            privateMethods = reflectionTestType.getMethods(BindingFlag.NonPublic),
-                            publicMethods = reflectionTestType.getMethods(BindingFlag.Public);
+                            privateMethods = reflectionTestType.getMethods(Modifier.NonPublic),
+                            publicMethods = reflectionTestType.getMethods(Modifier.Public);
 
                         expect(privateMethods.hasAny(m => m.name === '_firstPrivateMethod')).toBe(true);
                         expect(privateMethods.hasAny(m => m.name === '_secondPrivateMethod')).toBe(true);

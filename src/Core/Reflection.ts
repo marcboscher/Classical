@@ -475,14 +475,18 @@ module Classical.Reflection {
 
     //#endregion Imports
 
-    //#region BindingFlag
+    //#region Modifier
 
-    export enum BindingFlag {
+    export enum Modifier {
         Public,
-        NonPublic
+        NonPublic,
+        Instance,
+        Static
     }
 
-    //#endregion BindingFlag
+    var defaultModifier = [Modifier.Public, Modifier.Instance];
+
+    //#endregion Modifier
 
     //#region Module
 
@@ -1064,25 +1068,42 @@ module Classical.Reflection {
 
         //#region getMethods
 
-        getMethods(bindingFlag?: BindingFlag): IQueryable<Method> {
+        getMethods(...options: Array<Modifier>): IQueryable<Method> {
             if (!this._methods)
                 this._methods = this.getProperties().where(p => p.isMethod).cast<Method>().array();
 
-            if (bindingFlag) {
-                switch (bindingFlag) {
-                    case BindingFlag.NonPublic: {
-                        return this._methods.array().query().where(m => m.isPrivate);
+            if (!options || options.length === 0)
+                options = defaultModifier;
+            else
+                options = options.query().distinct().array();
+
+            var methods = new Array<Method>();
+
+            options.forEach(modifier => {
+                switch (modifier) {
+                    case Modifier.NonPublic: {
+                        methods.addRange(this._methods.array().query().where(m => m.isPrivate));
+                        break;
                     }
-                    case BindingFlag.Public: {
-                        return this._methods.array().query().where(m => m.isPublic);
+                    case Modifier.Public: {
+                        methods.addRange(this._methods.array().query().where(m => m.isPublic));
+                        break;
+                    }
+                    case Modifier.Instance: {
+                        // Need to implement getting instance methods.
+                        break;
+                    }
+                    case Modifier.Static: {
+                        // Need to implement getting instance methods.
+                        break;
                     }
                     default: {
-                        throw 'Unrecognized BindingFlag';
+                        throw 'Unrecognized Modifier';
                     }
                 }
-            }
+            });
 
-            return this._methods.array().query();
+            return methods.query();
         }
 
         //#endregion getMethods

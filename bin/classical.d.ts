@@ -124,9 +124,11 @@ declare module Classical.Collections {
 declare function typeOf(ctor: IFunction): Classical.Reflection.Type;
 declare function moduleOf(ctor: IFunction): Classical.Reflection.Module;
 declare module Classical.Reflection {
-    enum BindingFlag {
+    enum Modifier {
         Public = 0,
         NonPublic = 1,
+        Instance = 2,
+        Static = 3,
     }
     class Module {
         private _name;
@@ -183,7 +185,7 @@ declare module Classical.Reflection {
         public getMember(name: string): Member;
         public getProperties(): IQueryable<Property>;
         public getProperty(name: string): Property;
-        public getMethods(bindingFlag?: BindingFlag): IQueryable<Method>;
+        public getMethods(...options: Modifier[]): IQueryable<Method>;
         public getMethod(name: string): Method;
         private _initializeProperties();
         static getType(ctor: IFunction): Type;

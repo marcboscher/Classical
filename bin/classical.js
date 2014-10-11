@@ -941,11 +941,15 @@ var Classical;
         var u = Classical.Utilities;
         var c = Classical.Collections;
 
-        (function (BindingFlag) {
-            BindingFlag[BindingFlag["Public"] = 0] = "Public";
-            BindingFlag[BindingFlag["NonPublic"] = 1] = "NonPublic";
-        })(Reflection.BindingFlag || (Reflection.BindingFlag = {}));
-        var BindingFlag = Reflection.BindingFlag;
+        (function (Modifier) {
+            Modifier[Modifier["Public"] = 0] = "Public";
+            Modifier[Modifier["NonPublic"] = 1] = "NonPublic";
+            Modifier[Modifier["Instance"] = 2] = "Instance";
+            Modifier[Modifier["Static"] = 3] = "Static";
+        })(Reflection.Modifier || (Reflection.Modifier = {}));
+        var Modifier = Reflection.Modifier;
+
+        var defaultModifier = [0 /* Public */, 2 /* Instance */];
 
         var Module = (function () {
             function Module(password, name, scope, base) {
@@ -1346,31 +1350,51 @@ var Classical;
                 });
             };
 
-            Type.prototype.getMethods = function (bindingFlag) {
+            Type.prototype.getMethods = function () {
+                var _this = this;
+                var options = [];
+                for (var _i = 0; _i < (arguments.length - 0); _i++) {
+                    options[_i] = arguments[_i + 0];
+                }
                 if (!this._methods)
                     this._methods = this.getProperties().where(function (p) {
                         return p.isMethod;
                     }).cast().array();
 
-                if (bindingFlag) {
-                    switch (bindingFlag) {
+                if (!options || options.length === 0)
+                    options = defaultModifier;
+                else
+                    options = options.query().distinct().array();
+
+                var methods = new Array();
+
+                options.forEach(function (modifier) {
+                    switch (modifier) {
                         case 1 /* NonPublic */: {
-                            return this._methods.array().query().where(function (m) {
+                            methods.addRange(_this._methods.array().query().where(function (m) {
                                 return m.isPrivate;
-                            });
+                            }));
+                            break;
                         }
                         case 0 /* Public */: {
-                            return this._methods.array().query().where(function (m) {
+                            methods.addRange(_this._methods.array().query().where(function (m) {
                                 return m.isPublic;
-                            });
+                            }));
+                            break;
+                        }
+                        case 2 /* Instance */: {
+                            break;
+                        }
+                        case 3 /* Static */: {
+                            break;
                         }
                         default: {
-                            throw 'Unrecognized BindingFlag';
+                            throw 'Unrecognized Modifier';
                         }
                     }
-                }
+                });
 
-                return this._methods.array().query();
+                return methods.query();
             };
 
             Type.prototype.getMethod = function (name) {
