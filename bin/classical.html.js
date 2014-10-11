@@ -508,7 +508,7 @@ var Classical;
                 };
 
                 HtmlNode.prototype.isInitialized = function () {
-                    return Utilities.isTruthy(this._isInitialized);
+                    return Classical.Utilities.isTruthy(this._isInitialized);
                 };
 
                 HtmlNode.prototype.configure = function (element, document) {
@@ -532,7 +532,7 @@ var Classical;
 
                     var type = node.nodeName;
                     var ctor = constructorMap.getValue(type);
-                    Assert.isDefined(ctor, Utilities.format('The constructor for the HtmlNode decorating {0} could not be found.', type));
+                    Classical.Assert.isDefined(ctor, Classical.Utilities.format('The constructor for the HtmlNode decorating {0} could not be found.', type));
 
                     var htmlNode = (new ctor({}));
                     htmlNode.createElement = function () {
@@ -1928,10 +1928,10 @@ var Classical;
 
                 HtmlElementContainer.prototype.configure = function (element, document) {
                     _super.prototype.configure.call(this, element, document);
-                    var config = this.getConfig(), text = config.text, textBinder = config.textBinder, child = config.child, isTextDefined = Utilities.isDefined(text), isTextBinderDefined = Utilities.isDefined(textBinder), isChildDefined = Utilities.isDefined(child), isChildrenBinderDefined = Utilities.isDefined(config.childrenBinder);
+                    var config = this.getConfig(), text = config.text, textBinder = config.textBinder, child = config.child, isTextDefined = Classical.Utilities.isDefined(text), isTextBinderDefined = Classical.Utilities.isDefined(textBinder), isChildDefined = Classical.Utilities.isDefined(child), isChildrenBinderDefined = Classical.Utilities.isDefined(config.childrenBinder);
 
-                    Assert.isFalse((isTextDefined || isTextBinderDefined) && isChildrenBinderDefined, 'The text and textBinder properties cannot be specifed in conjuction with the childrenBinder. Add a text node as the first element of the source collection instead.');
-                    Assert.isFalse(isChildDefined && isChildrenBinderDefined, 'The child property cannot be specifed in conjuction with the childrenBinder. Add the child node as the first element of the source collection instead.');
+                    Classical.Assert.isFalse((isTextDefined || isTextBinderDefined) && isChildrenBinderDefined, 'The text and textBinder properties cannot be specifed in conjuction with the childrenBinder. Add a text node as the first element of the source collection instead.');
+                    Classical.Assert.isFalse(isChildDefined && isChildrenBinderDefined, 'The child property cannot be specifed in conjuction with the childrenBinder. Add the child node as the first element of the source collection instead.');
 
                     if (isTextDefined || isTextBinderDefined || isChildDefined) {
                         config.children = config.children || [];
@@ -7925,7 +7925,7 @@ var Classical;
             }
 
             function initializeProperty(element, propertyName, htmlPropertyName) {
-                var bindingProperyName = propertyName + 'Property', fieldName = '_' + bindingProperyName, htmlElement = element.element, htmlValue = htmlElement[htmlPropertyName], property = new Binding.Property(element, htmlValue);
+                var bindingProperyName = propertyName + 'Property', fieldName = '_' + bindingProperyName, htmlElement = element.element, htmlValue = htmlElement[htmlPropertyName], property = new Classical.Binding.Property(element, htmlValue);
 
                 property.propertyChanged.subscribe(function (host, value) {
                     var currentHtmlValue = htmlElement[htmlPropertyName];
@@ -7943,7 +7943,7 @@ var Classical;
 
                     if (valueWasNotChanged) {
                         property.value = htmlElement[htmlPropertyName];
-                        Assert.isInvalid(Utilities.format('{0} is not a valid value for {1}.{2} in the current context.', value, element.getType().name, propertyName));
+                        Classical.Assert.isInvalid(Classical.Utilities.format('{0} is not a valid value for {1}.{2} in the current context.', value, element.getType().name, propertyName));
                     }
                 });
 
@@ -7951,11 +7951,11 @@ var Classical;
             }
 
             function initializeChildrenProperty(element) {
-                var htmlElement = element.getElement(), htmlElementChildren = htmlElement.childNodes, htmlElementChildrenArray = Array.prototype.slice.call(htmlElementChildren), collectionProperty = new Binding.Collection(htmlElementChildrenArray.map(function (node) {
+                var htmlElement = element.getElement(), htmlElementChildren = htmlElement.childNodes, htmlElementChildrenArray = Array.prototype.slice.call(htmlElementChildren), collectionProperty = new Classical.Binding.Collection(htmlElementChildrenArray.map(function (node) {
                     return HtmlNode.getHtmlNode(node);
                 }));
                 collectionProperty.collectionChanged.subscribe(function (collection, info) {
-                    if (info.action.equals(Binding.CollectionAction.Add)) {
+                    if (info.action.equals(Classical.Binding.CollectionAction.Add)) {
                         var oldChild = htmlElementChildren[info.newIndex], newIndex = info.newIndex, newItem = info.newItem, newElement = newItem.element;
 
                         if (!newElement) {
@@ -7963,21 +7963,21 @@ var Classical;
                             newElement = newItem.element;
                         }
 
-                        Assert.isTrue(htmlElementChildren.length <= newIndex, 'The index of the element to add is out of range of the HtmlNode.');
+                        Classical.Assert.isTrue(htmlElementChildren.length <= newIndex, 'The index of the element to add is out of range of the HtmlNode.');
 
                         element._updating = true;
                         if (!oldChild)
                             htmlElement.appendChild(newElement);
                         else
                             htmlElement.replaceChild(newElement, oldChild);
-                    } else if (info.action.equals(Binding.CollectionAction.Remove)) {
+                    } else if (info.action.equals(Classical.Binding.CollectionAction.Remove)) {
                         var oldChild = htmlElementChildren[info.oldIndex];
-                        Assert.isDefined(oldChild, 'The element to remove could not be found.');
+                        Classical.Assert.isDefined(oldChild, 'The element to remove could not be found.');
 
                         element._updating = true;
                         htmlElement.removeChild(oldChild);
                     } else {
-                        Assert.isInvalid('The CollectionAction was not recognized.');
+                        Classical.Assert.isInvalid('The CollectionAction was not recognized.');
                     }
                 });
 
@@ -8036,13 +8036,13 @@ var Classical;
 
             var toString = Object.prototype.toString;
 
-            var elementMap = new Collections.Dictionary(5000);
+            var elementMap = new Classical.Collections.Dictionary(5000);
 
-            var propertyMap = new Collections.Dictionary(50).add('textContent', 'text').add('className', 'classes').add('dir', 'direction').add('lang', 'language').add('spellcheck', 'spellCheck').add('hreflang', 'hrefLanguage').add('rel', 'relationship').add('alt', 'alternate').add('coords', 'coordinates').add('autoplay', 'autoPlay').add('src', 'source').add('cite', 'citation').add('autofocus', 'autoFocus').add('autocomplete', 'autoComplete').add('enctype', 'encodingType').add('longDesc', 'longDescription').add('placeholder', 'placeHolder').add('charset', 'characterSet').add('rev', 'reverseRelationship').add('multiple', 'multipleOptions').add('colSpan', 'columnSpan').add('cols', 'columns').add('srclang', 'sourceLanguage');
+            var propertyMap = new Classical.Collections.Dictionary(50).add('textContent', 'text').add('className', 'classes').add('dir', 'direction').add('lang', 'language').add('spellcheck', 'spellCheck').add('hreflang', 'hrefLanguage').add('rel', 'relationship').add('alt', 'alternate').add('coords', 'coordinates').add('autoplay', 'autoPlay').add('src', 'source').add('cite', 'citation').add('autofocus', 'autoFocus').add('autocomplete', 'autoComplete').add('enctype', 'encodingType').add('longDesc', 'longDescription').add('placeholder', 'placeHolder').add('charset', 'characterSet').add('rev', 'reverseRelationship').add('multiple', 'multipleOptions').add('colSpan', 'columnSpan').add('cols', 'columns').add('srclang', 'sourceLanguage');
 
-            var contentMap = new Collections.Dictionary(10).add('accept-charset', 'acceptCharset').add('longdesc', 'longDesc').add('http-equiv', 'httpEquiv').add('colspan', 'colSpan').add('rowspan', 'rowSpan').add('maxlength', 'maxLength').add('readonly', 'readOnly');
+            var contentMap = new Classical.Collections.Dictionary(10).add('accept-charset', 'acceptCharset').add('longdesc', 'longDesc').add('http-equiv', 'httpEquiv').add('colspan', 'colSpan').add('rowspan', 'rowSpan').add('maxlength', 'maxLength').add('readonly', 'readOnly');
 
-            var constructorMap = new Collections.Dictionary(150).add('#text', TextNode).add('ABBR', AbbreviationElement).add('ADDRESS', AddressElement).add('A', AnchorElement).add('AREA', AreaElement).add('ARTICLE', ArticleElement).add('ASIDE', AsideElement).add('AUDIO', AudioElement).add('BASE', BaseElement).add('BDI', BidirectionalIsolationElement).add('BDO', BidirectionalOverrideElement).add('BLOCKQUOTE', BlockQuotationElement).add('BODY', BodyElement).add('B', BoldElement).add('BUTTON', ButtonElement).add('CANVAS', CanvasElement).add('CITE', CitationElement).add('CODE', CodeElement).add('DATA', DataElement).add('DATALIST', DataListElement).add('DFN', DefinitionElement).add('DT', DefinitionTermElement).add('DEL', DeletedTextElement).add('DD', DescriptionElement).add('DL', DescriptionListElement).add('DETAILS', DetailsElement).add('DIV', DivisionElement).add('EMBED', EmbedElement).add('OBJECT', EmbeddedObjectElement).add('EM', EmphasisElement).add('FIELDSET', FieldsetElement).add('FIGURE', FigureElement).add('FIGCAPTION', FigureCaptionElement).add('FOOTER', FooterElement).add('FORM', FormElement).add('HEAD', HeadElement).add('HEADER', HeaderElement).add('H5', HeaderFiveElement).add('H4', HeaderFourElement).add('H1', HeaderOneElement).add('H6', HeaderSixElement).add('H3', HeaderThreeElement).add('H2', HeaderTwoElement).add('HR', HorizontalRuleElement).add('IMG', ImageElement).add('IFRAME', InlineFrameElement).add('INPUT', InputElement).add('INS', InsertedElement).add('I', ItalicElement).add('KBD', KeyboardInputElement).add('LABEL', LabelElement).add('LEGEND', LegendFieldElement).add('BR', LineBreakElement).add('LINK', LinkElement).add('LI', ListItemElement).add('MAIN', MainElement).add('MAP', MapElement).add('MARK', MarkElement).add('META', MetaElement).add('NAV', NavigationElement).add('NOSCRIPT', NoScriptElement).add('OPTION', OptionElement).add('OPTGROUP', OptionsGroupElement).add('OL', OrderedListElement).add('P', ParagraphElement).add('PARAM', ParameterElement).add('PRE', PreformattedElement).add('PROGRESS', ProgressElement).add('Q', QuoteElement).add('HTML', RootElement).add('RUBY', RubyElement).add('RP', RubyParenthesisElement).add('RT', RubyPronunciationElement).add('SAMP', SampleElement).add('SCRIPT', ScriptElement).add('SECTION', SectionElement).add('SELECT', SelectElement).add('SMALL', SmallElement).add('SOURCE', SourceElement).add('SPAN', SpanElement).add('S', StrikethroughElement).add('STRONG', StrongElement).add('STYLE', StyleElement).add('SUB', SubscriptElement).add('SUMMARY', SummaryElement).add('SUP', SuperscriptElement).add('TABLE', TableElement).add('CAPTION', TableCaptionElement).add('COL', TableColumnElement).add('COLGROUP', TableColumnGroupElement).add('TD', TableDataCellElement).add('TH', TableHeaderCellElement).add('TR', TableRowElement).add('TEXTAREA', TextAreaElement).add('TITLE', TitleElement).add('TRACK', TrackElement).add('U', UnderlineElement).add('UL', UnorderedListElement).add('VAR', VariableElement).add('VIDEO', VideoElement).add('WBR', WordBreakOpportunityElement);
+            var constructorMap = new Classical.Collections.Dictionary(150).add('#text', TextNode).add('ABBR', AbbreviationElement).add('ADDRESS', AddressElement).add('A', AnchorElement).add('AREA', AreaElement).add('ARTICLE', ArticleElement).add('ASIDE', AsideElement).add('AUDIO', AudioElement).add('BASE', BaseElement).add('BDI', BidirectionalIsolationElement).add('BDO', BidirectionalOverrideElement).add('BLOCKQUOTE', BlockQuotationElement).add('BODY', BodyElement).add('B', BoldElement).add('BUTTON', ButtonElement).add('CANVAS', CanvasElement).add('CITE', CitationElement).add('CODE', CodeElement).add('DATA', DataElement).add('DATALIST', DataListElement).add('DFN', DefinitionElement).add('DT', DefinitionTermElement).add('DEL', DeletedTextElement).add('DD', DescriptionElement).add('DL', DescriptionListElement).add('DETAILS', DetailsElement).add('DIV', DivisionElement).add('EMBED', EmbedElement).add('OBJECT', EmbeddedObjectElement).add('EM', EmphasisElement).add('FIELDSET', FieldsetElement).add('FIGURE', FigureElement).add('FIGCAPTION', FigureCaptionElement).add('FOOTER', FooterElement).add('FORM', FormElement).add('HEAD', HeadElement).add('HEADER', HeaderElement).add('H5', HeaderFiveElement).add('H4', HeaderFourElement).add('H1', HeaderOneElement).add('H6', HeaderSixElement).add('H3', HeaderThreeElement).add('H2', HeaderTwoElement).add('HR', HorizontalRuleElement).add('IMG', ImageElement).add('IFRAME', InlineFrameElement).add('INPUT', InputElement).add('INS', InsertedElement).add('I', ItalicElement).add('KBD', KeyboardInputElement).add('LABEL', LabelElement).add('LEGEND', LegendFieldElement).add('BR', LineBreakElement).add('LINK', LinkElement).add('LI', ListItemElement).add('MAIN', MainElement).add('MAP', MapElement).add('MARK', MarkElement).add('META', MetaElement).add('NAV', NavigationElement).add('NOSCRIPT', NoScriptElement).add('OPTION', OptionElement).add('OPTGROUP', OptionsGroupElement).add('OL', OrderedListElement).add('P', ParagraphElement).add('PARAM', ParameterElement).add('PRE', PreformattedElement).add('PROGRESS', ProgressElement).add('Q', QuoteElement).add('HTML', RootElement).add('RUBY', RubyElement).add('RP', RubyParenthesisElement).add('RT', RubyPronunciationElement).add('SAMP', SampleElement).add('SCRIPT', ScriptElement).add('SECTION', SectionElement).add('SELECT', SelectElement).add('SMALL', SmallElement).add('SOURCE', SourceElement).add('SPAN', SpanElement).add('S', StrikethroughElement).add('STRONG', StrongElement).add('STYLE', StyleElement).add('SUB', SubscriptElement).add('SUMMARY', SummaryElement).add('SUP', SuperscriptElement).add('TABLE', TableElement).add('CAPTION', TableCaptionElement).add('COL', TableColumnElement).add('COLGROUP', TableColumnGroupElement).add('TD', TableDataCellElement).add('TH', TableHeaderCellElement).add('TR', TableRowElement).add('TEXTAREA', TextAreaElement).add('TITLE', TitleElement).add('TRACK', TrackElement).add('U', UnderlineElement).add('UL', UnorderedListElement).add('VAR', VariableElement).add('VIDEO', VideoElement).add('WBR', WordBreakOpportunityElement);
         })(Html.Elements || (Html.Elements = {}));
         var Elements = Html.Elements;
     })(Classical.Html || (Classical.Html = {}));
@@ -8053,7 +8053,7 @@ var Classical;
 (function (Classical) {
     (function (Html) {
         function create(node) {
-            Assert.isDefined(node, 'The HtmlNode was not defined');
+            Classical.Assert.isDefined(node, 'The HtmlNode was not defined');
             node.initialize();
 
             return node;
@@ -8066,7 +8066,7 @@ var Classical;
 
         function wrap(arg) {
             var element = arg;
-            if (Utilities.isString(arg))
+            if (Classical.Utilities.isString(arg))
                 element = document.getElementById(arg);
 
             return Html.Elements.HtmlNode.getHtmlNode(element);
@@ -8076,9 +8076,9 @@ var Classical;
         
 
         function text(content) {
-            if (!Utilities.isDefined(content))
+            if (!Classical.Utilities.isDefined(content))
                 content = '';
-            if (Utilities.isString(content) || !content.bind) {
+            if (Classical.Utilities.isString(content) || !content.bind) {
                 if (!content.bind)
                     content = content.toString();
 
@@ -8641,7 +8641,7 @@ var Classical;
             Object.defineProperty(HtmlElementEvent.prototype, "registrationMap", {
                 get: function () {
                     if (!this._registrationMap)
-                        this._registrationMap = new Collections.Dictionary();
+                        this._registrationMap = new Classical.Collections.Dictionary();
 
                     return this._registrationMap;
                 },
@@ -8651,7 +8651,7 @@ var Classical;
 
             HtmlElementEvent.prototype.subscribe = function (registration) {
                 var _this = this;
-                Assert.isDefined(registration, 'The registration is not defined.');
+                Classical.Assert.isDefined(registration, 'The registration is not defined.');
 
                 var elementRegistration = function (domInfo) {
                     registration(_this.node, domInfo);
@@ -8663,10 +8663,10 @@ var Classical;
             };
 
             HtmlElementEvent.prototype.unsubscribe = function (registration) {
-                Assert.isDefined(registration, 'The registration is not defined.');
+                Classical.Assert.isDefined(registration, 'The registration is not defined.');
 
                 var map = this.registrationMap, elementRegistration = map.getValue(registration);
-                Assert.isDefined(elementRegistration, Utilities.format('The registration has not been subscribed to the {0} event.', this._eventName));
+                Classical.Assert.isDefined(elementRegistration, Classical.Utilities.format('The registration has not been subscribed to the {0} event.', this._eventName));
 
                 this.node.element.removeEventListener(this._eventName, elementRegistration);
                 map.remove(registration);
