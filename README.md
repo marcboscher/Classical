@@ -1,18 +1,13 @@
 # Classical
-
-
-The TypeScript BCL
-
-
+The TypeScript BCL  
 Version 0.1.0
 
-TypeScript was released.
 
-Now we have classes, modules, type annotations, generics and type inference on the web. We even have an ES6 preview! 
+TypeScript was released.  
+Now we have classes, modules, type annotations, generics and type inference on the web. We even have an ES6 preview!  
+And we have all the design-time tooling that comes along with it.  
+Life is good.  
 
-And we have all the design-time tooling that comes along with it. 
-
-Life is good.
 
 Unfortunately, we're still left with the same APIs developed for JavaScript, a powerful but, let's admit it, quirky, dynamic language. 
 The JavaScript APIs just don't make use of the great features of classical object-oriented programming. If TypeScript is going to produce 
@@ -25,7 +20,7 @@ Our goal with Classical is to provide a base class library for TypeScript that i
 you with the tools you need to truly use JavaScript for application scale development. 
 
 
-Here's some of what you'll get:
+Here's some of what you'll get.
 
 ## Reflection
 ```
