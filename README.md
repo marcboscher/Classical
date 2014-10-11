@@ -1,11 +1,11 @@
 # Classical
 The TypeScript BCL 
-Version 0.1.0
+*Version 0.1.0*
 
 
-TypeScript was released. 
-Now we have classes, modules, type annotations, generics and type inference on the web. We even have an ES6 preview! 
-And we have all the design-time tooling that comes along with it. 
+TypeScript was released.
+Now we have classes, modules, type annotations, generics and type inference on the web. We even have an ES6 preview!
+And we have all the design-time tooling that comes along with it.
 Life is good.
 
 
@@ -63,6 +63,9 @@ Here's some of what you'll get.
 A module containing a declarative, statically typed DOM API.
 It provides MVVM style binding on POJOs completely in JavaScript -
 No loosey-goosey html pseudo-languages to memorize
+
+
+## Conclusion
 
 Ultimately we want to hear what you want. 
 So give us a bit of time to get a bit more implemented, documented and polished.
