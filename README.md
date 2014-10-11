@@ -1,10 +1,9 @@
-### Classical
+# Classical
 ##The TypeScript BCL 
 *Version 0.1.0*
 
-# Introduction
-TypeScript was released. Now we have classes, modules, type annotations, generics and type inference on the web. We even have an ES6 
-preview! And we have all the design-time tooling that comes along with it. Life is good.
+## Introduction
+TypeScript was released. Now we have classes, modules, type annotations, generics and type inference on the web. We even have an ES6 preview! And we have all the design-time tooling that comes along with it. Life is good.
 
 
 Unfortunately, we're still left with the same APIs developed for JavaScript, a powerful but, let's admit it, quirky, dynamic language. 
@@ -20,20 +19,20 @@ you with the tools you need to truly use JavaScript for application scale develo
 
 Here's some of what you'll get.
 
-# Reflection
+### Reflection
 ```
 	var type = obj.getType();
 	var properties = type.getProperties();
     var methods = type.getMethods();
 ```
 
-# Dictionary
+### Dictionary
 ```
 	var functionMap = new Dictionary<Function, Type>();
 	var dateMap = new Dictionary<Date, (arg: Function) => Function>();
 ```
      
-# Querying
+### Querying
 ```
     var squares = Enumerable.range(-1000, 1000).query()
 		.where(x => x > 0)
@@ -41,7 +40,7 @@ Here's some of what you'll get.
         .dictionary(x => x.key, x => x.value);
 ```
   
-# Expressions
+### Expressions
 ```
 	  var obj = { x: 0 };
 	  var property = Expression.getProperty(obj, o => o.x); //returns 'x'
@@ -49,7 +48,7 @@ Here's some of what you'll get.
 	  var arguments = Expression.getArguments(f): //returns ['x', 'y', 'z']
 ```
 	  
-# Binding
+### Binding
 ```
 	  var source = new Property(0);
 	  var target = new Property(-1);
@@ -63,7 +62,10 @@ It provides MVVM style binding on POJOs completely in JavaScript -
 No loosey-goosey html pseudo-languages to memorize
 
 
-# Conclusion
+and more...
+
+
+## Conclusion
 
 Ultimately we want to hear what you want. 
 So give us a bit of time to get a bit more implemented, documented and polished.
