@@ -20,20 +20,20 @@ you with the tools you need to truly use JavaScript for application scale develo
 Here's some of what you'll get.
 
 ### Reflection
-```
+```typescript
 	var type = obj.getType();
 	var properties = type.getProperties();
     var methods = type.getMethods();
 ```
 
 ### Dictionary
-```
+```typescript
 	var functionMap = new Dictionary<Function, Type>();
 	var dateMap = new Dictionary<Date, (arg: Function) => Function>();
 ```
      
 ### Querying
-```
+```typescript
     var squares = Enumerable.range(-1000, 1000).query()
 		.where(x => x > 0)
         .select(x => { key: x, value: x * x})
@@ -41,7 +41,7 @@ Here's some of what you'll get.
 ```
   
 ### Expressions
-```
+```typescript
 	  var obj = { x: 0 };
 	  var property = Expression.getProperty(obj, o => o.x); //returns 'x'
 	  function f(x, y, z) { }
@@ -49,7 +49,7 @@ Here's some of what you'll get.
 ```
 	  
 ### Binding
-```
+```typescript
 	  var source = new Property(0);
 	  var target = new Property(-1);
 	  target.bind(source); //target.value === 0
@@ -72,5 +72,6 @@ So give us a bit of time to get a bit more implemented, documented and polished.
 Then we'll see what you can be accomplished with the tools you enjoy using.
 
 If you're a TypeScript wonk like we are, open up the bin, give the type declarations a once-over and get started with classical.js.
+
 Ping us if you have any questions!
 
