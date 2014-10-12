@@ -67,9 +67,9 @@ and more...
 
 ## Conclusion
 
-Ultimately we want to hear what you want. 
+Ultimately we want to build what you need. 
 So give us a bit of time to get a bit more implemented, documented and polished.
-Then we'll see what you can be accomplished with the tools you enjoy using.
+Then we'll see just what can be accomplished when you create with the tools you enjoy using.
 
 If you're a TypeScript wonk like we are, open up the bin, give the type declarations a once-over and get started with classical.js.
 
