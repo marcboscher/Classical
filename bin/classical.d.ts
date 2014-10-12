@@ -183,28 +183,33 @@ declare module Classical.Reflection {
         public isAssignableFrom(other: Type): boolean;
         public getMembers(): IQueryable<Member>;
         public getMember(name: string): Member;
-        public getProperties(): IQueryable<Property>;
+        public getProperties(...options: Modifier[]): IQueryable<Property>;
         public getProperty(name: string): Property;
         public getMethods(...options: Modifier[]): IQueryable<Method>;
         public getMethod(name: string): Method;
         private _initializeProperties();
+        private _getProperOptions(options);
         static getType(ctor: IFunction): Type;
     }
     class Member {
         private _name;
         private _declaringType;
+        private _isStatic;
         public name : string;
         public declaringType : Type;
-        constructor(password: number, name: string, declaringType: Type);
+        public isStatic : boolean;
+        constructor(password: number, name: string, declaringType: Type, isStatic: boolean);
     }
     class Property extends Member {
         private _canWrite;
         private _canRead;
         private _isMethod;
+        public isPublic : boolean;
+        public isPrivate : boolean;
         public canWrite : boolean;
         public canRead : boolean;
         public isMethod : boolean;
-        constructor(password: number, name: string, declaringType: Type, canRead: boolean, canWrite: boolean, isMethod: boolean);
+        constructor(password: number, name: string, declaringType: Type, canRead: boolean, canWrite: boolean, isMethod: boolean, isStatic: boolean);
         public getValue(instance: any): any;
         public setValue(instance: any, value: any): any;
     }
@@ -216,9 +221,7 @@ declare module Classical.Reflection {
     class Method extends Property {
         private _underlyingFunction;
         private _parameters;
-        public isPublic : boolean;
-        public isPrivate : boolean;
-        constructor(password: number, name: string, declaringType: Type, canWrite: boolean, underlyingFunction: IFunction);
+        constructor(password: number, name: string, declaringType: Type, canWrite: boolean, underlyingFunction: IFunction, isStatic: boolean);
         public invoke(instance: any, ...args: any[]): any;
         public getParameters(): IQueryable<Parameter>;
         private _initializeParameters();

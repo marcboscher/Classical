@@ -1047,11 +1047,46 @@ module Classical.Reflection {
 
         //#region getProperties
 
-        getProperties(): IQueryable<Property> {
+        getProperties(...options: Array<Modifier>): IQueryable<Property> {
             if (!this._properties)
                 this._initializeProperties();
 
-            return this._properties.array().query();
+            options = this._getProperOptions(options);
+
+            var properties = new Array<Property>();
+            var includePublic = false;
+            var includeNonPublic = false;
+
+            options.forEach(modifier => {
+                switch (modifier) {
+                    case Modifier.Public: {
+                        includePublic = true;
+                        break;
+                    }
+                    case Modifier.NonPublic: {
+                        includeNonPublic = true;
+                        break;
+                    }
+                    case Modifier.Instance: {
+                        properties.addRange(this._properties.array().query().where(m => !m.isStatic));
+                        break;
+                    }
+                    case Modifier.Static: {
+                        properties.addRange(this._properties.array().query().where(m => m.isStatic));
+                        break;
+                    }
+                    default: {
+                        throw 'Unrecognized Modifier';
+                    }
+                }
+            });
+
+            if (includePublic)
+                properties = properties.query().where(m => m.isPublic).array();
+            else if (includeNonPublic)
+                properties = properties.query().where(m => !m.isPublic).array();
+
+            return properties.query().distinct();
         }
 
         //#endregion getProperties
@@ -1069,32 +1104,34 @@ module Classical.Reflection {
         //#region getMethods
 
         getMethods(...options: Array<Modifier>): IQueryable<Method> {
-            if (!this._methods)
-                this._methods = this.getProperties().where(p => p.isMethod).cast<Method>().array();
+            return (<IQueryable<Method>>this.getProperties.apply(this, options))
+                    .where(p => p.isMethod).cast<Method>();
 
-            if (!options || options.length === 0)
-                options = defaultModifier;
-            else
-                options = options.query().distinct().array();
+            if (!this._methods)
+                this._methods = this.getProperties(<any>options).where(p => p.isMethod).cast<Method>().array();
+
+            options = this._getProperOptions(options);
 
             var methods = new Array<Method>();
+            var includePublic = false;
+            var includeNonPublic = false;
 
             options.forEach(modifier => {
                 switch (modifier) {
-                    case Modifier.NonPublic: {
-                        methods.addRange(this._methods.array().query().where(m => m.isPrivate));
+                    case Modifier.Public: {
+                        includePublic = true;
                         break;
                     }
-                    case Modifier.Public: {
-                        methods.addRange(this._methods.array().query().where(m => m.isPublic));
+                    case Modifier.NonPublic: {
+                        includeNonPublic = true;
                         break;
                     }
                     case Modifier.Instance: {
-                        // Need to implement getting instance methods.
+                        methods.addRange(this._methods.array().query().where(m => !m.isStatic));
                         break;
                     }
                     case Modifier.Static: {
-                        // Need to implement getting instance methods.
+                        methods.addRange(this._methods.array().query().where(m => m.isStatic));
                         break;
                     }
                     default: {
@@ -1103,7 +1140,12 @@ module Classical.Reflection {
                 }
             });
 
-            return methods.query();
+            if (includePublic)
+                methods = methods.query().where(m => m.isPublic).array();
+            else if (includeNonPublic)
+                methods = methods.query().where(m => !m.isPublic).array();
+
+            return methods.query().distinct();
         }
 
         //#endregion getMethods
@@ -1128,13 +1170,22 @@ module Classical.Reflection {
             var properties = new Array<Property>();
             var instance = this._ctor.prototype;
 
+            Object.getOwnPropertyNames(this._ctor).forEach((property) => {
+                var propertyDescriptor = Object.getOwnPropertyDescriptor(this._ctor, property);
+
+                if (Utilities.isDefined(propertyDescriptor.get) || Utilities.isDefined(propertyDescriptor.set))
+                    properties.add(new Property(constructorPassword, property, typeOf(instance.constructor), Utilities.isDefined(propertyDescriptor.get), Utilities.isDefined(propertyDescriptor.set), false, true));
+                else if (Utilities.isFunction(propertyDescriptor.value))
+                    properties.add(new Method(constructorPassword, property, typeOf(instance.constructor), propertyDescriptor.writable, <IFunction>propertyDescriptor.value, true));
+            });
+
             Object.getOwnPropertyNames(instance).forEach((property) => {
                 var propertyDescriptor = Object.getOwnPropertyDescriptor(instance, property);
 
                 if (Utilities.isDefined(propertyDescriptor.get) || Utilities.isDefined(propertyDescriptor.set))
-                    properties.add(new Property(constructorPassword, property, typeOf(instance.constructor), Utilities.isDefined(propertyDescriptor.get), Utilities.isDefined(propertyDescriptor.set), false));
+                    properties.add(new Property(constructorPassword, property, typeOf(instance.constructor), Utilities.isDefined(propertyDescriptor.get), Utilities.isDefined(propertyDescriptor.set), false, false));
                 else if (Utilities.isFunction(propertyDescriptor.value))
-                    properties.add(new Method(constructorPassword, property, typeOf(instance.constructor), propertyDescriptor.writable, <IFunction>propertyDescriptor.value));
+                    properties.add(new Method(constructorPassword, property, typeOf(instance.constructor), propertyDescriptor.writable, <IFunction>propertyDescriptor.value, false));
             });
 
             var baseType = this.base;
@@ -1161,6 +1212,20 @@ module Classical.Reflection {
         }
 
         //#endregion initializeProperties
+
+        private _getProperOptions(options: Array<Modifier>): Array<Modifier> {
+            if (!options || options.length === 0)
+                options = defaultModifier;
+            else
+                options = options.query().distinct().array();
+
+            if (options.query().hasNone(o => o === Modifier.Public) && options.query().hasNone(o => o === Modifier.NonPublic))
+                options.add(Modifier.Public);
+            if (options.query().hasNone(o => o === Modifier.Static) && options.query().hasNone(o => o === Modifier.Instance))
+                options.add(Modifier.Instance);
+
+            return options;
+        }
 
         //#endregion Utilities
 
@@ -1195,6 +1260,7 @@ module Classical.Reflection {
 
         private _name: string;
         private _declaringType: Type;
+        private _isStatic: boolean;
 
         //#endregion Fields
 
@@ -1216,16 +1282,25 @@ module Classical.Reflection {
 
         //#endregion declaringType
 
+        //#region isStatic
+
+        get isStatic(): boolean {
+            return this._isStatic;
+        }
+
+        //#endregion isStatic
+
         //#endregion Properties
 
         //#region Constructors
 
-        constructor(password: number, name: string, declaringType: Type) {
+        constructor(password: number, name: string, declaringType: Type, isStatic: boolean) {
             Assert.isTrue(password === constructorPassword,
                 'You do not have permission to create instances of this type.');
 
             this._name = name;
             this._declaringType = declaringType;
+            this._isStatic = isStatic;
         }
 
         //#endregion Constructors
@@ -1246,6 +1321,22 @@ module Classical.Reflection {
         //#endregion Fields
 
         //#region Properties
+
+        //#region isPublic
+
+        get isPublic(): boolean {
+            return this.name.indexOf('_') !== 0;
+        }
+
+        //#endregion isPublic
+
+        //#region isPrivate
+
+        get isPrivate(): boolean {
+            return !this.isPublic;
+        }
+
+        //#endregion isPrivate
 
         //#region canWrite
 
@@ -1275,8 +1366,8 @@ module Classical.Reflection {
 
         //#region Constructors
 
-        constructor(password: number, name: string, declaringType: Type, canRead: boolean, canWrite: boolean, isMethod: boolean) {
-            super(password, name, declaringType);
+        constructor(password: number, name: string, declaringType: Type, canRead: boolean, canWrite: boolean, isMethod: boolean, isStatic: boolean) {
+            super(password, name, declaringType, isStatic);
 
             this._canWrite = canWrite;
             this._canRead = canRead;
@@ -1394,7 +1485,7 @@ module Classical.Reflection {
         constructor(password: number, name: string, module: Module) {
             Assert.isDefined(module);
 
-            super(password, name, undefined, true, true, false);
+            super(password, name, undefined, true, true, false, true);
         }
 
         //#endregion Constructors
@@ -1413,30 +1504,10 @@ module Classical.Reflection {
 
         //#endregion Fields
 
-        //#region Properties
-
-        //#region isPublic
-
-        get isPublic(): boolean {
-            return this.name.indexOf('_') !== 0;
-        }
-
-        //#endregion isPublic
-
-        //#region isPrivate
-
-        get isPrivate(): boolean {
-            return !this.isPublic;
-        }
-
-        //#endregion isPrivate
-
-        //#endregion Properties
-
         //#region Constructors
 
-        constructor(password: number, name: string, declaringType: Type, canWrite: boolean, underlyingFunction: IFunction) {
-            super(password, name, declaringType, true, canWrite, true);
+        constructor(password: number, name: string, declaringType: Type, canWrite: boolean, underlyingFunction: IFunction, isStatic: boolean) {
+            super(password, name, declaringType, true, canWrite, true, isStatic);
 
             this._underlyingFunction = underlyingFunction;
         }
@@ -1505,7 +1576,7 @@ module Classical.Reflection {
         //#region Constructors
 
         constructor(password: number, name: string, canWrite: boolean, underlyingFunction: IFunction) {
-            super(password, name, undefined, canWrite, underlyingFunction);
+            super(password, name, undefined, canWrite, underlyingFunction, true);
         }
 
         //#endregion Constructors
