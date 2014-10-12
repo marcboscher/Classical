@@ -1383,6 +1383,9 @@ module Classical.Reflection {
         getValue(instance: any): any {
             Assert.isDefined(instance);
 
+            if (this.isStatic)
+                return this.declaringType.ctor[this.name];
+
             var type = typeOf(instance.constructor);
             var property = type.getProperty(this.name);
 
@@ -1415,8 +1418,13 @@ module Classical.Reflection {
 
         //#region setValue
 
-        setValue(instance: any, value: any): any {
+        setValue(instance: any, value: any): void {
             Assert.isDefined(instance);
+
+            if (this.isStatic) {
+                this.declaringType.ctor[this.name] = value;
+                return;
+            }
 
             var type = typeOf(instance.constructor);
             var property = type.getProperty(this.name);
@@ -1427,28 +1435,6 @@ module Classical.Reflection {
                 throw 'The property cannot be written to.';
 
             instance[this.name] = value;
-
-            //var instanceType = <Type>instance.getType();
-
-            //if (instanceType && instanceType.ctor === instance.constructor) {
-            //    instance[this.name] = value;
-            //}
-            //else {
-            //    var prototype = instanceType.prototype;
-            //    while (prototype) {
-            //        if (instanceType.ctor === prototype.constructor) {
-            //            prototype[this.name] = value;
-
-            //            break;
-            //        }
-
-            //        var prototypeType = <Type>prototype.getType();
-            //        if (prototypeType)
-            //            prototype = prototypeType.prototype;
-            //        else
-            //            prototype = undefined;
-            //    }
-            //}
         }
 
         //#endregion setValue
@@ -1520,6 +1506,9 @@ module Classical.Reflection {
 
         invoke(instance: any, ...args: any[]) {
             Assert.isDefined(instance);
+
+            if (this.isStatic)
+                return this.declaringType.ctor[this.name].apply(null, args);
 
             var type = typeOf(instance.constructor);
             var method = type.getMethod(this.name);

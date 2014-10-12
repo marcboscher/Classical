@@ -211,7 +211,7 @@ declare module Classical.Reflection {
         public isMethod : boolean;
         constructor(password: number, name: string, declaringType: Type, canRead: boolean, canWrite: boolean, isMethod: boolean, isStatic: boolean);
         public getValue(instance: any): any;
-        public setValue(instance: any, value: any): any;
+        public setValue(instance: any, value: any): void;
     }
     class Variable extends Property {
         private _module;

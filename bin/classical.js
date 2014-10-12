@@ -1638,6 +1638,9 @@ var Classical;
             Property.prototype.getValue = function (instance) {
                 Classical.Assert.isDefined(instance);
 
+                if (this.isStatic)
+                    return this.declaringType.ctor[this.name];
+
                 var type = typeOf(instance.constructor);
                 var property = type.getProperty(this.name);
 
@@ -1668,6 +1671,11 @@ var Classical;
 
             Property.prototype.setValue = function (instance, value) {
                 Classical.Assert.isDefined(instance);
+
+                if (this.isStatic) {
+                    this.declaringType.ctor[this.name] = value;
+                    return;
+                }
 
                 var type = typeOf(instance.constructor);
                 var property = type.getProperty(this.name);
@@ -1714,6 +1722,9 @@ var Classical;
                     args[_i] = arguments[_i + 1];
                 }
                 Classical.Assert.isDefined(instance);
+
+                if (this.isStatic)
+                    return this.declaringType.ctor[this.name].apply(null, args);
 
                 var type = typeOf(instance.constructor);
                 var method = type.getMethod(this.name);
