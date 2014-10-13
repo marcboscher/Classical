@@ -1603,7 +1603,7 @@ var Classical;
                 configurable: true
             });
 
-            Object.defineProperty(Property.prototype, "isPrivate", {
+            Object.defineProperty(Property.prototype, "isNotPublic", {
                 get: function () {
                     return !this.isPublic;
                 },

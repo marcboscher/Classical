@@ -1330,13 +1330,13 @@ module Classical.Reflection {
 
         //#endregion isPublic
 
-        //#region isPrivate
+        //#region isNotPublic
 
-        get isPrivate(): boolean {
+        get isNotPublic(): boolean {
             return !this.isPublic;
         }
 
-        //#endregion isPrivate
+        //#endregion isNotPublic
 
         //#region canWrite
 

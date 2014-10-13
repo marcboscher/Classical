@@ -205,7 +205,7 @@ declare module Classical.Reflection {
         private _canRead;
         private _isMethod;
         public isPublic : boolean;
-        public isPrivate : boolean;
+        public isNotPublic : boolean;
         public canWrite : boolean;
         public canRead : boolean;
         public isMethod : boolean;
