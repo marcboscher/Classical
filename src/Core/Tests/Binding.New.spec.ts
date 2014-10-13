@@ -738,6 +738,137 @@ module Classical.Binding.New.Spec {
 
                 //#endregion value
 
+                //#region bind
+
+                describe('bind', () => {
+                    it('should provide two-way binding when another property is passed as the argument', () => {
+                        var source = new Property(0),
+                            target = new Property(-1);
+
+                        target.bind(source);
+                        expect(target.value).toBe(0);
+
+                        source.value = 1;
+                        expect(target.value).toBe(1);
+
+                        target.value = 2;
+                        expect(source.value).toBe(2);
+                    });
+                    it('should provide complex one-way binding when multiple sources and a selector are passed as the arguments', () => {
+                        var source1 = new Property(1),
+                            source2 = new Property(1),
+                            source3 = new Property(1),
+                            source4 = new Property(1),
+                            target = new Property(-1);
+
+                        target.bind([source1, source2, source3, source4],
+                            sources => sources.query().sum(s => s.value));
+
+                        expect(target.value).toBe(4);
+
+                        source1.value = 0;
+                        expect(target.value).toBe(3);
+
+                        source2.value = 0;
+                        expect(target.value).toBe(2);
+
+                        source3.value = 0;
+                        expect(target.value).toBe(1);
+
+                        source4.value = 0;
+                        expect(target.value).toBe(0);
+                    });
+                    it('should provide two-way binding when a PropertyBinder is passed as the argument', () => {
+                        var source = new Property(0),
+                            target = new Property(-1);
+
+                        target.bind({
+                            property: source,
+                            converter: {
+                                convert: x => x,
+                                convertBack: x => x
+                            }
+                        });
+                        expect(target.value).toBe(0);
+
+                        source.value = 1;
+                        expect(target.value).toBe(1);
+
+                        target.value = 2;
+                        expect(source.value).toBe(2);
+                    });
+                    it('should provide two-way binding when both converter methods are specified', () => {
+                        var first = new Property(1),
+                            second = new Property(2);
+
+                        first.bind({
+                            source: second,
+                            converter: {
+                                convert: update => update,
+                                convertBack: update => update
+                            }
+                        });
+
+                        first.value = 1;
+                        expect(first.value).toBe(1);
+                        expect(first.value).toBe(second.value);
+
+                        second.value = 2;
+                        expect(second.value).toBe(2);
+                        expect(second.value).toBe(first.value);
+                    });
+                    it('should provide one-way binding when one converter method is specified', () => {
+                        var first = new Property(1),
+                            second = new Property(2);
+
+                        first.bind({
+                            source: second,
+                            converter: {
+                                convert: update => update
+                            }
+                        });
+
+                        second.value = 2;
+                        expect(second.value).toBe(2);
+                        expect(second.value).toBe(first.value);
+
+                        first.value = 1;
+                        expect(second.value).toBe(2);
+                        expect(first.value).toBe(1);
+                    });
+                    it('should run the init method on the target', () => {
+                        var first = new Property(1),
+                            second = new Property(2);
+
+                        expect(first.value).toBe(1);
+
+                        first.bind({
+                            source: second,
+                            init: (target, source) => (<any>target).value = (<any>source).value
+                        });
+
+                        expect(first.value).toBe(second.value);
+                    });
+                    it('should provide complex binding', () => {
+                        var first = new Property(1),
+                            second = new Property(2),
+                            sum = new Property(0);
+
+                        sum.bind({
+                            sources: [first, second],
+                            converter: {
+                                convert: sources => new IntegerUpdate(
+                                    sources.query().sum(s => s.value))
+                            }
+                        });
+
+                        first.value = 3;
+                        second.value = 4;
+                        expect(sum.value).toBe(first.value + second.value);
+                    });
+                });
+
+                //#endregion bind
             });
 
             //#endregion Property
@@ -745,55 +876,74 @@ module Classical.Binding.New.Spec {
             //#region ConfirmationProperty
 
             describe('ConfirmationProperty', () => {
+
+                describe('newValue', () => {
+                    it('should contain the value of the pending change.', () => {
+                        var first = new ConfirmationProperty(1);
+                        var second = new ConfirmationProperty(2);
+                        first.bind(second);
+
+                        expect(first.value).toBe(1);
+                        expect(first.newValue).toBe(2);
+                        first.accept();
+                        expect(first.value).toBe(2);
+                        expect(first.newValue).toBe(2);
+
+                        second.value = 0;
+                        second.accept();
+
+                        expect(first.value).toBe(2);
+                        expect(first.newValue).toBe(0);
+                        first.reject();
+                        expect(first.value).toBe(2);
+                        expect(first.newValue).toBe(2);
+
+                        second.value = 0;
+                        second.accept();
+
+                        expect(first.value).toBe(2);
+                        expect(first.newValue).toBe(0);
+                        first.accept();
+                        expect(first.value).toBe(0);
+                        expect(first.newValue).toBe(0);
+                    });
+                });
+
                 describe('accept', () => {
                     it('should only update the value when accept is called.', () => {
-                        var confirmationPropertyOne = new ConfirmationProperty(1);
-                        var confirmationPropertyTwo = new ConfirmationProperty(2);
-                        confirmationPropertyTwo.bind(confirmationPropertyOne); //The bind won't actually set ConfirmationPropertyTwo to value 1 since accept hasn't been called yet.
+                        var first = new ConfirmationProperty(1);
+                        var second = new ConfirmationProperty(2);
+                        first.bind(second);
 
-                        var propertyUpdate = new PropertyUpdate(13);
+                        expect(first.value).toBe(1);
+                        first.accept();
+                        expect(first.value).toBe(2);
 
-                        confirmationPropertyOne.apply([propertyUpdate]);
+                        second.value = 0;
+                        second.accept();
 
-                        expect(confirmationPropertyOne.value).toBe(1);
-                        expect(confirmationPropertyTwo.value).toBe(2);
-
-                        confirmationPropertyOne.accept();
-
-                        expect(confirmationPropertyOne.value).toBe(13);
-                        expect(confirmationPropertyTwo.value).toBe(2);
-
-                        confirmationPropertyTwo.accept();
-                        expect(confirmationPropertyTwo.value).toBe(13);
+                        expect(first.value).toBe(2);
+                        first.accept();
+                        expect(first.value).toBe(0);
                     });
                 });
 
                 describe('reject', () => {
                     it('should keep the original value when reject is called.', () => {
-                        var confirmationPropertyOne = new ConfirmationProperty(1);
-                        var confirmationPropertyTwo = new ConfirmationProperty(2);
-                        confirmationPropertyTwo.bind(confirmationPropertyOne);
+                        var first = new ConfirmationProperty(1);
+                        var second = new ConfirmationProperty(2);
+                        first.bind(second);
 
-                        var propertyUpdate = new PropertyUpdate(13);
+                        expect(first.value).toBe(1);
+                        first.reject();
+                        expect(first.value).toBe(1);
 
-                        confirmationPropertyOne.apply([propertyUpdate]);
+                        second.value = 0;
+                        second.accept();
 
-                        expect(confirmationPropertyOne.value).toBe(1);
-                        expect(confirmationPropertyTwo.value).toBe(2);
-
-                        confirmationPropertyOne.reject();
-
-                        expect(confirmationPropertyOne.value).toBe(1);
-                        expect(confirmationPropertyTwo.value).toBe(2);
-
-                        confirmationPropertyOne.accept();
-
-                        expect(confirmationPropertyOne.value).toBe(1);
-                        expect(confirmationPropertyTwo.value).toBe(2);
-
-                        confirmationPropertyTwo.accept();
-                        expect(confirmationPropertyOne.value).toBe(1);
-                        expect(confirmationPropertyTwo.value).toBe(1);
+                        expect(first.value).toBe(1);
+                        first.reject();
+                        expect(first.value).toBe(1);
                     });
                 });
             });

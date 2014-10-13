@@ -183,35 +183,30 @@ declare module Classical.Reflection {
         public isAssignableFrom(other: Type): boolean;
         public getMembers(): IQueryable<Member>;
         public getMember(name: string): Member;
-        public getProperties(...options: Modifier[]): IQueryable<Property>;
+        public getProperties(): IQueryable<Property>;
         public getProperty(name: string): Property;
         public getMethods(...options: Modifier[]): IQueryable<Method>;
         public getMethod(name: string): Method;
         private _initializeProperties();
-        private _getProperOptions(options);
         static getType(ctor: IFunction): Type;
     }
     class Member {
         private _name;
         private _declaringType;
-        private _isStatic;
         public name : string;
         public declaringType : Type;
-        public isStatic : boolean;
-        constructor(password: number, name: string, declaringType: Type, isStatic: boolean);
+        constructor(password: number, name: string, declaringType: Type);
     }
     class Property extends Member {
         private _canWrite;
         private _canRead;
         private _isMethod;
-        public isPublic : boolean;
-        public isNotPublic : boolean;
         public canWrite : boolean;
         public canRead : boolean;
         public isMethod : boolean;
-        constructor(password: number, name: string, declaringType: Type, canRead: boolean, canWrite: boolean, isMethod: boolean, isStatic: boolean);
+        constructor(password: number, name: string, declaringType: Type, canRead: boolean, canWrite: boolean, isMethod: boolean);
         public getValue(instance: any): any;
-        public setValue(instance: any, value: any): void;
+        public setValue(instance: any, value: any): any;
     }
     class Variable extends Property {
         private _module;
@@ -221,7 +216,9 @@ declare module Classical.Reflection {
     class Method extends Property {
         private _underlyingFunction;
         private _parameters;
-        constructor(password: number, name: string, declaringType: Type, canWrite: boolean, underlyingFunction: IFunction, isStatic: boolean);
+        public isPublic : boolean;
+        public isPrivate : boolean;
+        constructor(password: number, name: string, declaringType: Type, canWrite: boolean, underlyingFunction: IFunction);
         public invoke(instance: any, ...args: any[]): any;
         public getParameters(): IQueryable<Parameter>;
         private _initializeParameters();
@@ -651,7 +648,7 @@ declare module Classical.Binding.New {
         private _setValue(value);
     }
     interface IPropertyBinder<TValue> extends IObject {
-        source: Property<any>;
+        property: Property<any>;
         converter: IConverter<any, TValue>;
     }
     class PropertyUpdate<TValue> extends Update {

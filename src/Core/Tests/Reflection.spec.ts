@@ -340,31 +340,9 @@ module Classical.Reflection.Spec {
 
                         expect(privateMethods.hasAny(m => m.name === '_firstPrivateMethod')).toBe(true);
                         expect(privateMethods.hasAny(m => m.name === '_secondPrivateMethod')).toBe(true);
-                        expect(privateMethods.hasNone(m => m.name === 'returnNumber')).toBe(true);
-
                         expect(publicMethods.hasAny(m => m.name === 'returnNumber')).toBe(true);
                         expect(publicMethods.hasAny(m => m.name === 'returnParameter')).toBe(true);
-                        expect(publicMethods.hasNone(m => m.name === '_secondPrivateMethod')).toBe(true);
                         
-                    });
-                    it('should return static and instance methods correctly.', () => {
-                        var reflectionTest = new ReflectionTest(),
-                            reflectionTestType = reflectionTest.getType(),
-                            publicStaticMethods = reflectionTestType.getMethods(Modifier.Public, Modifier.Static),
-                            publicInstanceMethods = reflectionTestType.getMethods(Modifier.Public, Modifier.Instance),
-                            privateStaticMethods = reflectionTestType.getMethods(Modifier.NonPublic, Modifier.Static);
-
-                        expect(publicStaticMethods.hasAny(m => m.name === 'staticMethod')).toBe(true);
-                        expect(publicStaticMethods.hasNone(m => m.name === 'returnNumber')).toBe(true);
-                        expect(publicStaticMethods.hasNone(m => m.name === 'returnParameter')).toBe(true);
-
-                        expect(publicInstanceMethods.hasAny(m => m.name === 'returnNumber')).toBe(true);
-                        expect(publicInstanceMethods.hasAny(m => m.name === 'returnParameter')).toBe(true);
-                        expect(publicInstanceMethods.hasNone(m => m.name === 'staticMethod')).toBe(true);
-
-                        expect(privateStaticMethods.hasAny(m => m.name === '_privateStaticMethod')).toBe(true);
-                        expect(privateStaticMethods.hasNone(m => m.name === '_firstPrivateMethod')).toBe(true);
-                        expect(privateStaticMethods.hasNone(m => m.name === '_secondPrivateMethod')).toBe(true);
                     });
                 });
 
@@ -638,12 +616,6 @@ module Classical.Reflection.Spec {
         }
 
         private _secondPrivateMethod(): void {
-        }
-
-        public static staticMethod() {
-        }
-
-        private static _privateStaticMethod() {
         }
     }
 

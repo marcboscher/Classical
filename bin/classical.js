@@ -1336,58 +1336,10 @@ var Classical;
             };
 
             Type.prototype.getProperties = function () {
-                var _this = this;
-                var options = [];
-                for (var _i = 0; _i < (arguments.length - 0); _i++) {
-                    options[_i] = arguments[_i + 0];
-                }
                 if (!this._properties)
                     this._initializeProperties();
 
-                options = this._getProperOptions(options);
-
-                var properties = new Array();
-                var includePublic = false;
-                var includeNonPublic = false;
-
-                options.forEach(function (modifier) {
-                    switch (modifier) {
-                        case 0 /* Public */: {
-                            includePublic = true;
-                            break;
-                        }
-                        case 1 /* NonPublic */: {
-                            includeNonPublic = true;
-                            break;
-                        }
-                        case 2 /* Instance */: {
-                            properties.addRange(_this._properties.array().query().where(function (m) {
-                                return !m.isStatic;
-                            }));
-                            break;
-                        }
-                        case 3 /* Static */: {
-                            properties.addRange(_this._properties.array().query().where(function (m) {
-                                return m.isStatic;
-                            }));
-                            break;
-                        }
-                        default: {
-                            throw 'Unrecognized Modifier';
-                        }
-                    }
-                });
-
-                if (includePublic)
-                    properties = properties.query().where(function (m) {
-                        return m.isPublic;
-                    }).array();
-                else if (includeNonPublic)
-                    properties = properties.query().where(function (m) {
-                        return !m.isPublic;
-                    }).array();
-
-                return properties.query().distinct();
+                return this._properties.array().query();
             };
 
             Type.prototype.getProperty = function (name) {
@@ -1404,41 +1356,36 @@ var Classical;
                 for (var _i = 0; _i < (arguments.length - 0); _i++) {
                     options[_i] = arguments[_i + 0];
                 }
-                return this.getProperties.apply(this, options).where(function (p) {
-                    return p.isMethod;
-                }).cast();
-
                 if (!this._methods)
-                    this._methods = this.getProperties(options).where(function (p) {
+                    this._methods = this.getProperties().where(function (p) {
                         return p.isMethod;
                     }).cast().array();
 
-                options = this._getProperOptions(options);
+                if (!options || options.length === 0)
+                    options = defaultModifier;
+                else
+                    options = options.query().distinct().array();
 
                 var methods = new Array();
-                var includePublic = false;
-                var includeNonPublic = false;
 
                 options.forEach(function (modifier) {
                     switch (modifier) {
-                        case 0 /* Public */: {
-                            includePublic = true;
+                        case 1 /* NonPublic */: {
+                            methods.addRange(_this._methods.array().query().where(function (m) {
+                                return m.isPrivate;
+                            }));
                             break;
                         }
-                        case 1 /* NonPublic */: {
-                            includeNonPublic = true;
+                        case 0 /* Public */: {
+                            methods.addRange(_this._methods.array().query().where(function (m) {
+                                return m.isPublic;
+                            }));
                             break;
                         }
                         case 2 /* Instance */: {
-                            methods.addRange(_this._methods.array().query().where(function (m) {
-                                return !m.isStatic;
-                            }));
                             break;
                         }
                         case 3 /* Static */: {
-                            methods.addRange(_this._methods.array().query().where(function (m) {
-                                return m.isStatic;
-                            }));
                             break;
                         }
                         default: {
@@ -1447,16 +1394,7 @@ var Classical;
                     }
                 });
 
-                if (includePublic)
-                    methods = methods.query().where(function (m) {
-                        return m.isPublic;
-                    }).array();
-                else if (includeNonPublic)
-                    methods = methods.query().where(function (m) {
-                        return !m.isPublic;
-                    }).array();
-
-                return methods.query().distinct();
+                return methods.query();
             };
 
             Type.prototype.getMethod = function (name) {
@@ -1468,26 +1406,16 @@ var Classical;
             };
 
             Type.prototype._initializeProperties = function () {
-                var _this = this;
                 var properties = new Array();
                 var instance = this._ctor.prototype;
-
-                Object.getOwnPropertyNames(this._ctor).forEach(function (property) {
-                    var propertyDescriptor = Object.getOwnPropertyDescriptor(_this._ctor, property);
-
-                    if (Classical.Utilities.isDefined(propertyDescriptor.get) || Classical.Utilities.isDefined(propertyDescriptor.set))
-                        properties.add(new Property(constructorPassword, property, typeOf(instance.constructor), Classical.Utilities.isDefined(propertyDescriptor.get), Classical.Utilities.isDefined(propertyDescriptor.set), false, true));
-                    else if (Classical.Utilities.isFunction(propertyDescriptor.value))
-                        properties.add(new Method(constructorPassword, property, typeOf(instance.constructor), propertyDescriptor.writable, propertyDescriptor.value, true));
-                });
 
                 Object.getOwnPropertyNames(instance).forEach(function (property) {
                     var propertyDescriptor = Object.getOwnPropertyDescriptor(instance, property);
 
                     if (Classical.Utilities.isDefined(propertyDescriptor.get) || Classical.Utilities.isDefined(propertyDescriptor.set))
-                        properties.add(new Property(constructorPassword, property, typeOf(instance.constructor), Classical.Utilities.isDefined(propertyDescriptor.get), Classical.Utilities.isDefined(propertyDescriptor.set), false, false));
+                        properties.add(new Property(constructorPassword, property, typeOf(instance.constructor), Classical.Utilities.isDefined(propertyDescriptor.get), Classical.Utilities.isDefined(propertyDescriptor.set), false));
                     else if (Classical.Utilities.isFunction(propertyDescriptor.value))
-                        properties.add(new Method(constructorPassword, property, typeOf(instance.constructor), propertyDescriptor.writable, propertyDescriptor.value, false));
+                        properties.add(new Method(constructorPassword, property, typeOf(instance.constructor), propertyDescriptor.writable, propertyDescriptor.value));
                 });
 
                 var baseType = this.base;
@@ -1515,28 +1443,6 @@ var Classical;
                 this._properties = properties;
             };
 
-            Type.prototype._getProperOptions = function (options) {
-                if (!options || options.length === 0)
-                    options = defaultModifier;
-                else
-                    options = options.query().distinct().array();
-
-                if (options.query().hasNone(function (o) {
-                    return o === 0 /* Public */;
-                }) && options.query().hasNone(function (o) {
-                    return o === 1 /* NonPublic */;
-                }))
-                    options.add(0 /* Public */);
-                if (options.query().hasNone(function (o) {
-                    return o === 3 /* Static */;
-                }) && options.query().hasNone(function (o) {
-                    return o === 2 /* Instance */;
-                }))
-                    options.add(2 /* Instance */);
-
-                return options;
-            };
-
             Type.getType = function (ctor) {
                 Classical.Assert.isDefined(ctor, 'The constructor is not defined.');
                 var type = types.getValue(ctor);
@@ -1552,12 +1458,11 @@ var Classical;
         Reflection.Type = Type;
 
         var Member = (function () {
-            function Member(password, name, declaringType, isStatic) {
+            function Member(password, name, declaringType) {
                 Classical.Assert.isTrue(password === constructorPassword, 'You do not have permission to create instances of this type.');
 
                 this._name = name;
                 this._declaringType = declaringType;
-                this._isStatic = isStatic;
             }
             Object.defineProperty(Member.prototype, "name", {
                 get: function () {
@@ -1574,43 +1479,19 @@ var Classical;
                 enumerable: true,
                 configurable: true
             });
-
-            Object.defineProperty(Member.prototype, "isStatic", {
-                get: function () {
-                    return this._isStatic;
-                },
-                enumerable: true,
-                configurable: true
-            });
             return Member;
         })();
         Reflection.Member = Member;
 
         var Property = (function (_super) {
             __extends(Property, _super);
-            function Property(password, name, declaringType, canRead, canWrite, isMethod, isStatic) {
-                _super.call(this, password, name, declaringType, isStatic);
+            function Property(password, name, declaringType, canRead, canWrite, isMethod) {
+                _super.call(this, password, name, declaringType);
 
                 this._canWrite = canWrite;
                 this._canRead = canRead;
                 this._isMethod = isMethod;
             }
-            Object.defineProperty(Property.prototype, "isPublic", {
-                get: function () {
-                    return this.name.indexOf('_') !== 0;
-                },
-                enumerable: true,
-                configurable: true
-            });
-
-            Object.defineProperty(Property.prototype, "isNotPublic", {
-                get: function () {
-                    return !this.isPublic;
-                },
-                enumerable: true,
-                configurable: true
-            });
-
             Object.defineProperty(Property.prototype, "canWrite", {
                 get: function () {
                     return this._canWrite;
@@ -1637,9 +1518,6 @@ var Classical;
 
             Property.prototype.getValue = function (instance) {
                 Classical.Assert.isDefined(instance);
-
-                if (this.isStatic)
-                    return this.declaringType.ctor[this.name];
 
                 var type = typeOf(instance.constructor);
                 var property = type.getProperty(this.name);
@@ -1672,11 +1550,6 @@ var Classical;
             Property.prototype.setValue = function (instance, value) {
                 Classical.Assert.isDefined(instance);
 
-                if (this.isStatic) {
-                    this.declaringType.ctor[this.name] = value;
-                    return;
-                }
-
                 var type = typeOf(instance.constructor);
                 var property = type.getProperty(this.name);
 
@@ -1696,7 +1569,7 @@ var Classical;
             function Variable(password, name, module) {
                 Classical.Assert.isDefined(module);
 
-                _super.call(this, password, name, undefined, true, true, false, true);
+                _super.call(this, password, name, undefined, true, true, false);
             }
             Object.defineProperty(Variable.prototype, "module", {
                 get: function () {
@@ -1711,20 +1584,33 @@ var Classical;
 
         var Method = (function (_super) {
             __extends(Method, _super);
-            function Method(password, name, declaringType, canWrite, underlyingFunction, isStatic) {
-                _super.call(this, password, name, declaringType, true, canWrite, true, isStatic);
+            function Method(password, name, declaringType, canWrite, underlyingFunction) {
+                _super.call(this, password, name, declaringType, true, canWrite, true);
 
                 this._underlyingFunction = underlyingFunction;
             }
+            Object.defineProperty(Method.prototype, "isPublic", {
+                get: function () {
+                    return this.name.indexOf('_') !== 0;
+                },
+                enumerable: true,
+                configurable: true
+            });
+
+            Object.defineProperty(Method.prototype, "isPrivate", {
+                get: function () {
+                    return !this.isPublic;
+                },
+                enumerable: true,
+                configurable: true
+            });
+
             Method.prototype.invoke = function (instance) {
                 var args = [];
                 for (var _i = 0; _i < (arguments.length - 1); _i++) {
                     args[_i] = arguments[_i + 1];
                 }
                 Classical.Assert.isDefined(instance);
-
-                if (this.isStatic)
-                    return this.declaringType.ctor[this.name].apply(null, args);
 
                 var type = typeOf(instance.constructor);
                 var method = type.getMethod(this.name);
@@ -1761,7 +1647,7 @@ var Classical;
         var Function = (function (_super) {
             __extends(Function, _super);
             function Function(password, name, canWrite, underlyingFunction) {
-                _super.call(this, password, name, undefined, canWrite, underlyingFunction, true);
+                _super.call(this, password, name, undefined, canWrite, underlyingFunction);
             }
             return Function;
         })(Method);
@@ -3696,10 +3582,10 @@ var Classical;
                     }
 
                     return {
-                        source: propertyBinder.source,
+                        source: propertyBinder.property,
                         converter: converter,
                         init: function () {
-                            _this.value = valueConverter.convert(propertyBinder.source.value);
+                            _this.value = valueConverter.convert(propertyBinder.property.value);
                         }
                     };
                 };

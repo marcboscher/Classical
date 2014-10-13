@@ -608,11 +608,11 @@ module Classical.Binding.New {
             }
 
             return {
-                source: propertyBinder.source,
+                source: propertyBinder.property,
                 converter: converter,
                 init: () => {
                     this.value = valueConverter.convert(
-                        propertyBinder.source.value);
+                        propertyBinder.property.value);
                 }
             };
         }
@@ -638,7 +638,7 @@ module Classical.Binding.New {
 
         //#region Properties
 
-        get value() {
+        get value(): TValue {
             return this._getValue();
         }
 
@@ -728,7 +728,7 @@ module Classical.Binding.New {
     //#region IPropertyBinder
 
     export interface IPropertyBinder<TValue> extends IObject {
-        source: Property<any>;
+        property: Property<any>;
         converter: IConverter<any, TValue>;
     }
 
