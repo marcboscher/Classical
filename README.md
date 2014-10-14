@@ -50,10 +50,11 @@ Here's some of what you'll get.
 	  
 ### Binding
 ```typescript
-	  var source = new Property(0);
-	  var target = new Property(-1);
-	  target.bind(source); //target.value === 0
-	  source.value = 1; //target.value === 1
+	  var source = new Property(1);
+	  var target = new Property(0);
+	  target.bind(source); //target.value === 1
+	  source.value = 2; //target.value === 2
+	  target.value = 3; //source.value === 3 (two-way)
 ```
 
 ### Classical.Html
