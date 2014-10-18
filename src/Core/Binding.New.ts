@@ -308,13 +308,13 @@ module Classical.Binding.New {
                 data: []
             };
 
-            this._binders.query().foreach(binder => {
+            this._binders.query().forEach(binder => {
                 var sourceUpdates: Array<Update> = [];
                 var converter = binder.converter;
                 if (!converter.convertBack)
                     return;
 
-                updates.query().foreach(update => {
+                updates.query().forEach(update => {
                     if (!update.has(binder.source)) {
                         var sourceUpdate = converter.convertBack(update);
                         update.transferTo(sourceUpdate);
@@ -359,11 +359,11 @@ module Classical.Binding.New {
                 sourcesQuery = sources.query(),
                 bindingHandler = () => {
                     var update = binder.converter.convert(sources);
-                    sourcesQuery.foreach(source => update.add(source));
+                    sourcesQuery.forEach(source => update.add(source));
                     return this.target.apply([update]);
                 };
 
-            sourcesQuery.foreach(source => source.observe(bindingHandler));
+            sourcesQuery.forEach(source => source.observe(bindingHandler));
             bindingHandler();
         }
 
@@ -383,7 +383,7 @@ module Classical.Binding.New {
             if (groupUpdate.isExecuted)
                 return;
 
-            groupUpdate.data.query().foreach(sourceUpdate => {
+            groupUpdate.data.query().forEach(sourceUpdate => {
                 if (sourceUpdate.updates.query().hasAny())
                     sourceUpdate.binder.source.apply(sourceUpdate.updates);
             });
@@ -742,7 +742,7 @@ module Classical.Binding.New {
             super();
             this.value = value;
             if (sources)
-                sources.query().foreach(source => this.add(source));
+                sources.query().forEach(source => this.add(source));
         }
     }
 

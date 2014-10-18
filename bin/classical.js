@@ -140,7 +140,7 @@
         ArrayPrototype.addRange = function (items) {
             var _this = this;
             Classical.Assert.isDefined(items);
-            forall(items, function (item) {
+            items.forEach(function (item) {
                 return _this.add(item);
             });
 
@@ -649,9 +649,13 @@ var Classical;
                 return new Collections.Queryable(this);
             };
 
+            Dictionary.prototype.forEach = function (operation) {
+                forEach(this, operation);
+            };
+
             Dictionary.prototype.array = function () {
                 var array = [];
-                forall(this, function (pair) {
+                this.forEach(function (pair) {
                     array.add(pair);
                 });
                 return array;
@@ -878,9 +882,13 @@ var Classical;
                 return new Collections.Queryable(this);
             };
 
+            DictionaryKeyCollection.prototype.forEach = function (operation) {
+                forEach(this, operation);
+            };
+
             DictionaryKeyCollection.prototype.array = function () {
                 var array = new Array();
-                forall(this, function (pair) {
+                this.forEach(function (pair) {
                     return array.add(pair);
                 });
                 return array;
@@ -919,6 +927,15 @@ var Classical;
             return KeyValuePair;
         })();
         Collections.KeyValuePair = KeyValuePair;
+
+        function forEach(items, operation) {
+            var enumerator = items.getEnumerator(), current;
+
+            while (enumerator.moveNext()) {
+                var current = enumerator.current;
+                operation.bind(current)(current);
+            }
+        }
     })(Classical.Collections || (Classical.Collections = {}));
     var Collections = Classical.Collections;
 })(Classical || (Classical = {}));
@@ -1109,7 +1126,7 @@ var Classical;
                 var _this = this;
                 var foundType = false;
 
-                this.getTypes().foreach(function (t) {
+                this.getTypes().forEach(function (t) {
                     if (t === type)
                         foundType = true;
                     else
@@ -1336,10 +1353,58 @@ var Classical;
             };
 
             Type.prototype.getProperties = function () {
+                var _this = this;
+                var options = [];
+                for (var _i = 0; _i < (arguments.length - 0); _i++) {
+                    options[_i] = arguments[_i + 0];
+                }
                 if (!this._properties)
                     this._initializeProperties();
 
-                return this._properties.array().query();
+                options = this._getProperOptions(options);
+
+                var properties = new Array();
+                var includePublic = false;
+                var includeNonPublic = false;
+
+                options.forEach(function (modifier) {
+                    switch (modifier) {
+                        case 0 /* Public */: {
+                            includePublic = true;
+                            break;
+                        }
+                        case 1 /* NonPublic */: {
+                            includeNonPublic = true;
+                            break;
+                        }
+                        case 2 /* Instance */: {
+                            properties.addRange(_this._properties.array().query().where(function (m) {
+                                return !m.isStatic;
+                            }));
+                            break;
+                        }
+                        case 3 /* Static */: {
+                            properties.addRange(_this._properties.array().query().where(function (m) {
+                                return m.isStatic;
+                            }));
+                            break;
+                        }
+                        default: {
+                            throw 'Unrecognized Modifier';
+                        }
+                    }
+                });
+
+                if (includePublic)
+                    properties = properties.query().where(function (m) {
+                        return m.isPublic;
+                    }).array();
+                else if (includeNonPublic)
+                    properties = properties.query().where(function (m) {
+                        return !m.isPublic;
+                    }).array();
+
+                return properties.query().distinct();
             };
 
             Type.prototype.getProperty = function (name) {
@@ -1356,36 +1421,41 @@ var Classical;
                 for (var _i = 0; _i < (arguments.length - 0); _i++) {
                     options[_i] = arguments[_i + 0];
                 }
+                return this.getProperties.apply(this, options).where(function (p) {
+                    return p.isMethod;
+                }).cast();
+
                 if (!this._methods)
-                    this._methods = this.getProperties().where(function (p) {
+                    this._methods = this.getProperties(options).where(function (p) {
                         return p.isMethod;
                     }).cast().array();
 
-                if (!options || options.length === 0)
-                    options = defaultModifier;
-                else
-                    options = options.query().distinct().array();
+                options = this._getProperOptions(options);
 
                 var methods = new Array();
+                var includePublic = false;
+                var includeNonPublic = false;
 
                 options.forEach(function (modifier) {
                     switch (modifier) {
-                        case 1 /* NonPublic */: {
-                            methods.addRange(_this._methods.array().query().where(function (m) {
-                                return m.isPrivate;
-                            }));
+                        case 0 /* Public */: {
+                            includePublic = true;
                             break;
                         }
-                        case 0 /* Public */: {
-                            methods.addRange(_this._methods.array().query().where(function (m) {
-                                return m.isPublic;
-                            }));
+                        case 1 /* NonPublic */: {
+                            includeNonPublic = true;
                             break;
                         }
                         case 2 /* Instance */: {
+                            methods.addRange(_this._methods.array().query().where(function (m) {
+                                return !m.isStatic;
+                            }));
                             break;
                         }
                         case 3 /* Static */: {
+                            methods.addRange(_this._methods.array().query().where(function (m) {
+                                return m.isStatic;
+                            }));
                             break;
                         }
                         default: {
@@ -1394,7 +1464,16 @@ var Classical;
                     }
                 });
 
-                return methods.query();
+                if (includePublic)
+                    methods = methods.query().where(function (m) {
+                        return m.isPublic;
+                    }).array();
+                else if (includeNonPublic)
+                    methods = methods.query().where(function (m) {
+                        return !m.isPublic;
+                    }).array();
+
+                return methods.query().distinct();
             };
 
             Type.prototype.getMethod = function (name) {
@@ -1406,16 +1485,26 @@ var Classical;
             };
 
             Type.prototype._initializeProperties = function () {
+                var _this = this;
                 var properties = new Array();
                 var instance = this._ctor.prototype;
+
+                Object.getOwnPropertyNames(this._ctor).forEach(function (property) {
+                    var propertyDescriptor = Object.getOwnPropertyDescriptor(_this._ctor, property);
+
+                    if (Classical.Utilities.isDefined(propertyDescriptor.get) || Classical.Utilities.isDefined(propertyDescriptor.set))
+                        properties.add(new Property(constructorPassword, property, typeOf(instance.constructor), Classical.Utilities.isDefined(propertyDescriptor.get), Classical.Utilities.isDefined(propertyDescriptor.set), false, true));
+                    else if (Classical.Utilities.isFunction(propertyDescriptor.value))
+                        properties.add(new Method(constructorPassword, property, typeOf(instance.constructor), propertyDescriptor.writable, propertyDescriptor.value, true));
+                });
 
                 Object.getOwnPropertyNames(instance).forEach(function (property) {
                     var propertyDescriptor = Object.getOwnPropertyDescriptor(instance, property);
 
                     if (Classical.Utilities.isDefined(propertyDescriptor.get) || Classical.Utilities.isDefined(propertyDescriptor.set))
-                        properties.add(new Property(constructorPassword, property, typeOf(instance.constructor), Classical.Utilities.isDefined(propertyDescriptor.get), Classical.Utilities.isDefined(propertyDescriptor.set), false));
+                        properties.add(new Property(constructorPassword, property, typeOf(instance.constructor), Classical.Utilities.isDefined(propertyDescriptor.get), Classical.Utilities.isDefined(propertyDescriptor.set), false, false));
                     else if (Classical.Utilities.isFunction(propertyDescriptor.value))
-                        properties.add(new Method(constructorPassword, property, typeOf(instance.constructor), propertyDescriptor.writable, propertyDescriptor.value));
+                        properties.add(new Method(constructorPassword, property, typeOf(instance.constructor), propertyDescriptor.writable, propertyDescriptor.value, false));
                 });
 
                 var baseType = this.base;
@@ -1443,6 +1532,28 @@ var Classical;
                 this._properties = properties;
             };
 
+            Type.prototype._getProperOptions = function (options) {
+                if (!options || options.length === 0)
+                    options = defaultModifier;
+                else
+                    options = options.query().distinct().array();
+
+                if (options.query().hasNone(function (o) {
+                    return o === 0 /* Public */;
+                }) && options.query().hasNone(function (o) {
+                    return o === 1 /* NonPublic */;
+                }))
+                    options.add(0 /* Public */);
+                if (options.query().hasNone(function (o) {
+                    return o === 3 /* Static */;
+                }) && options.query().hasNone(function (o) {
+                    return o === 2 /* Instance */;
+                }))
+                    options.add(2 /* Instance */);
+
+                return options;
+            };
+
             Type.getType = function (ctor) {
                 Classical.Assert.isDefined(ctor, 'The constructor is not defined.');
                 var type = types.getValue(ctor);
@@ -1458,11 +1569,12 @@ var Classical;
         Reflection.Type = Type;
 
         var Member = (function () {
-            function Member(password, name, declaringType) {
+            function Member(password, name, declaringType, isStatic) {
                 Classical.Assert.isTrue(password === constructorPassword, 'You do not have permission to create instances of this type.');
 
                 this._name = name;
                 this._declaringType = declaringType;
+                this._isStatic = isStatic;
             }
             Object.defineProperty(Member.prototype, "name", {
                 get: function () {
@@ -1479,19 +1591,43 @@ var Classical;
                 enumerable: true,
                 configurable: true
             });
+
+            Object.defineProperty(Member.prototype, "isStatic", {
+                get: function () {
+                    return this._isStatic;
+                },
+                enumerable: true,
+                configurable: true
+            });
             return Member;
         })();
         Reflection.Member = Member;
 
         var Property = (function (_super) {
             __extends(Property, _super);
-            function Property(password, name, declaringType, canRead, canWrite, isMethod) {
-                _super.call(this, password, name, declaringType);
+            function Property(password, name, declaringType, canRead, canWrite, isMethod, isStatic) {
+                _super.call(this, password, name, declaringType, isStatic);
 
                 this._canWrite = canWrite;
                 this._canRead = canRead;
                 this._isMethod = isMethod;
             }
+            Object.defineProperty(Property.prototype, "isPublic", {
+                get: function () {
+                    return this.name.indexOf('_') !== 0;
+                },
+                enumerable: true,
+                configurable: true
+            });
+
+            Object.defineProperty(Property.prototype, "isNotPublic", {
+                get: function () {
+                    return !this.isPublic;
+                },
+                enumerable: true,
+                configurable: true
+            });
+
             Object.defineProperty(Property.prototype, "canWrite", {
                 get: function () {
                     return this._canWrite;
@@ -1518,6 +1654,9 @@ var Classical;
 
             Property.prototype.getValue = function (instance) {
                 Classical.Assert.isDefined(instance);
+
+                if (this.isStatic)
+                    return this.declaringType.ctor[this.name];
 
                 var type = typeOf(instance.constructor);
                 var property = type.getProperty(this.name);
@@ -1550,6 +1689,11 @@ var Classical;
             Property.prototype.setValue = function (instance, value) {
                 Classical.Assert.isDefined(instance);
 
+                if (this.isStatic) {
+                    this.declaringType.ctor[this.name] = value;
+                    return;
+                }
+
                 var type = typeOf(instance.constructor);
                 var property = type.getProperty(this.name);
 
@@ -1569,7 +1713,7 @@ var Classical;
             function Variable(password, name, module) {
                 Classical.Assert.isDefined(module);
 
-                _super.call(this, password, name, undefined, true, true, false);
+                _super.call(this, password, name, undefined, true, true, false, true);
             }
             Object.defineProperty(Variable.prototype, "module", {
                 get: function () {
@@ -1584,33 +1728,20 @@ var Classical;
 
         var Method = (function (_super) {
             __extends(Method, _super);
-            function Method(password, name, declaringType, canWrite, underlyingFunction) {
-                _super.call(this, password, name, declaringType, true, canWrite, true);
+            function Method(password, name, declaringType, canWrite, underlyingFunction, isStatic) {
+                _super.call(this, password, name, declaringType, true, canWrite, true, isStatic);
 
                 this._underlyingFunction = underlyingFunction;
             }
-            Object.defineProperty(Method.prototype, "isPublic", {
-                get: function () {
-                    return this.name.indexOf('_') !== 0;
-                },
-                enumerable: true,
-                configurable: true
-            });
-
-            Object.defineProperty(Method.prototype, "isPrivate", {
-                get: function () {
-                    return !this.isPublic;
-                },
-                enumerable: true,
-                configurable: true
-            });
-
             Method.prototype.invoke = function (instance) {
                 var args = [];
                 for (var _i = 0; _i < (arguments.length - 1); _i++) {
                     args[_i] = arguments[_i + 1];
                 }
                 Classical.Assert.isDefined(instance);
+
+                if (this.isStatic)
+                    return this.declaringType.ctor[this.name].apply(null, args);
 
                 var type = typeOf(instance.constructor);
                 var method = type.getMethod(this.name);
@@ -1647,7 +1778,7 @@ var Classical;
         var Function = (function (_super) {
             __extends(Function, _super);
             function Function(password, name, canWrite, underlyingFunction) {
-                _super.call(this, password, name, undefined, canWrite, underlyingFunction);
+                _super.call(this, password, name, undefined, canWrite, underlyingFunction, true);
             }
             return Function;
         })(Method);
@@ -1692,20 +1823,12 @@ var Classical;
 
 
 
-function forall(enumerable, operation) {
-    var enumerator = enumerable.getEnumerator();
-    while (enumerator.moveNext()) {
-        operation(enumerator.current);
-    }
-
-    return enumerable;
-}
-
 var Classical;
 (function (Classical) {
     (function (Collections) {
         var u = Classical.Utilities;
         var r = Classical.Reflection;
+        var ce = Classical.Collections.Enumerable;
 
         var ArrayPrototype = Array.prototype;
 
@@ -1802,6 +1925,10 @@ var Classical;
                 return this._get(0 /* Copy */).query();
             };
 
+            ImmutableCollection.prototype.forEach = function (operation) {
+                ce.forEach(this, operation);
+            };
+
             ImmutableCollection.prototype.array = function () {
                 return this._get(0 /* Copy */).array();
             };
@@ -1863,8 +1990,15 @@ var Classical;
                 return result;
             };
 
-            Queryable.prototype.foreach = function (operation) {
-                return forall(this, operation).query();
+            Queryable.prototype.forEach = function (operation) {
+                var enumerator = this.getEnumerator(), current;
+
+                while (enumerator.moveNext()) {
+                    var current = enumerator.current;
+                    operation.bind(current)(current);
+                }
+
+                return this;
             };
 
             Queryable.prototype.cast = function () {
@@ -1911,7 +2045,7 @@ var Classical;
                 }
 
                 var firstPass = true;
-                this.foreach(function (item) {
+                this.forEach(function (item) {
                     if (skipFirst && firstPass) {
                         firstPass = false;
                         return;
@@ -2254,6 +2388,52 @@ var Classical;
             return ConcatQueryableEnumerator;
         })();
 
+        (function (Enumerable) {
+            
+
+            
+
+            
+
+            function range(start, increment, end) {
+                if (arguments.length == 1) {
+                    end = start;
+                    start = 0;
+                    increment = end < 0 ? -1 : 1;
+                } else if (arguments.length == 2) {
+                    end = increment;
+                    increment = end < start ? -1 : 1;
+                }
+                if (start === end)
+                    return [start];
+
+                Classical.Assert.isFalse(increment == 0, 'The increment cannot be equal to zero.');
+                Classical.Assert.isFalse(start < end && increment < 0, 'The increment must be positive for increasing ranges.');
+                Classical.Assert.isFalse(end < start && increment > 0, 'The increment must be negative for decreasing ranges.');
+
+                var result = [], current = start, adjustmentFactor = start < end ? 1 : -1, adjustedEnd = end * adjustmentFactor;
+
+                while (current * adjustmentFactor <= adjustedEnd) {
+                    result.push(current);
+                    current += increment;
+                }
+
+                return result;
+            }
+            Enumerable.range = range;
+
+            function forEach(items, operation) {
+                var enumerator = items.getEnumerator(), current;
+
+                while (enumerator.moveNext()) {
+                    var current = enumerator.current;
+                    operation.bind(current)(current);
+                }
+            }
+            Enumerable.forEach = forEach;
+        })(Collections.Enumerable || (Collections.Enumerable = {}));
+        var Enumerable = Collections.Enumerable;
+
         function getComparer(array, selector, comparison, ascending) {
             if (!selector)
                 selector = function (item) {
@@ -2350,48 +2530,6 @@ var Classical;
     })(Classical.Collections || (Classical.Collections = {}));
     var Collections = Classical.Collections;
 })(Classical || (Classical = {}));
-
-var Classical;
-(function (Classical) {
-    (function (Collections) {
-        (function (Enumerable) {
-            
-
-            
-
-            
-
-            function range(start, increment, end) {
-                if (arguments.length == 1) {
-                    end = start;
-                    start = 0;
-                    increment = end < 0 ? -1 : 1;
-                } else if (arguments.length == 2) {
-                    end = increment;
-                    increment = end < start ? -1 : 1;
-                }
-                if (start === end)
-                    return [start];
-
-                Classical.Assert.isFalse(increment == 0, 'The increment cannot be equal to zero.');
-                Classical.Assert.isFalse(start < end && increment < 0, 'The increment must be positive for increasing ranges.');
-                Classical.Assert.isFalse(end < start && increment > 0, 'The increment must be negative for decreasing ranges.');
-
-                var result = [], current = start, adjustmentFactor = start < end ? 1 : -1, adjustedEnd = end * adjustmentFactor;
-
-                while (current * adjustmentFactor <= adjustedEnd) {
-                    result.push(current);
-                    current += increment;
-                }
-
-                return result;
-            }
-            Enumerable.range = range;
-        })(Collections.Enumerable || (Collections.Enumerable = {}));
-        var Enumerable = Collections.Enumerable;
-    })(Classical.Collections || (Classical.Collections = {}));
-    var Collections = Classical.Collections;
-})(Classical || (Classical = {}));
 var Classical;
 (function (Classical) {
     (function (Expression) {
@@ -2480,7 +2618,7 @@ var Classical;
                 if (subscribers.count() === 0)
                     return;
 
-                subscribers.query().foreach(function (registration) {
+                subscribers.query().forEach(function (registration) {
                     registration(host, info);
                 });
             };
@@ -2518,7 +2656,7 @@ var Classical;
 
                 var responses = [], response;
 
-                forall(subscribers, function (registration) {
+                subscribers.forEach(function (registration) {
                     response = registration(host, info);
                     Classical.Assert.isDefined(response, 'A subscriber gave a response which is null or undefined.');
                     responses.add(response);
@@ -2547,7 +2685,7 @@ var Classical;
             TallyRequest.prototype.tally = function (info) {
                 var responses = this.execute(info), tally = 0;
 
-                forall(responses, function (value) {
+                responses.forEach(function (value) {
                     return tally += value;
                 });
                 return tally;
@@ -2574,7 +2712,7 @@ var Classical;
                 if (responses.count() === 0)
                     return this._undecidedResult;
 
-                forall(responses, function (vote) {
+                responses.forEach(function (vote) {
                     vote ? tally++ : tally--;
                 });
 
@@ -2651,6 +2789,7 @@ var Classical;
     (function (Binding) {
         var u = Classical.Utilities;
         var e = Classical.Events;
+        var ce = Classical.Collections.Enumerable;
 
         var anonymousPropertyName = '<Anonymous>';
 
@@ -2950,7 +3089,7 @@ var Classical;
             Collection.prototype.addRange = function (items) {
                 var _this = this;
                 Classical.Assert.isDefined(items);
-                forall(items, function (item) {
+                items.forEach(function (item) {
                     return _this.add(item);
                 });
                 return this;
@@ -3030,6 +3169,10 @@ var Classical;
 
             Collection.prototype.query = function () {
                 return this.items.query();
+            };
+
+            Collection.prototype.forEach = function (operation) {
+                ce.forEach(this, operation);
             };
 
             Collection.prototype.array = function () {
@@ -3390,13 +3533,13 @@ var Classical;
                         data: []
                     };
 
-                    this._binders.query().foreach(function (binder) {
+                    this._binders.query().forEach(function (binder) {
                         var sourceUpdates = [];
                         var converter = binder.converter;
                         if (!converter.convertBack)
                             return;
 
-                        updates.query().foreach(function (update) {
+                        updates.query().forEach(function (update) {
                             if (!update.has(binder.source)) {
                                 var sourceUpdate = converter.convertBack(update);
                                 update.transferTo(sourceUpdate);
@@ -3428,13 +3571,13 @@ var Classical;
                     Assert.isDefined(binder.sources, 'The sources of the ComplexBinder are not defined');
                     var sources = binder.sources, sourcesQuery = sources.query(), bindingHandler = function () {
                         var update = binder.converter.convert(sources);
-                        sourcesQuery.foreach(function (source) {
+                        sourcesQuery.forEach(function (source) {
                             return update.add(source);
                         });
                         return _this.target.apply([update]);
                     };
 
-                    sourcesQuery.foreach(function (source) {
+                    sourcesQuery.forEach(function (source) {
                         return source.observe(bindingHandler);
                     });
                     bindingHandler();
@@ -3448,7 +3591,7 @@ var Classical;
                     if (groupUpdate.isExecuted)
                         return;
 
-                    groupUpdate.data.query().foreach(function (sourceUpdate) {
+                    groupUpdate.data.query().forEach(function (sourceUpdate) {
                         if (sourceUpdate.updates.query().hasAny())
                             sourceUpdate.binder.source.apply(sourceUpdate.updates);
                     });
@@ -3673,7 +3816,7 @@ var Classical;
                     _super.call(this);
                     this.value = value;
                     if (sources)
-                        sources.query().foreach(function (source) {
+                        sources.query().forEach(function (source) {
                             return _this.add(source);
                         });
                 }

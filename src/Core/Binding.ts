@@ -213,6 +213,7 @@ module Classical.Binding {
 
     import u = Classical.Utilities;
     import e = Classical.Events;
+    import ce = Classical.Collections.Enumerable;
 
     //#endregion Imports
 
@@ -606,7 +607,7 @@ module Classical.Binding {
         //Adds a sequence of items to the collection.
         addRange(items: IEnumerable<T>): ICollection<T> {
             Assert.isDefined(items);
-            forall(items, item => this.add(item));
+            items.forEach(item => this.add(item));
             return this;
         }
 
@@ -699,6 +700,11 @@ module Classical.Binding {
         //Returns an IEnumerable implementation that is queryable.
         query(): IQueryable<T> {
             return this.items.query();
+        }
+
+        //Enumerates the collection
+        forEach(operation: (item: T) => void): void {
+            ce.forEach(this, operation);
         }
 
         //Returns a JavaScript array.

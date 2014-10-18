@@ -636,7 +636,7 @@ module Classical.Html.Template.Elements {
                 return this;
 
             super.initialize();
-            this.children.query().foreach(node => {
+            this.children.query().forEach(node => {
                 node.initialize();
             });
 
@@ -1074,7 +1074,7 @@ module Classical.Html.Template {
         //Clears all subscribers from the event.
         //Note: This only works for handlers registered through this event.
         clear(): void {
-            this.registrationMap.keys.query().foreach(registration => {
+            this.registrationMap.keys.query().forEach(registration => {
                 this.unsubscribe(registration);
             });
         }

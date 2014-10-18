@@ -105,7 +105,7 @@ module Classical.Events {
             if (subscribers.count() === 0)
                 return;
 
-            subscribers.query().foreach(registration => {
+            subscribers.query().forEach(registration => {
                 registration(host, info);
             });
         }
@@ -162,7 +162,7 @@ module Classical.Events {
             var responses = [],
                 response: TResponse;
 
-            forall(subscribers, registration => {
+            subscribers.forEach(registration => {
                 response = registration(host, info);
                 Assert.isDefined(response, 'A subscriber gave a response which is null or undefined.');
                 responses.add(response);
@@ -203,7 +203,7 @@ module Classical.Events {
             var responses = this.execute(info),
                 tally: number = 0;
 
-            forall(responses, (value) => tally += value);
+            responses.forEach((value) => tally += value);
             return tally;
         }
     }
@@ -243,7 +243,7 @@ module Classical.Events {
             if (responses.count() === 0)
                 return this._undecidedResult;
             
-            forall(responses, (vote) => {
+            responses.forEach((vote) => {
                 vote ? tally++ : tally--
             });
 

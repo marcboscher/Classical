@@ -987,7 +987,7 @@ module Classical.Binding.New.Spec {
             super();
             this.value = value;
             if (sources)
-                sources.query().foreach(source => this.add(source));
+                sources.query().forEach(source => this.add(source));
         }
 
         //#endregion Constructor

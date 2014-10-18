@@ -167,7 +167,7 @@ module Classical.Native {
     //The array is returned for chaining.
     ArrayPrototype.addRange = function (items: IEnumerable<any>) {
         Assert.isDefined(items);
-        forall(items, item => this.add(item));
+        items.forEach(item => this.add(item));
 
         return this;
     };

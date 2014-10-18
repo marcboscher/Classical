@@ -1962,7 +1962,7 @@ var Classical;
                         return this;
 
                     _super.prototype.initialize.call(this);
-                    this.children.query().foreach(function (node) {
+                    this.children.query().forEach(function (node) {
                         node.initialize();
                     });
 
@@ -8678,7 +8678,7 @@ var Classical;
 
             HtmlElementEvent.prototype.clear = function () {
                 var _this = this;
-                this.registrationMap.keys.query().foreach(function (registration) {
+                this.registrationMap.keys.query().forEach(function (registration) {
                     _this.unsubscribe(registration);
                 });
             };

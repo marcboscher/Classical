@@ -5,6 +5,9 @@ interface IEnumerable<T> extends IObject {
     //Enumerates the elements of the sequence, calling the enumerator for each.
     getEnumerator(): IEnumerator<T>;
 
+    //Enumerates the sequence
+    forEach(operation: (item?: T) => void): void;
+
     //Returns an IEnumerable implementation that is queryable.
     query(): IQueryable<T>;
 
@@ -67,7 +70,7 @@ interface ICollection<T> extends IAccessibleCollection<T> {
 interface IQueryable<T> extends IEnumerable<T> {
 
     //Iterates through the elements in the queried sequence.
-    foreach(operation: (item: T) => void): IQueryable<T>;
+    forEach(operation: (item: T) => void): IQueryable<T>;
 
     //Casts the elements of the query to a new type.
     cast<TElement>(): IQueryable<TElement>;
@@ -174,32 +177,13 @@ interface IQueryable<T> extends IEnumerable<T> {
 
 //#endregion IQueryable
 
-//#region forall
-
-//Provides a global loop function for all enumerables.
-//It returns the enumerable for chaining.
-
-function forall<T>(
-    enumerable: IEnumerable<T>,
-    operation: (item: T) => void)
-    : IEnumerable<T> {
-
-    var enumerator = enumerable.getEnumerator();
-    while (enumerator.moveNext()) {
-        operation(enumerator.current);
-    }
-
-    return enumerable;
-}
-
-//#endregion forall
-
 module Classical.Collections {
 
     //#region Imports
 
     import u = Classical.Utilities;
     import r = Classical.Reflection;
+    import ce = Classical.Collections.Enumerable;
 
     //#endregion Imports
 
@@ -337,6 +321,11 @@ module Classical.Collections {
             return this._get(Element.Copy).query();
         }
 
+        //Enumerates the collection
+        forEach(operation: (item: T) => void): void {
+            ce.forEach(this, operation);
+        }
+
         //Returns a JavaScript array.
         array(): Array<T> {
             return this._get(Element.Copy).array();
@@ -433,13 +422,23 @@ module Classical.Collections {
 
         //#region IQueryable Members
 
-        //#region foreach
+        //#region forEach
 
-        foreach(operation: (item: T) => void): IQueryable<T> {
-            return forall(this, operation).query();
+        forEach(operation: (item?: T) => void): void;
+        forEach(operation: (item: T) => void): IQueryable<T>;
+        forEach(operation: Function): any {
+            var enumerator = this.getEnumerator(),
+                current: T;
+
+            while (enumerator.moveNext()) {
+                var current = enumerator.current;
+                operation.bind(current)(current);
+            }
+
+            return this;
         }
 
-        //#endregion foreach
+        //#endregion forEach
 
         //#region cast
 
@@ -529,7 +528,7 @@ module Classical.Collections {
             }
 
             var firstPass = true;
-            this.foreach(item => {
+            this.forEach(item => {
                 if (skipFirst && firstPass) {
                     firstPass = false;
                     return;
@@ -893,7 +892,7 @@ module Classical.Collections {
     }
 
     //#endregion WhereQueryable
-
+    
     //#region SelectQueryable
 
     class SelectQueryable<T, TSelected>
@@ -1050,6 +1049,74 @@ module Classical.Collections {
 
     //#endregion ConcatQueryableEnumerator
 
+    //#region Enumerable
+
+    export module Enumerable {
+
+        //#region range
+
+        //Returns numbers from 0, incremented by 1 or -1, to the end number.
+        export function range(end: number): IEnumerable<number>;
+
+        //Returns numbers from the start number, incremented by 1 or -1, to the end number.
+        export function range(start: number, end: number): IEnumerable<number>;
+
+        //Returns numbers from the start number, incrememted by the increment number, to the end number.
+        export function range(start: number, increment: number, end: number): IEnumerable<number>;
+
+        //Returns numbers from the start number, incrememted by the increment number, to the end number.
+        export function range(start: number, increment?: number, end?: number): IEnumerable<number> {
+            if (arguments.length == 1) {
+                end = start;
+                start = 0;
+                increment = end < 0 ? -1 : 1;
+            }
+            else if (arguments.length == 2) {
+                end = increment;
+                increment = end < start ? -1 : 1;
+            }
+            if (start === end)
+                return <IEnumerable<number>><any>[start];
+
+            Assert.isFalse(increment == 0,
+                'The increment cannot be equal to zero.');
+            Assert.isFalse(start < end && increment < 0,
+                'The increment must be positive for increasing ranges.');
+            Assert.isFalse(end < start && increment > 0,
+                'The increment must be negative for decreasing ranges.');
+
+            var result: number[] = [],
+                current = start,
+                adjustmentFactor = start < end ? 1 : -1,
+                adjustedEnd = end * adjustmentFactor;
+
+            while (current * adjustmentFactor <= adjustedEnd) {
+                result.push(current);
+                current += increment;
+            }
+
+            return result;
+        }
+
+        //#endregion range
+
+        //#region forEach
+
+        export function forEach<T>(items: IEnumerable<T>, operation: (item?: T) => void) {
+            var enumerator = items.getEnumerator(),
+                current: T;
+
+            while (enumerator.moveNext()) {
+                var current = enumerator.current;
+                operation.bind(current)(current);
+            }
+        }
+
+        //#endregion forEach
+    }
+
+//#endregion Enumerable
+
     //#region Utilities
 
     function getComparer(array: Array<any>, selector: Function, comparison: Function, ascending: boolean): Function {
@@ -1147,57 +1214,3 @@ module Classical.Collections {
 
     //#endregion Utilities
 }
-
-//#region Enumerable
-
-module Classical.Collections.Enumerable {
-
-    //#region range
-
-    //Returns numbers from 0, incremented by 1 or -1, to the end number.
-    export function range(end: number): IEnumerable < number>;
-
-    //Returns numbers from the start number, incremented by 1 or -1, to the end number.
-    export function range(start: number, end: number): IEnumerable < number>;
-
-    //Returns numbers from the start number, incrememted by the increment number, to the end number.
-    export function range(start: number, increment: number, end: number): IEnumerable < number>;
-
-        //Returns numbers from the start number, incrememted by the increment number, to the end number.
-    export function range(start: number, increment?: number, end?: number): IEnumerable < number > {
-        if (arguments.length == 1) {
-            end = start;
-            start = 0;
-            increment = end < 0 ? -1 : 1;
-                }
-                else if (arguments.length == 2) {
-            end = increment;
-            increment = end < start ? -1 : 1;
-        }
-        if (start === end)
-            return <IEnumerable<number>><any>[start];
-
-        Assert.isFalse(increment == 0,
-            'The increment cannot be equal to zero.');
-        Assert.isFalse(start < end && increment < 0,
-            'The increment must be positive for increasing ranges.');
-        Assert.isFalse(end < start && increment > 0,
-            'The increment must be negative for decreasing ranges.');
-
-        var result: number[] = [],
-            current = start,
-            adjustmentFactor = start < end ? 1 : -1,
-            adjustedEnd = end * adjustmentFactor;
-
-        while (current * adjustmentFactor <= adjustedEnd) {
-            result.push(current);
-            current += increment;
-        }
-
-        return result;
-    }
-
-    //#endregion range
-}
-
-//#endregion Enumerable

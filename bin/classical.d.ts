@@ -101,6 +101,7 @@ declare module Classical.Collections {
         constructor(capacity?: number);
         public getEnumerator(): IEnumerator<KeyValuePair<TKey, TValue>>;
         public query(): IQueryable<KeyValuePair<TKey, TValue>>;
+        public forEach(operation: (item: KeyValuePair<TKey, TValue>) => void): void;
         public array(): KeyValuePair<TKey, TValue>[];
         public add(key: TKey, value: TValue): Dictionary<TKey, TValue>;
         public remove(key: TKey): Dictionary<TKey, TValue>;
@@ -183,30 +184,35 @@ declare module Classical.Reflection {
         public isAssignableFrom(other: Type): boolean;
         public getMembers(): IQueryable<Member>;
         public getMember(name: string): Member;
-        public getProperties(): IQueryable<Property>;
+        public getProperties(...options: Modifier[]): IQueryable<Property>;
         public getProperty(name: string): Property;
         public getMethods(...options: Modifier[]): IQueryable<Method>;
         public getMethod(name: string): Method;
         private _initializeProperties();
+        private _getProperOptions(options);
         static getType(ctor: IFunction): Type;
     }
     class Member {
         private _name;
         private _declaringType;
+        private _isStatic;
         public name : string;
         public declaringType : Type;
-        constructor(password: number, name: string, declaringType: Type);
+        public isStatic : boolean;
+        constructor(password: number, name: string, declaringType: Type, isStatic: boolean);
     }
     class Property extends Member {
         private _canWrite;
         private _canRead;
         private _isMethod;
+        public isPublic : boolean;
+        public isNotPublic : boolean;
         public canWrite : boolean;
         public canRead : boolean;
         public isMethod : boolean;
-        constructor(password: number, name: string, declaringType: Type, canRead: boolean, canWrite: boolean, isMethod: boolean);
+        constructor(password: number, name: string, declaringType: Type, canRead: boolean, canWrite: boolean, isMethod: boolean, isStatic: boolean);
         public getValue(instance: any): any;
-        public setValue(instance: any, value: any): any;
+        public setValue(instance: any, value: any): void;
     }
     class Variable extends Property {
         private _module;
@@ -216,9 +222,7 @@ declare module Classical.Reflection {
     class Method extends Property {
         private _underlyingFunction;
         private _parameters;
-        public isPublic : boolean;
-        public isPrivate : boolean;
-        constructor(password: number, name: string, declaringType: Type, canWrite: boolean, underlyingFunction: IFunction);
+        constructor(password: number, name: string, declaringType: Type, canWrite: boolean, underlyingFunction: IFunction, isStatic: boolean);
         public invoke(instance: any, ...args: any[]): any;
         public getParameters(): IQueryable<Parameter>;
         private _initializeParameters();
@@ -238,6 +242,7 @@ declare module Classical.Anonymous {
 }
 interface IEnumerable<T> extends IObject {
     getEnumerator(): IEnumerator<T>;
+    forEach(operation: (item?: T) => void): void;
     query(): IQueryable<T>;
     array(): T[];
     count(): number;
@@ -258,7 +263,7 @@ interface ICollection<T> extends IAccessibleCollection<T> {
     set(index: number, item: T): ICollection<T>;
 }
 interface IQueryable<T> extends IEnumerable<T> {
-    foreach(operation: (item: T) => void): IQueryable<T>;
+    forEach(operation: (item: T) => void): IQueryable<T>;
     cast<TElement>(): IQueryable<TElement>;
     where(predicate: (item: T) => boolean): IQueryable<T>;
     select<TSelected>(selector: (item: T) => TSelected): IQueryable<TSelected>;
@@ -285,7 +290,6 @@ interface IQueryable<T> extends IEnumerable<T> {
     reverse(): IQueryable<T>;
     dictionary<TKey, TValue>(keySelector: (item: T) => TKey, valueSelector: (item: T) => TValue): Classical.Collections.Dictionary<TKey, TValue>;
 }
-declare function forall<T>(enumerable: IEnumerable<T>, operation: (item: T) => void): IEnumerable<T>;
 declare module Classical.Collections {
     class ImmutableCollection<T> implements IAccessibleCollection<T> {
         private _get;
@@ -293,6 +297,7 @@ declare module Classical.Collections {
         public get(index: number): T;
         public getEnumerator(): IEnumerator<T>;
         public query(): IQueryable<T>;
+        public forEach(operation: (item: T) => void): void;
         public array(): T[];
         public count(): number;
     }
@@ -304,7 +309,8 @@ declare module Classical.Collections {
         public query(): Queryable<T>;
         public array(): T[];
         public count(): number;
-        public foreach(operation: (item: T) => void): IQueryable<T>;
+        public forEach(operation: (item?: T) => void): void;
+        public forEach(operation: (item: T) => void): IQueryable<T>;
         public cast<TElement>(): IQueryable<TElement>;
         public where(predicate: (item: T) => boolean): IQueryable<T>;
         public select<TSelected>(selector: (item: T) => TSelected): IQueryable<TSelected>;
@@ -332,11 +338,12 @@ declare module Classical.Collections {
         public dictionary<TKey, TValue>(keySelector: (item: T) => TKey, valueSelector: (item: T) => TValue): Dictionary<TKey, TValue>;
         private coalescePredicate(predicate);
     }
-}
-declare module Classical.Collections.Enumerable {
-    function range(end: number): IEnumerable<number>;
-    function range(start: number, end: number): IEnumerable<number>;
-    function range(start: number, increment: number, end: number): IEnumerable<number>;
+    module Enumerable {
+        function range(end: number): IEnumerable<number>;
+        function range(start: number, end: number): IEnumerable<number>;
+        function range(start: number, increment: number, end: number): IEnumerable<number>;
+        function forEach<T>(items: IEnumerable<T>, operation: (item?: T) => void): void;
+    }
 }
 declare module Classical.Expression {
     function getProperty<TInstance>(instance: TInstance, selector: (instance: TInstance) => any): string;
@@ -522,6 +529,7 @@ declare module Classical.Binding {
         public set(index: number, item: T): ICollection<T>;
         public getEnumerator(): IEnumerator<T>;
         public query(): IQueryable<T>;
+        public forEach(operation: (item: T) => void): void;
         public array(): T[];
         public count(): number;
         public bindingOff(): void;

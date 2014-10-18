@@ -9,7 +9,7 @@ module Classical.Collections.Spec {
                 it('Should enumerate an enumerable', () => {
                     var numbers = Enumerable.range(10);
                     var index = 0;
-                    forall(numbers, n => {
+                    numbers.forEach(n => {
                         expect(n).toBe(index++);
                     });
                     });
@@ -326,7 +326,7 @@ module Classical.Collections.Spec {
                                 .add('2', 2);
 
                         var count = 0;
-                        forall(dictionary.keys, key => {
+                        dictionary.keys.forEach(key => {
                             count++;
                             expect(key).toBe(dictionary.getValue(key).toString());
                         });
@@ -352,7 +352,7 @@ module Classical.Collections.Spec {
                                 .add('2', 2);
 
                         var count = 0;
-                        forall(dictionary.values, value => {
+                        dictionary.values.forEach(value => {
                             count++;
                             expect(value).toBe(dictionary.getValue(value.toString()));
                         });
@@ -378,7 +378,7 @@ module Classical.Collections.Spec {
                             .add('2', 2);
 
                         var count = 0;
-                        forall(dictionary, value => {
+                        dictionary.forEach(value => {
                             count++;
                             expect(value.key).toBe(value.value.toString());
                             });
@@ -1191,6 +1191,8 @@ module Classical.Collections.Spec {
 
             describe('Enumerable', () => {
 
+                //#region range
+
                 describe('range', () => {
                     it('should return increasing numbers for a single positive input', () => {
                         var values = Enumerable.range(2).array();
@@ -1238,6 +1240,28 @@ module Classical.Collections.Spec {
                         expect(values[2]).toBe(1);
                     });
                 });
+
+                //#endregion range
+
+                //#region forEach
+
+                describe('forEach', () => {
+                    it('should enumerate the members of the sequence.', () => {
+                        forEachTest([]);
+                        forEachTest([null]);
+                        forEachTest([null, undefined, 1, 2, 3]);
+                    });
+                });
+
+                function forEachTest<T>(collection: IEnumerable<T>) {
+                    var count = 0;
+                    collection.forEach(item => {
+                        expect(item).toBe(collection.array()[count++]);
+                    })
+                    expect(count).toBe(collection.count());
+                }
+
+                //#endregion forEach
             });
 
             //#endregion Enumerable

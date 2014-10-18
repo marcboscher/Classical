@@ -261,19 +261,19 @@ module Classical.Utilities.Spec {
             describe('isInteger', () => {
                 it('should return true for positive and negative integers', () => {
                     cc.Enumerable.range(-10, 1, 10).query()
-                        .foreach(n => expect(isInteger(n)).toBe(true));
+                        .forEach(n => expect(isInteger(n)).toBe(true));
                 });
                 it('should return true for numbers with decimal values that are all zero', () => {
                     cc.Enumerable.range(-10.0, 1.000, 10.00).query()
-                        .foreach(n => expect(isInteger(n)).toBe(true));
+                        .forEach(n => expect(isInteger(n)).toBe(true));
                 });
                 it('should return false for numbers with non-zero decimal values', () => {
                     cc.Enumerable.range(-10.1, 1, 10.1).query()
-                        .foreach(n => expect(isInteger(n)).toBe(false));
+                        .forEach(n => expect(isInteger(n)).toBe(false));
                 });
                 it('should return false undefined, null, NaN, Infinity, -Infinity', () => {
                     [undefined, null, NaN, Infinity, -Infinity].query()
-                        .foreach(n => expect(isInteger(n)).toBe(false));
+                        .forEach(n => expect(isInteger(n)).toBe(false));
                 });
             });
 
