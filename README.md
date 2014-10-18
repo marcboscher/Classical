@@ -59,7 +59,7 @@ Here's some of what you'll get.
 
 ### Classical.Html
 A module containing a declarative, statically typed DOM API.
-It provides MVVM style binding on POJOs completely in JavaScript -
+It provides MVVM style binding on plain old JavaScript objects completely in JavaScript -
 No loosey-goosey html pseudo-languages to memorize
 
 
