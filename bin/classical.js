@@ -570,7 +570,6 @@ var Classical;
 
 
 
-
 var Classical;
 (function (Classical) {
     var Enum = (function () {
@@ -1823,6 +1822,7 @@ var Classical;
 
 
 
+
 var Classical;
 (function (Classical) {
     (function (Collections) {
@@ -2225,6 +2225,14 @@ var Classical;
                 }
 
                 return result;
+            };
+
+            Queryable.prototype.execute = function () {
+                return this.result().query();
+            };
+
+            Queryable.prototype.result = function () {
+                return this.array();
             };
 
             Queryable.prototype.coalescePredicate = function (predicate) {

@@ -1183,6 +1183,42 @@ module Classical.Collections.Spec {
                     });
 
                 //#endregion dictionary
+
+                //#region execute
+
+                describe('execute', () => {
+                    it('should return a queryable that has already been executed.', () => {
+                        var counter = 0,
+                            query = [0].query()
+                                .select(x => ++counter);
+
+                        expect(counter).toBe(0);
+                        query = query.execute();
+                        expect(counter).toBe(1);
+
+                        query.array();
+                        expect(counter).toBe(1);
+                    });
+                });
+
+                //#endregion execute
+
+                //#region result
+
+                describe('result', () => {
+                    it('should return the result of executing a query and converting the value into an array.', () => {
+                        var counter = 0,
+                            query = [0].query()
+                                .select(x => ++counter);
+
+                        expect(counter).toBe(0);
+                        var result = query.result();
+                        expect(result.length).toBe(1);
+                        expect(result[0]).toBe(1);
+                    });
+                });
+
+                //#endregion result
             });
 
             //#endregion Queryable

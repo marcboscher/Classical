@@ -145,13 +145,11 @@ module Classical.Reflection.Spec {
                         var objectType = typeOf(Object);
                         var numberType = typeOf(Number);
                         var booleanType = typeOf(Boolean);
-                        var enumType = typeOf(Classical.Enum);
                         var methodType = typeOf(r.Method);
 
                         expect(objectType.module.fullName).toBe('Global');
                         expect(numberType.module.fullName).toBe('Global');
                         expect(booleanType.module.fullName).toBe('Global');
-                        expect(enumType.module.fullName).toBe('Classical');
                         expect(methodType.module.fullName).toBe('Classical.Reflection');
                     });
                 });

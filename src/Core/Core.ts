@@ -57,13 +57,6 @@ interface Boolean extends IObject { }
 
 //#endregion Boolean
 
-//#region Array
-
-//Delete this when the above code is legal.
-interface Array<T> extends ICollection<T>, IEnumerable<T> { }
-
-//#endregion Array
-
 module Classical {
 
     //#region Imports

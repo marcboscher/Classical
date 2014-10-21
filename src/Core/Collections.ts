@@ -157,6 +157,12 @@ interface IQueryable<T> extends IEnumerable<T> {
         valueSelector: (item: T) => TValue):
         Classical.Collections.Dictionary<TKey, TValue>;
 
+    //Returns an executed version of the query which can be passed around without risk of redundant calculation.
+    execute(): IQueryable<T>;
+
+    //Return the result of executing the query, as a basi JavaScript array.
+    result(): Array<T>;
+
     //#region IEnumerable Members
     //Remove when interface inheritance is bug free
 
@@ -176,6 +182,13 @@ interface IQueryable<T> extends IEnumerable<T> {
 }
 
 //#endregion IQueryable
+
+//#region Array
+
+//Delete this when the above code is legal.
+interface Array<T> extends ICollection<T>, IEnumerable<T> { }
+
+//#endregion Array
 
 module Classical.Collections {
 
@@ -820,6 +833,24 @@ module Classical.Collections {
         }
 
         //#endregion dictionary
+
+        //#region execute
+
+        //Returns an executed version of the query which can be passed around without risk of redundant calculation.
+        execute(): IQueryable<T> {
+            return this.result().query();
+        }
+
+        //#endregion execute
+
+        //#region result
+
+        //Return the result of executing the query, as a basi JavaScript array.
+        result(): Array<T> {
+            return this.array();
+        }
+
+        //#endregion result
 
         //#endregion IQueryable Members
 

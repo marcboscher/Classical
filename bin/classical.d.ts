@@ -76,8 +76,6 @@ interface Number extends IObject {
 }
 interface Boolean extends IObject {
 }
-interface Array<T> extends ICollection<T>, IEnumerable<T> {
-}
 declare module Classical {
     class Enum<TValue extends IObject> {
         private _value;
@@ -289,6 +287,10 @@ interface IQueryable<T> extends IEnumerable<T> {
     distinct(): IQueryable<T>;
     reverse(): IQueryable<T>;
     dictionary<TKey, TValue>(keySelector: (item: T) => TKey, valueSelector: (item: T) => TValue): Classical.Collections.Dictionary<TKey, TValue>;
+    execute(): IQueryable<T>;
+    result(): T[];
+}
+interface Array<T> extends ICollection<T>, IEnumerable<T> {
 }
 declare module Classical.Collections {
     class ImmutableCollection<T> implements IAccessibleCollection<T> {
@@ -336,6 +338,8 @@ declare module Classical.Collections {
         public distinct(): IQueryable<T>;
         public reverse(): IQueryable<T>;
         public dictionary<TKey, TValue>(keySelector: (item: T) => TKey, valueSelector: (item: T) => TValue): Dictionary<TKey, TValue>;
+        public execute(): IQueryable<T>;
+        public result(): T[];
         private coalescePredicate(predicate);
     }
     module Enumerable {
