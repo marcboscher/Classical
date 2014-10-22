@@ -29,7 +29,7 @@ Here's some of what you'll get.
 ### Dictionary
 ```typescript
 	var functionMap = new Dictionary<Function, Type>();
-	var dateMap = new Dictionary<Date, (arg: Function) => Function>();
+	var dateToFunctionMap = new Dictionary<Date, (arg: Function): Function>();
 ```
      
 ### Querying
