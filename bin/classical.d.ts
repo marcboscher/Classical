@@ -180,14 +180,13 @@ declare module Classical.Reflection {
         public getHashCode(): number;
         public isAssignableTo(other: Type): boolean;
         public isAssignableFrom(other: Type): boolean;
-        public getMembers(): IQueryable<Member>;
-        public getMember(name: string): Member;
         public getProperties(...options: Modifier[]): IQueryable<Property>;
-        public getProperty(name: string): Property;
+        public getProperty(name: string, ...options: Modifier[]): Property;
         public getMethods(...options: Modifier[]): IQueryable<Method>;
-        public getMethod(name: string): Method;
+        public getMethod(name: string, ...options: Modifier[]): Method;
         private _initializeProperties();
-        private _getProperOptions(options);
+        private _getProperOptions(optionsList);
+        private _isValidProperty(property, modifiers);
         static getType(ctor: IFunction): Type;
     }
     class Member {

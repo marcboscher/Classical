@@ -503,7 +503,7 @@ module Classical.Reflection {
         Public,
         NonPublic,
         Instance,
-        Static
+        Static,
     }
 
     var defaultModifier = [Modifier.Public, Modifier.Instance];
@@ -608,16 +608,16 @@ module Classical.Reflection {
 
         //#endregion getFunctions
 
-        //#region variables
+        //#region getVariables
 
-            getVariables(): IQueryable<Variable> {
+        getVariables(): IQueryable<Variable> {
             if (!this._variables)
                 this._variables = this._initializeVariables();
 
             return this._variables.array().query();
         }
 
-        //#endregion variables
+        //#endregion getVariables
 
         //#endregion Methods
 
@@ -1046,27 +1046,6 @@ module Classical.Reflection {
 
         //#endregion isAssignableFrom
 
-        //#region getMembers
-
-        getMembers(): IQueryable<Member> {
-            if (!this._members)
-                this._members = this.getProperties();
-
-            return this._members.array().query();
-        }
-
-        //#endregion getMembers
-
-        //#region getMember
-
-        getMember(name: string): Member {
-            Assert.isDefined(name);
-
-            return this.getMembers().query().singleOrDefault(m => m.name === name);
-        }
-
-        //#endregion getMember
-
         //#region getProperties
 
         getProperties(...options: Array<Modifier>): IQueryable<Property> {
@@ -1075,50 +1054,17 @@ module Classical.Reflection {
 
             options = this._getProperOptions(options);
 
-            var properties = new Array<Property>();
-            var includePublic = false;
-            var includeNonPublic = false;
-
-            options.forEach(modifier => {
-                switch (modifier) {
-                    case Modifier.Public: {
-                        includePublic = true;
-                        break;
-                    }
-                    case Modifier.NonPublic: {
-                        includeNonPublic = true;
-                        break;
-                    }
-                    case Modifier.Instance: {
-                        properties.addRange(this._properties.array().query().where(m => !m.isStatic));
-                        break;
-                    }
-                    case Modifier.Static: {
-                        properties.addRange(this._properties.array().query().where(m => m.isStatic));
-                        break;
-                    }
-                    default: {
-                        throw 'Unrecognized Modifier';
-                    }
-                }
-            });
-
-            if (includePublic)
-                properties = properties.query().where(m => m.isPublic).array();
-            else if (includeNonPublic)
-                properties = properties.query().where(m => !m.isPublic).array();
-
-            return properties.query().distinct();
+            return this._properties.array().query().where(p => this._isValidProperty(p, options)).distinct();
         }
 
         //#endregion getProperties
 
         //#region getProperty
 
-        getProperty(name: string): Property {
+        getProperty(name: string, ...options: Array<Modifier>): Property {
             Assert.isDefined(name);
 
-            return this.getProperties().query().singleOrDefault(p => p.name === name);
+            return (<IQueryable<Method>>this.getProperties.apply(this, options)).query().singleOrDefault(p => p.name === name);;
         }
 
         //#endregion getProperty
@@ -1128,56 +1074,16 @@ module Classical.Reflection {
         getMethods(...options: Array<Modifier>): IQueryable<Method> {
             return (<IQueryable<Method>>this.getProperties.apply(this, options))
                     .where(p => p.isMethod).cast<Method>();
-
-            if (!this._methods)
-                this._methods = this.getProperties(<any>options).where(p => p.isMethod).cast<Method>().array();
-
-            options = this._getProperOptions(options);
-
-            var methods = new Array<Method>();
-            var includePublic = false;
-            var includeNonPublic = false;
-
-            options.forEach(modifier => {
-                switch (modifier) {
-                    case Modifier.Public: {
-                        includePublic = true;
-                        break;
-                    }
-                    case Modifier.NonPublic: {
-                        includeNonPublic = true;
-                        break;
-                    }
-                    case Modifier.Instance: {
-                        methods.addRange(this._methods.array().query().where(m => !m.isStatic));
-                        break;
-                    }
-                    case Modifier.Static: {
-                        methods.addRange(this._methods.array().query().where(m => m.isStatic));
-                        break;
-                    }
-                    default: {
-                        throw 'Unrecognized Modifier';
-                    }
-                }
-            });
-
-            if (includePublic)
-                methods = methods.query().where(m => m.isPublic).array();
-            else if (includeNonPublic)
-                methods = methods.query().where(m => !m.isPublic).array();
-
-            return methods.query().distinct();
         }
 
         //#endregion getMethods
 
         //#region getMethod
 
-        getMethod(name: string): Method {
+        getMethod(name: string, ...options: Array<Modifier>): Method {
             Assert.isDefined(name);
 
-            return this.getMethods().query().singleOrDefault(m => m.name === name);
+            return (<IQueryable<Method>>this.getMethods.apply(this, options)).query().singleOrDefault(m => m.name === name);;
         }
 
         //#endregion getMethod
@@ -1191,7 +1097,7 @@ module Classical.Reflection {
         private _initializeProperties(): void {
             var properties = new Array<Property>();
             var instance = this._ctor.prototype;
-
+    
             Object.getOwnPropertyNames(this._ctor).forEach((property) => {
                 var propertyDescriptor = Object.getOwnPropertyDescriptor(this._ctor, property);
 
@@ -1235,19 +1141,55 @@ module Classical.Reflection {
 
         //#endregion initializeProperties
 
-        private _getProperOptions(options: Array<Modifier>): Array<Modifier> {
-            if (!options || options.length === 0)
-                options = defaultModifier;
-            else
-                options = options.query().distinct().array();
+        //#region _getProperOptions
 
-            if (options.query().hasNone(o => o === Modifier.Public) && options.query().hasNone(o => o === Modifier.NonPublic))
-                options.add(Modifier.Public);
-            if (options.query().hasNone(o => o === Modifier.Static) && options.query().hasNone(o => o === Modifier.Instance))
-                options.add(Modifier.Instance);
+        private _getProperOptions(optionsList: Array<Modifier>): Array<Modifier> {
+            if (!optionsList || optionsList.length === 0)
+                return defaultModifier;
 
-            return options;
+            var options = optionsList.query().distinct().array().query();
+            var result = options.array();
+
+            if (options.hasNone(o => o === Modifier.Public) && options.hasNone(o => o === Modifier.NonPublic))
+                result.add(Modifier.Public);
+            if (options.hasNone(o => o === Modifier.Static) && options.hasNone(o => o === Modifier.Instance))
+                result.add(Modifier.Instance);
+
+            return result;
         }
+
+        //#endregion _getProperOptions
+
+        //#region _isValidProperty
+
+        private _isValidProperty(property: Property, modifiers: IEnumerable<Modifier>): boolean {
+            var modifierQuery = modifiers.query();
+
+            if (modifierQuery.hasAny(m => m === Modifier.Instance)) {
+                if(modifierQuery.hasAny(m => m === Modifier.Public)) {
+                    if (property.isPublic && !property.isStatic)
+                        return true;
+                }
+                else if(modifierQuery.hasAny(m => m === Modifier.NonPublic)) {
+                    if (property.isNotPublic && !property.isStatic)
+                        return true;
+                }
+            }
+            else if (modifierQuery.hasAny(m => m === Modifier.Static)) {
+                if (modifierQuery.hasAny(m => m === Modifier.Public)) {
+                    if (property.isPublic && property.isStatic)
+                        return true;
+                }
+                else if (modifierQuery.hasAny(m => m === Modifier.NonPublic)) {
+                    if (property.isNotPublic && property.isStatic)
+                        return true;
+                }
+            }
+
+            return false;
+        }
+
+        //#endregion _isValidProperty
 
         //#endregion Utilities
 

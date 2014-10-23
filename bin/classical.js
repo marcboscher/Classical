@@ -1336,21 +1336,6 @@ var Classical;
                 return other.isAssignableTo(this);
             };
 
-            Type.prototype.getMembers = function () {
-                if (!this._members)
-                    this._members = this.getProperties();
-
-                return this._members.array().query();
-            };
-
-            Type.prototype.getMember = function (name) {
-                Classical.Assert.isDefined(name);
-
-                return this.getMembers().query().singleOrDefault(function (m) {
-                    return m.name === name;
-                });
-            };
-
             Type.prototype.getProperties = function () {
                 var _this = this;
                 var options = [];
@@ -1362,60 +1347,25 @@ var Classical;
 
                 options = this._getProperOptions(options);
 
-                var properties = new Array();
-                var includePublic = false;
-                var includeNonPublic = false;
-
-                options.forEach(function (modifier) {
-                    switch (modifier) {
-                        case 0 /* Public */: {
-                            includePublic = true;
-                            break;
-                        }
-                        case 1 /* NonPublic */: {
-                            includeNonPublic = true;
-                            break;
-                        }
-                        case 2 /* Instance */: {
-                            properties.addRange(_this._properties.array().query().where(function (m) {
-                                return !m.isStatic;
-                            }));
-                            break;
-                        }
-                        case 3 /* Static */: {
-                            properties.addRange(_this._properties.array().query().where(function (m) {
-                                return m.isStatic;
-                            }));
-                            break;
-                        }
-                        default: {
-                            throw 'Unrecognized Modifier';
-                        }
-                    }
-                });
-
-                if (includePublic)
-                    properties = properties.query().where(function (m) {
-                        return m.isPublic;
-                    }).array();
-                else if (includeNonPublic)
-                    properties = properties.query().where(function (m) {
-                        return !m.isPublic;
-                    }).array();
-
-                return properties.query().distinct();
+                return this._properties.array().query().where(function (p) {
+                    return _this._isValidProperty(p, options);
+                }).distinct();
             };
 
             Type.prototype.getProperty = function (name) {
+                var options = [];
+                for (var _i = 0; _i < (arguments.length - 1); _i++) {
+                    options[_i] = arguments[_i + 1];
+                }
                 Classical.Assert.isDefined(name);
 
-                return this.getProperties().query().singleOrDefault(function (p) {
+                return this.getProperties.apply(this, options).query().singleOrDefault(function (p) {
                     return p.name === name;
                 });
+                ;
             };
 
             Type.prototype.getMethods = function () {
-                var _this = this;
                 var options = [];
                 for (var _i = 0; _i < (arguments.length - 0); _i++) {
                     options[_i] = arguments[_i + 0];
@@ -1423,64 +1373,19 @@ var Classical;
                 return this.getProperties.apply(this, options).where(function (p) {
                     return p.isMethod;
                 }).cast();
-
-                if (!this._methods)
-                    this._methods = this.getProperties(options).where(function (p) {
-                        return p.isMethod;
-                    }).cast().array();
-
-                options = this._getProperOptions(options);
-
-                var methods = new Array();
-                var includePublic = false;
-                var includeNonPublic = false;
-
-                options.forEach(function (modifier) {
-                    switch (modifier) {
-                        case 0 /* Public */: {
-                            includePublic = true;
-                            break;
-                        }
-                        case 1 /* NonPublic */: {
-                            includeNonPublic = true;
-                            break;
-                        }
-                        case 2 /* Instance */: {
-                            methods.addRange(_this._methods.array().query().where(function (m) {
-                                return !m.isStatic;
-                            }));
-                            break;
-                        }
-                        case 3 /* Static */: {
-                            methods.addRange(_this._methods.array().query().where(function (m) {
-                                return m.isStatic;
-                            }));
-                            break;
-                        }
-                        default: {
-                            throw 'Unrecognized Modifier';
-                        }
-                    }
-                });
-
-                if (includePublic)
-                    methods = methods.query().where(function (m) {
-                        return m.isPublic;
-                    }).array();
-                else if (includeNonPublic)
-                    methods = methods.query().where(function (m) {
-                        return !m.isPublic;
-                    }).array();
-
-                return methods.query().distinct();
             };
 
             Type.prototype.getMethod = function (name) {
+                var options = [];
+                for (var _i = 0; _i < (arguments.length - 1); _i++) {
+                    options[_i] = arguments[_i + 1];
+                }
                 Classical.Assert.isDefined(name);
 
-                return this.getMethods().query().singleOrDefault(function (m) {
+                return this.getMethods.apply(this, options).query().singleOrDefault(function (m) {
                     return m.name === name;
                 });
+                ;
             };
 
             Type.prototype._initializeProperties = function () {
@@ -1531,26 +1436,63 @@ var Classical;
                 this._properties = properties;
             };
 
-            Type.prototype._getProperOptions = function (options) {
-                if (!options || options.length === 0)
-                    options = defaultModifier;
-                else
-                    options = options.query().distinct().array();
+            Type.prototype._getProperOptions = function (optionsList) {
+                if (!optionsList || optionsList.length === 0)
+                    return defaultModifier;
 
-                if (options.query().hasNone(function (o) {
+                var options = optionsList.query().distinct().array().query();
+                var result = options.array();
+
+                if (options.hasNone(function (o) {
                     return o === 0 /* Public */;
-                }) && options.query().hasNone(function (o) {
+                }) && options.hasNone(function (o) {
                     return o === 1 /* NonPublic */;
                 }))
-                    options.add(0 /* Public */);
-                if (options.query().hasNone(function (o) {
+                    result.add(0 /* Public */);
+                if (options.hasNone(function (o) {
                     return o === 3 /* Static */;
-                }) && options.query().hasNone(function (o) {
+                }) && options.hasNone(function (o) {
                     return o === 2 /* Instance */;
                 }))
-                    options.add(2 /* Instance */);
+                    result.add(2 /* Instance */);
 
-                return options;
+                return result;
+            };
+
+            Type.prototype._isValidProperty = function (property, modifiers) {
+                var modifierQuery = modifiers.query();
+
+                if (modifierQuery.hasAny(function (m) {
+                    return m === 2 /* Instance */;
+                })) {
+                    if (modifierQuery.hasAny(function (m) {
+                        return m === 0 /* Public */;
+                    })) {
+                        if (property.isPublic && !property.isStatic)
+                            return true;
+                    } else if (modifierQuery.hasAny(function (m) {
+                        return m === 1 /* NonPublic */;
+                    })) {
+                        if (property.isNotPublic && !property.isStatic)
+                            return true;
+                    }
+                } else if (modifierQuery.hasAny(function (m) {
+                    return m === 3 /* Static */;
+                })) {
+                    if (modifierQuery.hasAny(function (m) {
+                        return m === 0 /* Public */;
+                    })) {
+                        if (property.isPublic && property.isStatic)
+                            return true;
+                    } else if (modifierQuery.hasAny(function (m) {
+                        return m === 1 /* NonPublic */;
+                    })) {
+                        if (property.isNotPublic && property.isStatic)
+                            return true;
+                    }
+                }
+
+                return false;
             };
 
             Type.getType = function (ctor) {

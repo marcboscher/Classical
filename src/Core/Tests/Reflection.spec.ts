@@ -204,47 +204,6 @@ module Classical.Reflection.Spec {
 
                 //#endregion isAssignableFrom
 
-                //#region getMembers
-
-                describe('getMembers', () => {
-                    it('should return the members of the given type.', () => {
-                        var propertyTest = new ReflectionTest(),
-                            propertyTestType = propertyTest.getType(),
-                            members = propertyTestType.getMembers();
-
-                        expect(members.query().hasAny(p => p.name == 'name')).toBe(true);
-                    });
-                });
-
-                //#endregion getMembers
-
-                //#region getMember
-
-                describe('getMember', () => {
-                    it('should return the specified member of the given type.', () => {
-                        var propertyTest = new ReflectionTest(),
-                            propertyTestType = propertyTest.getType(),
-                            members = propertyTestType.getMembers(),
-                            nameMember = propertyTestType.getMember('name');
-
-                        expect(nameMember).toBeDefined();
-                        expect(nameMember.name).toBe('name');
-                    });
-                    it('should return the correct declaring type of the member.', () => {
-                        var derivedTest = new DerivedReflectionTest(),
-                            derivedTestType = derivedTest.getType(),
-                            propertyTestType = typeOf(ReflectionTest),
-                            members = derivedTestType.getMembers(),
-                            nameMember = derivedTestType.getMember('name'),
-                            derivedMember = derivedTestType.getMember('derivedProperty');
-
-                        expect(nameMember.declaringType).toBe(propertyTestType);
-                        expect(derivedMember.declaringType).toBe(derivedTestType);
-                    });
-                });
-
-                //#endregion getMember
-
                 //#region getProperties
 
                 describe('getProperties', () => {
