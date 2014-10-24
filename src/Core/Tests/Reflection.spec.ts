@@ -156,6 +156,24 @@ module Classical.Reflection.Spec {
 
                 //#endregion module
 
+                //#region isPrimitive
+
+                describe('isPrimitive', () => {
+                    it('should return true if the type is one of JavaScript\'s primitive types.', () => {
+                        var booleanType = typeOf(Boolean);
+                        var stringType = typeOf(String);
+                        var numberType = typeOf(Number);
+                        var nonPrimitiveType = typeOf(DifferentType);
+
+                        expect(booleanType.isPrimitive).toBe(true);
+                        expect(stringType.isPrimitive).toBe(true);
+                        expect(numberType.isPrimitive).toBe(true);
+                        expect(nonPrimitiveType.isPrimitive).toBe(false);
+                    });
+                });
+
+                //#endregion isPrimitive
+
                 //#region isAssignableTo
 
                 describe('isAssignableTo', () => {
@@ -292,7 +310,7 @@ module Classical.Reflection.Spec {
                     it('should return public and private methods correctly.', () => {
                         var reflectionTest = new ReflectionTest(),
                             reflectionTestType = reflectionTest.getType(),
-                            privateMethods = reflectionTestType.getMethods(Modifier.NonPublic),
+                            privateMethods = reflectionTestType.getMethods(Modifier.Private),
                             publicMethods = reflectionTestType.getMethods(Modifier.Public);
 
                         expect(privateMethods.hasAny(m => m.name === '_firstPrivateMethod')).toBe(true);
@@ -309,7 +327,7 @@ module Classical.Reflection.Spec {
                             reflectionTestType = reflectionTest.getType(),
                             publicStaticMethods = reflectionTestType.getMethods(Modifier.Public, Modifier.Static),
                             publicInstanceMethods = reflectionTestType.getMethods(Modifier.Public, Modifier.Instance),
-                            privateStaticMethods = reflectionTestType.getMethods(Modifier.NonPublic, Modifier.Static);
+                            privateStaticMethods = reflectionTestType.getMethods(Modifier.Private, Modifier.Static);
 
                         expect(publicStaticMethods.hasAny(m => m.name === 'staticMethod')).toBe(true);
                         expect(publicStaticMethods.hasNone(m => m.name === 'returnNumber')).toBe(true);

@@ -125,9 +125,10 @@ declare function moduleOf(ctor: IFunction): Classical.Reflection.Module;
 declare module Classical.Reflection {
     enum Modifier {
         Public = 0,
-        NonPublic = 1,
-        Instance = 2,
-        Static = 3,
+        Protected = 1,
+        Private = 2,
+        Instance = 3,
+        Static = 4,
     }
     class Module {
         private _name;
@@ -168,6 +169,10 @@ declare module Classical.Reflection {
         private _members;
         private _properties;
         private _methods;
+        public isPublic : boolean;
+        public isPrivate : boolean;
+        public isProtected : boolean;
+        public isPrimitive : boolean;
         public name : string;
         public fullName : string;
         public ctor : IFunction;
@@ -185,6 +190,8 @@ declare module Classical.Reflection {
         public getMethods(...options: Modifier[]): IQueryable<Method>;
         public getMethod(name: string, ...options: Modifier[]): Method;
         private _initializeProperties();
+        private _getStaticProperties();
+        private _getInstanceProperties();
         private _getProperOptions(optionsList);
         private _isValidProperty(property, modifiers);
         static getType(ctor: IFunction): Type;
@@ -203,7 +210,8 @@ declare module Classical.Reflection {
         private _canRead;
         private _isMethod;
         public isPublic : boolean;
-        public isNotPublic : boolean;
+        public isPrivate : boolean;
+        public isProtected : boolean;
         public canWrite : boolean;
         public canRead : boolean;
         public isMethod : boolean;

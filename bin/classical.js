@@ -959,13 +959,14 @@ var Classical;
 
         (function (Modifier) {
             Modifier[Modifier["Public"] = 0] = "Public";
-            Modifier[Modifier["NonPublic"] = 1] = "NonPublic";
-            Modifier[Modifier["Instance"] = 2] = "Instance";
-            Modifier[Modifier["Static"] = 3] = "Static";
+            Modifier[Modifier["Protected"] = 1] = "Protected";
+            Modifier[Modifier["Private"] = 2] = "Private";
+            Modifier[Modifier["Instance"] = 3] = "Instance";
+            Modifier[Modifier["Static"] = 4] = "Static";
         })(Reflection.Modifier || (Reflection.Modifier = {}));
         var Modifier = Reflection.Modifier;
 
-        var defaultModifier = [0 /* Public */, 2 /* Instance */];
+        var defaultModifier = [0 /* Public */, 3 /* Instance */];
 
         var Module = (function () {
             function Module(password, name, scope, base) {
@@ -1222,6 +1223,38 @@ var Classical;
                 if (mod)
                     this._module = mod;
             }
+            Object.defineProperty(Type.prototype, "isPublic", {
+                get: function () {
+                    return !this.isPrivate && !this.isProtected;
+                },
+                enumerable: true,
+                configurable: true
+            });
+
+            Object.defineProperty(Type.prototype, "isPrivate", {
+                get: function () {
+                    return this.name.indexOf('_') === 0;
+                },
+                enumerable: true,
+                configurable: true
+            });
+
+            Object.defineProperty(Type.prototype, "isProtected", {
+                get: function () {
+                    return this.name.indexOf('$') === 0;
+                },
+                enumerable: true,
+                configurable: true
+            });
+
+            Object.defineProperty(Type.prototype, "isPrimitive", {
+                get: function () {
+                    return this === typeOf(Boolean) || this === typeOf(String) || this === typeOf(Number);
+                },
+                enumerable: true,
+                configurable: true
+            });
+
             Object.defineProperty(Type.prototype, "name", {
                 get: function () {
                     if (this._name === null) {
@@ -1389,27 +1422,11 @@ var Classical;
             };
 
             Type.prototype._initializeProperties = function () {
-                var _this = this;
                 var properties = new Array();
                 var instance = this._ctor.prototype;
 
-                Object.getOwnPropertyNames(this._ctor).forEach(function (property) {
-                    var propertyDescriptor = Object.getOwnPropertyDescriptor(_this._ctor, property);
-
-                    if (Classical.Utilities.isDefined(propertyDescriptor.get) || Classical.Utilities.isDefined(propertyDescriptor.set))
-                        properties.add(new Property(constructorPassword, property, typeOf(instance.constructor), Classical.Utilities.isDefined(propertyDescriptor.get), Classical.Utilities.isDefined(propertyDescriptor.set), false, true));
-                    else if (Classical.Utilities.isFunction(propertyDescriptor.value))
-                        properties.add(new Method(constructorPassword, property, typeOf(instance.constructor), propertyDescriptor.writable, propertyDescriptor.value, true));
-                });
-
-                Object.getOwnPropertyNames(instance).forEach(function (property) {
-                    var propertyDescriptor = Object.getOwnPropertyDescriptor(instance, property);
-
-                    if (Classical.Utilities.isDefined(propertyDescriptor.get) || Classical.Utilities.isDefined(propertyDescriptor.set))
-                        properties.add(new Property(constructorPassword, property, typeOf(instance.constructor), Classical.Utilities.isDefined(propertyDescriptor.get), Classical.Utilities.isDefined(propertyDescriptor.set), false, false));
-                    else if (Classical.Utilities.isFunction(propertyDescriptor.value))
-                        properties.add(new Method(constructorPassword, property, typeOf(instance.constructor), propertyDescriptor.writable, propertyDescriptor.value, false));
-                });
+                properties.addRange(this._getStaticProperties());
+                properties.addRange(this._getInstanceProperties());
 
                 var baseType = this.base;
                 if (Classical.Utilities.isDefined(baseType)) {
@@ -1436,6 +1453,39 @@ var Classical;
                 this._properties = properties;
             };
 
+            Type.prototype._getStaticProperties = function () {
+                var _this = this;
+                var properties = new Array();
+                var instance = this._ctor.prototype;
+
+                Object.getOwnPropertyNames(this._ctor).forEach(function (property) {
+                    var propertyDescriptor = Object.getOwnPropertyDescriptor(_this._ctor, property);
+
+                    if (Classical.Utilities.isDefined(propertyDescriptor.get) || Classical.Utilities.isDefined(propertyDescriptor.set))
+                        properties.add(new Property(constructorPassword, property, typeOf(instance.constructor), Classical.Utilities.isDefined(propertyDescriptor.get), Classical.Utilities.isDefined(propertyDescriptor.set), false, true));
+                    else if (Classical.Utilities.isFunction(propertyDescriptor.value))
+                        properties.add(new Method(constructorPassword, property, typeOf(instance.constructor), propertyDescriptor.writable, propertyDescriptor.value, true));
+                });
+
+                return properties;
+            };
+
+            Type.prototype._getInstanceProperties = function () {
+                var properties = new Array();
+                var instance = this._ctor.prototype;
+
+                Object.getOwnPropertyNames(instance).forEach(function (property) {
+                    var propertyDescriptor = Object.getOwnPropertyDescriptor(instance, property);
+
+                    if (Classical.Utilities.isDefined(propertyDescriptor.get) || Classical.Utilities.isDefined(propertyDescriptor.set))
+                        properties.add(new Property(constructorPassword, property, typeOf(instance.constructor), Classical.Utilities.isDefined(propertyDescriptor.get), Classical.Utilities.isDefined(propertyDescriptor.set), false, false));
+                    else if (Classical.Utilities.isFunction(propertyDescriptor.value))
+                        properties.add(new Method(constructorPassword, property, typeOf(instance.constructor), propertyDescriptor.writable, propertyDescriptor.value, false));
+                });
+
+                return properties;
+            };
+
             Type.prototype._getProperOptions = function (optionsList) {
                 if (!optionsList || optionsList.length === 0)
                     return defaultModifier;
@@ -1446,51 +1496,59 @@ var Classical;
                 if (options.hasNone(function (o) {
                     return o === 0 /* Public */;
                 }) && options.hasNone(function (o) {
-                    return o === 1 /* NonPublic */;
+                    return o === 1 /* Protected */;
+                }) && options.hasNone(function (o) {
+                    return o === 2 /* Private */;
                 }))
                     result.add(0 /* Public */);
                 if (options.hasNone(function (o) {
-                    return o === 3 /* Static */;
+                    return o === 4 /* Static */;
                 }) && options.hasNone(function (o) {
-                    return o === 2 /* Instance */;
+                    return o === 3 /* Instance */;
                 }))
-                    result.add(2 /* Instance */);
+                    result.add(3 /* Instance */);
 
                 return result;
             };
 
             Type.prototype._isValidProperty = function (property, modifiers) {
                 var modifierQuery = modifiers.query();
+                var accessModifiers = modifierQuery.where(function (m) {
+                    return m !== 3 /* Instance */ && m !== 4 /* Static */;
+                });
+                var isValidAccessor = false;
+
+                accessModifiers.forEach(function (m) {
+                    switch (m) {
+                        case 0 /* Public */: {
+                            if (property.isPublic)
+                                isValidAccessor = true;
+
+                            break;
+                        }
+                        case 1 /* Protected */: {
+                            if (property.isProtected)
+                                isValidAccessor = true;
+
+                            break;
+                        }
+                        case 2 /* Private */: {
+                            if (property.isPrivate)
+                                isValidAccessor = true;
+
+                            break;
+                        }
+                    }
+                });
 
                 if (modifierQuery.hasAny(function (m) {
-                    return m === 2 /* Instance */;
-                })) {
-                    if (modifierQuery.hasAny(function (m) {
-                        return m === 0 /* Public */;
-                    })) {
-                        if (property.isPublic && !property.isStatic)
-                            return true;
-                    } else if (modifierQuery.hasAny(function (m) {
-                        return m === 1 /* NonPublic */;
-                    })) {
-                        if (property.isNotPublic && !property.isStatic)
-                            return true;
-                    }
-                } else if (modifierQuery.hasAny(function (m) {
-                    return m === 3 /* Static */;
-                })) {
-                    if (modifierQuery.hasAny(function (m) {
-                        return m === 0 /* Public */;
-                    })) {
-                        if (property.isPublic && property.isStatic)
-                            return true;
-                    } else if (modifierQuery.hasAny(function (m) {
-                        return m === 1 /* NonPublic */;
-                    })) {
-                        if (property.isNotPublic && property.isStatic)
-                            return true;
-                    }
-                }
+                    return m === 3 /* Instance */;
+                }))
+                    return isValidAccessor && !property.isStatic;
+                else if (modifierQuery.hasAny(function (m) {
+                    return m === 4 /* Static */;
+                }))
+                    return isValidAccessor && property.isStatic;
 
                 return false;
             };
@@ -1555,15 +1613,23 @@ var Classical;
             }
             Object.defineProperty(Property.prototype, "isPublic", {
                 get: function () {
-                    return this.name.indexOf('_') !== 0;
+                    return !this.isPrivate && !this.isProtected;
                 },
                 enumerable: true,
                 configurable: true
             });
 
-            Object.defineProperty(Property.prototype, "isNotPublic", {
+            Object.defineProperty(Property.prototype, "isPrivate", {
                 get: function () {
-                    return !this.isPublic;
+                    return this.name.indexOf('_') === 0;
+                },
+                enumerable: true,
+                configurable: true
+            });
+
+            Object.defineProperty(Property.prototype, "isProtected", {
+                get: function () {
+                    return this.name.indexOf('$') === 0;
                 },
                 enumerable: true,
                 configurable: true

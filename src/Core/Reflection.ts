@@ -501,7 +501,8 @@ module Classical.Reflection {
 
     export enum Modifier {
         Public,
-        NonPublic,
+        Protected,
+        Private,
         Instance,
         Static,
     }
@@ -880,6 +881,40 @@ module Classical.Reflection {
 
         //#region Properties
 
+        //#region isPublic
+
+        get isPublic(): boolean {
+            return !this.isPrivate && !this.isProtected;
+        }
+
+        //#endregion isPublic
+
+        //#region isPrivate
+
+        get isPrivate(): boolean {
+            return this.name.indexOf('_') === 0;
+        }
+
+        //#endregion isPrivate
+
+        //#region isProtected
+
+        get isProtected(): boolean {
+            return this.name.indexOf('$') === 0;
+        }
+
+        //#endregion isProtected
+
+        //#region isPrimitive
+
+        public get isPrimitive(): boolean {
+            return this === typeOf(Boolean) ||
+                this === typeOf(String) ||
+                this === typeOf(Number);
+        }
+
+        //#endregion isPrimitive
+
         //#region name
 
         //The name of the Type.
@@ -1097,24 +1132,9 @@ module Classical.Reflection {
         private _initializeProperties(): void {
             var properties = new Array<Property>();
             var instance = this._ctor.prototype;
-    
-            Object.getOwnPropertyNames(this._ctor).forEach((property) => {
-                var propertyDescriptor = Object.getOwnPropertyDescriptor(this._ctor, property);
 
-                if (Utilities.isDefined(propertyDescriptor.get) || Utilities.isDefined(propertyDescriptor.set))
-                    properties.add(new Property(constructorPassword, property, typeOf(instance.constructor), Utilities.isDefined(propertyDescriptor.get), Utilities.isDefined(propertyDescriptor.set), false, true));
-                else if (Utilities.isFunction(propertyDescriptor.value))
-                    properties.add(new Method(constructorPassword, property, typeOf(instance.constructor), propertyDescriptor.writable, <IFunction>propertyDescriptor.value, true));
-            });
-
-            Object.getOwnPropertyNames(instance).forEach((property) => {
-                var propertyDescriptor = Object.getOwnPropertyDescriptor(instance, property);
-
-                if (Utilities.isDefined(propertyDescriptor.get) || Utilities.isDefined(propertyDescriptor.set))
-                    properties.add(new Property(constructorPassword, property, typeOf(instance.constructor), Utilities.isDefined(propertyDescriptor.get), Utilities.isDefined(propertyDescriptor.set), false, false));
-                else if (Utilities.isFunction(propertyDescriptor.value))
-                    properties.add(new Method(constructorPassword, property, typeOf(instance.constructor), propertyDescriptor.writable, <IFunction>propertyDescriptor.value, false));
-            });
+            properties.addRange(this._getStaticProperties());
+            properties.addRange(this._getInstanceProperties());
 
             var baseType = this.base;
             if (Utilities.isDefined(baseType)) {
@@ -1141,6 +1161,46 @@ module Classical.Reflection {
 
         //#endregion initializeProperties
 
+        //#region _getStaticProperties
+
+        private _getStaticProperties(): IEnumerable<Property> {
+            var properties = new Array<Property>();
+            var instance = this._ctor.prototype;
+
+            Object.getOwnPropertyNames(this._ctor).forEach((property) => {
+                var propertyDescriptor = Object.getOwnPropertyDescriptor(this._ctor, property);
+
+                if (Utilities.isDefined(propertyDescriptor.get) || Utilities.isDefined(propertyDescriptor.set))
+                    properties.add(new Property(constructorPassword, property, typeOf(instance.constructor), Utilities.isDefined(propertyDescriptor.get), Utilities.isDefined(propertyDescriptor.set), false, true));
+                else if (Utilities.isFunction(propertyDescriptor.value))
+                    properties.add(new Method(constructorPassword, property, typeOf(instance.constructor), propertyDescriptor.writable, <IFunction>propertyDescriptor.value, true));
+            });
+
+            return properties;
+        }
+
+        //#endregion _getStaticProperties
+
+        //#region _getInstanceProperties
+
+        private _getInstanceProperties(): IEnumerable<Property> {
+            var properties = new Array<Property>();
+            var instance = this._ctor.prototype;
+
+            Object.getOwnPropertyNames(instance).forEach((property) => {
+                var propertyDescriptor = Object.getOwnPropertyDescriptor(instance, property);
+
+                if (Utilities.isDefined(propertyDescriptor.get) || Utilities.isDefined(propertyDescriptor.set))
+                    properties.add(new Property(constructorPassword, property, typeOf(instance.constructor), Utilities.isDefined(propertyDescriptor.get), Utilities.isDefined(propertyDescriptor.set), false, false));
+                else if (Utilities.isFunction(propertyDescriptor.value))
+                    properties.add(new Method(constructorPassword, property, typeOf(instance.constructor), propertyDescriptor.writable, <IFunction>propertyDescriptor.value, false));
+            });
+
+            return properties;
+        }
+
+        //#endregion _getInstanceProperties
+
         //#region _getProperOptions
 
         private _getProperOptions(optionsList: Array<Modifier>): Array<Modifier> {
@@ -1150,7 +1210,7 @@ module Classical.Reflection {
             var options = optionsList.query().distinct().array().query();
             var result = options.array();
 
-            if (options.hasNone(o => o === Modifier.Public) && options.hasNone(o => o === Modifier.NonPublic))
+            if (options.hasNone(o => o === Modifier.Public) && options.hasNone(o => o === Modifier.Protected) && options.hasNone(o => o === Modifier.Private))
                 result.add(Modifier.Public);
             if (options.hasNone(o => o === Modifier.Static) && options.hasNone(o => o === Modifier.Instance))
                 result.add(Modifier.Instance);
@@ -1164,27 +1224,36 @@ module Classical.Reflection {
 
         private _isValidProperty(property: Property, modifiers: IEnumerable<Modifier>): boolean {
             var modifierQuery = modifiers.query();
+            var accessModifiers = modifierQuery.where(m => m !== Modifier.Instance && m !== Modifier.Static);
+            var isValidAccessor = false;
 
-            if (modifierQuery.hasAny(m => m === Modifier.Instance)) {
-                if(modifierQuery.hasAny(m => m === Modifier.Public)) {
-                    if (property.isPublic && !property.isStatic)
-                        return true;
+            accessModifiers.forEach(m => {
+                switch (m) {
+                    case Modifier.Public: {
+                        if (property.isPublic)
+                            isValidAccessor = true;
+
+                        break;
+                    }
+                    case Modifier.Protected: {
+                        if (property.isProtected)
+                            isValidAccessor = true;
+
+                        break;
+                    }
+                    case Modifier.Private: {
+                        if (property.isPrivate)
+                            isValidAccessor = true;
+
+                        break;
+                    }
                 }
-                else if(modifierQuery.hasAny(m => m === Modifier.NonPublic)) {
-                    if (property.isNotPublic && !property.isStatic)
-                        return true;
-                }
-            }
-            else if (modifierQuery.hasAny(m => m === Modifier.Static)) {
-                if (modifierQuery.hasAny(m => m === Modifier.Public)) {
-                    if (property.isPublic && property.isStatic)
-                        return true;
-                }
-                else if (modifierQuery.hasAny(m => m === Modifier.NonPublic)) {
-                    if (property.isNotPublic && property.isStatic)
-                        return true;
-                }
-            }
+            });
+
+            if (modifierQuery.hasAny(m => m === Modifier.Instance))
+                return isValidAccessor && !property.isStatic;
+            else if (modifierQuery.hasAny(m => m === Modifier.Static))
+                return isValidAccessor && property.isStatic;
 
             return false;
         }
@@ -1289,18 +1358,26 @@ module Classical.Reflection {
         //#region isPublic
 
         get isPublic(): boolean {
-            return this.name.indexOf('_') !== 0;
+            return !this.isPrivate && !this.isProtected;
         }
 
         //#endregion isPublic
 
-        //#region isNotPublic
+        //#region isPrivate
 
-        get isNotPublic(): boolean {
-            return !this.isPublic;
+        get isPrivate(): boolean {
+            return this.name.indexOf('_') === 0;
         }
 
-        //#endregion isNotPublic
+        //#endregion isPrivate
+
+        //#region isProtected
+
+        get isProtected(): boolean {
+            return this.name.indexOf('$') === 0;
+        }
+
+        //#endregion isProtected
 
         //#region canWrite
 
