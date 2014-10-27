@@ -1369,6 +1369,29 @@ var Classical;
                 return other.isAssignableTo(this);
             };
 
+            Type.prototype.getFields = function () {
+                var options = [];
+                for (var _i = 0; _i < (arguments.length - 0); _i++) {
+                    options[_i] = arguments[_i + 0];
+                }
+                return this.getProperties.apply(this, options).where(function (p) {
+                    return p.isField;
+                }).cast();
+            };
+
+            Type.prototype.getField = function (name) {
+                var options = [];
+                for (var _i = 0; _i < (arguments.length - 1); _i++) {
+                    options[_i] = arguments[_i + 1];
+                }
+                Classical.Assert.isDefined(name);
+
+                return this.getFields.apply(this, options).query().singleOrDefault(function (f) {
+                    return f.name === name;
+                });
+                ;
+            };
+
             Type.prototype.getProperties = function () {
                 var _this = this;
                 var options = [];
@@ -1460,11 +1483,15 @@ var Classical;
 
                 Object.getOwnPropertyNames(this._ctor).forEach(function (property) {
                     var propertyDescriptor = Object.getOwnPropertyDescriptor(_this._ctor, property);
+                    var getter = propertyDescriptor.get;
+                    var setter = propertyDescriptor.set;
 
-                    if (Classical.Utilities.isDefined(propertyDescriptor.get) || Classical.Utilities.isDefined(propertyDescriptor.set))
-                        properties.add(new Property(constructorPassword, property, typeOf(instance.constructor), Classical.Utilities.isDefined(propertyDescriptor.get), Classical.Utilities.isDefined(propertyDescriptor.set), false, true));
+                    if (Classical.Utilities.isDefined(getter) || Classical.Utilities.isDefined(setter))
+                        properties.add(new Property(constructorPassword, property, typeOf(instance.constructor), propertyDescriptor, Classical.Utilities.isDefined(getter), Classical.Utilities.isDefined(setter), false, false, true));
                     else if (Classical.Utilities.isFunction(propertyDescriptor.value))
-                        properties.add(new Method(constructorPassword, property, typeOf(instance.constructor), propertyDescriptor.writable, propertyDescriptor.value, true));
+                        properties.add(new Method(constructorPassword, property, typeOf(instance.constructor), propertyDescriptor, propertyDescriptor.writable, propertyDescriptor.value, true));
+                    else if (!Classical.Utilities.isDefined(getter) && !Classical.Utilities.isDefined(setter))
+                        properties.add(new Field(constructorPassword, property, typeOf(instance.constructor), true));
                 });
 
                 return properties;
@@ -1476,11 +1503,15 @@ var Classical;
 
                 Object.getOwnPropertyNames(instance).forEach(function (property) {
                     var propertyDescriptor = Object.getOwnPropertyDescriptor(instance, property);
+                    var getter = propertyDescriptor.get;
+                    var setter = propertyDescriptor.set;
 
-                    if (Classical.Utilities.isDefined(propertyDescriptor.get) || Classical.Utilities.isDefined(propertyDescriptor.set))
-                        properties.add(new Property(constructorPassword, property, typeOf(instance.constructor), Classical.Utilities.isDefined(propertyDescriptor.get), Classical.Utilities.isDefined(propertyDescriptor.set), false, false));
+                    if (Classical.Utilities.isDefined(getter) || Classical.Utilities.isDefined(setter))
+                        properties.add(new Property(constructorPassword, property, typeOf(instance.constructor), propertyDescriptor, Classical.Utilities.isDefined(getter), Classical.Utilities.isDefined(setter), false, false, false));
                     else if (Classical.Utilities.isFunction(propertyDescriptor.value))
-                        properties.add(new Method(constructorPassword, property, typeOf(instance.constructor), propertyDescriptor.writable, propertyDescriptor.value, false));
+                        properties.add(new Method(constructorPassword, property, typeOf(instance.constructor), propertyDescriptor, propertyDescriptor.writable, propertyDescriptor.value, false));
+                    else if (!Classical.Utilities.isDefined(getter) && !Classical.Utilities.isDefined(setter))
+                        properties.add(new Field(constructorPassword, property, typeOf(instance.constructor), true));
                 });
 
                 return properties;
@@ -1604,12 +1635,14 @@ var Classical;
 
         var Property = (function (_super) {
             __extends(Property, _super);
-            function Property(password, name, declaringType, canRead, canWrite, isMethod, isStatic) {
+            function Property(password, name, declaringType, propertyDescriptor, canRead, canWrite, isMethod, isField, isStatic) {
                 _super.call(this, password, name, declaringType, isStatic);
 
                 this._canWrite = canWrite;
                 this._canRead = canRead;
                 this._isMethod = isMethod;
+                this._isField = isField;
+                this._propertyDescriptor = propertyDescriptor;
             }
             Object.defineProperty(Property.prototype, "isPublic", {
                 get: function () {
@@ -1651,9 +1684,33 @@ var Classical;
                 configurable: true
             });
 
+            Object.defineProperty(Property.prototype, "enumerable", {
+                get: function () {
+                    return this._propertyDescriptor && this._propertyDescriptor.enumerable;
+                },
+                enumerable: true,
+                configurable: true
+            });
+
+            Object.defineProperty(Property.prototype, "configurable", {
+                get: function () {
+                    return this._propertyDescriptor && this._propertyDescriptor.configurable;
+                },
+                enumerable: true,
+                configurable: true
+            });
+
             Object.defineProperty(Property.prototype, "isMethod", {
                 get: function () {
                     return this._isMethod;
+                },
+                enumerable: true,
+                configurable: true
+            });
+
+            Object.defineProperty(Property.prototype, "isField", {
+                get: function () {
+                    return this._isField;
                 },
                 enumerable: true,
                 configurable: true
@@ -1715,12 +1772,97 @@ var Classical;
         })(Member);
         Reflection.Property = Property;
 
+        var Field = (function (_super) {
+            __extends(Field, _super);
+            function Field(password, name, declaringType, isStatic) {
+                _super.call(this, password, name, declaringType, null, true, true, false, true, isStatic);
+            }
+            Object.defineProperty(Field.prototype, "isPublic", {
+                get: function () {
+                    return !this.isPrivate && !this.isProtected;
+                },
+                enumerable: true,
+                configurable: true
+            });
+
+            Object.defineProperty(Field.prototype, "isPrivate", {
+                get: function () {
+                    return this.name.indexOf('_') === 0;
+                },
+                enumerable: true,
+                configurable: true
+            });
+
+            Object.defineProperty(Field.prototype, "isProtected", {
+                get: function () {
+                    return this.name.indexOf('$') === 0;
+                },
+                enumerable: true,
+                configurable: true
+            });
+
+            Field.prototype.getValue = function (instance) {
+                Classical.Assert.isDefined(instance);
+
+                if (this.isStatic)
+                    return this.declaringType.ctor[this.name];
+
+                var type = typeOf(instance.constructor);
+                var property = type.getProperty(this.name);
+
+                if (Classical.Utilities.isNullOrUndefined(property))
+                    throw Classical.Utilities.format('The property does not exist on type {0}.', type.name);
+                else if (!property.canRead)
+                    throw 'The property cannot be read.';
+
+                var instanceType = instance.getType();
+
+                if (instanceType && instanceType.ctor !== instance.constructor) {
+                    var prototype = instanceType.prototype;
+                    while (prototype) {
+                        if (instanceType.ctor === prototype.constructor) {
+                            return prototype[this.name];
+                        }
+
+                        var prototypeType = prototype.getType();
+                        if (prototypeType)
+                            prototype = prototypeType.prototype;
+                        else
+                            prototype = undefined;
+                    }
+                }
+
+                return instance[this.name];
+            };
+
+            Field.prototype.setValue = function (instance, value) {
+                Classical.Assert.isDefined(instance);
+
+                if (this.isStatic) {
+                    this.declaringType.ctor[this.name] = value;
+                    return;
+                }
+
+                var type = typeOf(instance.constructor);
+                var property = type.getProperty(this.name);
+
+                if (Classical.Utilities.isNullOrUndefined(property))
+                    throw Classical.Utilities.format('The property does not exist on type {0}.', type.name);
+                else if (!property.canWrite)
+                    throw 'The property cannot be written to.';
+
+                instance[this.name] = value;
+            };
+            return Field;
+        })(Property);
+        Reflection.Field = Field;
+
         var Variable = (function (_super) {
             __extends(Variable, _super);
             function Variable(password, name, module) {
                 Classical.Assert.isDefined(module);
 
-                _super.call(this, password, name, undefined, true, true, false, true);
+                _super.call(this, password, name, null, null, true, true, false, false, true);
             }
             Object.defineProperty(Variable.prototype, "module", {
                 get: function () {
@@ -1735,8 +1877,8 @@ var Classical;
 
         var Method = (function (_super) {
             __extends(Method, _super);
-            function Method(password, name, declaringType, canWrite, underlyingFunction, isStatic) {
-                _super.call(this, password, name, declaringType, true, canWrite, true, isStatic);
+            function Method(password, name, declaringType, propertyDescriptor, canWrite, underlyingFunction, isStatic) {
+                _super.call(this, password, name, declaringType, propertyDescriptor, true, canWrite, true, false, isStatic);
 
                 this._underlyingFunction = underlyingFunction;
             }
@@ -1785,7 +1927,7 @@ var Classical;
         var Function = (function (_super) {
             __extends(Function, _super);
             function Function(password, name, canWrite, underlyingFunction) {
-                _super.call(this, password, name, undefined, canWrite, underlyingFunction, true);
+                _super.call(this, password, name, null, null, canWrite, underlyingFunction, true);
             }
             return Function;
         })(Method);

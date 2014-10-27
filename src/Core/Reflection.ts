@@ -873,8 +873,8 @@ module Classical.Reflection {
         private _base: Type = null;
         private _module: Module;
         private _name: string = null;
-        private _members: IEnumerable<Member>;
         private _properties: IEnumerable<Property>;
+        private _fields: IEnumerable<Field>;
         private _methods: IEnumerable<Method>;
 
         //#endregion Fields
@@ -1081,6 +1081,25 @@ module Classical.Reflection {
 
         //#endregion isAssignableFrom
 
+        //#region getFields
+
+        getFields(...options: Array<Modifier>): IQueryable<Field> {
+            return (<IQueryable<Property>>this.getProperties.apply(this, options))
+                .where(p => p.isField).cast<Field>();
+        }
+
+        //#endregion getFields
+
+        //#region getField
+
+        getField(name: string, ...options: Array<Modifier>): Field {
+            Assert.isDefined(name);
+
+            return (<IQueryable<Method>>this.getFields.apply(this, options)).query().singleOrDefault(f => f.name === name);;
+        }
+
+        //#endregion getField
+
         //#region getProperties
 
         getProperties(...options: Array<Modifier>): IQueryable<Property> {
@@ -1127,7 +1146,7 @@ module Classical.Reflection {
 
         //#region Utilities
 
-        //#region initializeProperties
+        //#region _initializeProperties
 
         private _initializeProperties(): void {
             var properties = new Array<Property>();
@@ -1159,7 +1178,7 @@ module Classical.Reflection {
             this._properties = properties;
         }
 
-        //#endregion initializeProperties
+        //#endregion _initializeProperties
 
         //#region _getStaticProperties
 
@@ -1169,11 +1188,15 @@ module Classical.Reflection {
 
             Object.getOwnPropertyNames(this._ctor).forEach((property) => {
                 var propertyDescriptor = Object.getOwnPropertyDescriptor(this._ctor, property);
+                var getter = propertyDescriptor.get;
+                var setter = propertyDescriptor.set;
 
-                if (Utilities.isDefined(propertyDescriptor.get) || Utilities.isDefined(propertyDescriptor.set))
-                    properties.add(new Property(constructorPassword, property, typeOf(instance.constructor), Utilities.isDefined(propertyDescriptor.get), Utilities.isDefined(propertyDescriptor.set), false, true));
+                if (Utilities.isDefined(getter) || Utilities.isDefined(setter))
+                    properties.add(new Property(constructorPassword, property, typeOf(instance.constructor), propertyDescriptor, Utilities.isDefined(getter), Utilities.isDefined(setter), false, false, true));
                 else if (Utilities.isFunction(propertyDescriptor.value))
-                    properties.add(new Method(constructorPassword, property, typeOf(instance.constructor), propertyDescriptor.writable, <IFunction>propertyDescriptor.value, true));
+                    properties.add(new Method(constructorPassword, property, typeOf(instance.constructor), propertyDescriptor, propertyDescriptor.writable, <IFunction>propertyDescriptor.value, true));
+                else if (!Utilities.isDefined(getter) && !Utilities.isDefined(setter))
+                    properties.add(new Field(constructorPassword, property, typeOf(instance.constructor), true));
             });
 
             return properties;
@@ -1189,11 +1212,15 @@ module Classical.Reflection {
 
             Object.getOwnPropertyNames(instance).forEach((property) => {
                 var propertyDescriptor = Object.getOwnPropertyDescriptor(instance, property);
+                var getter = propertyDescriptor.get;
+                var setter = propertyDescriptor.set;
 
-                if (Utilities.isDefined(propertyDescriptor.get) || Utilities.isDefined(propertyDescriptor.set))
-                    properties.add(new Property(constructorPassword, property, typeOf(instance.constructor), Utilities.isDefined(propertyDescriptor.get), Utilities.isDefined(propertyDescriptor.set), false, false));
+                if (Utilities.isDefined(getter) || Utilities.isDefined(setter))
+                    properties.add(new Property(constructorPassword, property, typeOf(instance.constructor), propertyDescriptor, Utilities.isDefined(getter), Utilities.isDefined(setter), false, false, false));
                 else if (Utilities.isFunction(propertyDescriptor.value))
-                    properties.add(new Method(constructorPassword, property, typeOf(instance.constructor), propertyDescriptor.writable, <IFunction>propertyDescriptor.value, false));
+                    properties.add(new Method(constructorPassword, property, typeOf(instance.constructor), propertyDescriptor, propertyDescriptor.writable, <IFunction>propertyDescriptor.value, false));
+                else if (!Utilities.isDefined(getter) && !Utilities.isDefined(setter))
+                    properties.add(new Field(constructorPassword, property, typeOf(instance.constructor), true));
             });
 
             return properties;
@@ -1350,6 +1377,8 @@ module Classical.Reflection {
         private _canWrite: boolean;
         private _canRead: boolean;
         private _isMethod: boolean;
+        private _isField: boolean;
+        private _propertyDescriptor: PropertyDescriptor;
 
         //#endregion Fields
 
@@ -1395,6 +1424,22 @@ module Classical.Reflection {
 
         //#endregion canRead
 
+        //#region enumerable
+
+        get enumerable(): boolean {
+            return this._propertyDescriptor && this._propertyDescriptor.enumerable;
+        }
+
+        //#endregion enumerable
+
+        //#region configurable
+
+        get configurable(): boolean {
+            return this._propertyDescriptor && this._propertyDescriptor.configurable;
+        }
+
+        //#endregion configurable
+
         //#region isMethod
 
         public get isMethod(): boolean {
@@ -1403,16 +1448,26 @@ module Classical.Reflection {
 
         //#endregion isMethod
 
+        //#region isField
+
+        get isField(): boolean {
+            return this._isField;
+        }
+        
+        //#endregion isField
+
         //#endregion Properties
 
         //#region Constructors
 
-        constructor(password: number, name: string, declaringType: Type, canRead: boolean, canWrite: boolean, isMethod: boolean, isStatic: boolean) {
+        constructor(password: number, name: string, declaringType: Type, propertyDescriptor: PropertyDescriptor, canRead: boolean, canWrite: boolean, isMethod: boolean, isField: boolean, isStatic: boolean) {
             super(password, name, declaringType, isStatic);
 
             this._canWrite = canWrite;
             this._canRead = canRead;
             this._isMethod = isMethod;
+            this._isField = isField;
+            this._propertyDescriptor = propertyDescriptor;
         }
 
         //#endregion Constructors
@@ -1485,6 +1540,114 @@ module Classical.Reflection {
 
     //#endregion Property
 
+    //#region Field
+
+    export class Field extends Property {
+
+        //#region Properties
+
+        //#region isPublic
+
+        get isPublic(): boolean {
+            return !this.isPrivate && !this.isProtected;
+        }
+
+        //#endregion isPublic
+
+        //#region isPrivate
+
+        get isPrivate(): boolean {
+            return this.name.indexOf('_') === 0;
+        }
+
+        //#endregion isPrivate
+
+        //#region isProtected
+
+        get isProtected(): boolean {
+            return this.name.indexOf('$') === 0;
+        }
+
+        //#endregion isProtected
+
+        //#endregion Properties
+
+        //#region Constructors
+
+        constructor(password: number, name: string, declaringType: Type, isStatic: boolean) {
+            super(password, name, declaringType, null, true, true, false, true, isStatic);
+        }
+
+        //#endregion Constructors
+
+        //#region Methods
+
+        //#region getValue
+
+        getValue(instance: any): any {
+            Assert.isDefined(instance);
+
+            if (this.isStatic)
+                return this.declaringType.ctor[this.name];
+
+            var type = typeOf(instance.constructor);
+            var property = type.getProperty(this.name);
+
+            if (Utilities.isNullOrUndefined(property))
+                throw Utilities.format('The property does not exist on type {0}.', type.name);
+            else if (!property.canRead)
+                throw 'The property cannot be read.';
+
+            var instanceType = <Type>instance.getType();
+
+            if (instanceType && instanceType.ctor !== instance.constructor) {
+                var prototype = instanceType.prototype;
+                while (prototype) {
+                    if (instanceType.ctor === prototype.constructor) {
+                        return prototype[this.name];
+                    }
+
+                    var prototypeType = <Type>prototype.getType();
+                    if (prototypeType)
+                        prototype = prototypeType.prototype;
+                    else
+                        prototype = undefined;
+                }
+            }
+
+            return instance[this.name];
+        }
+
+        //#endregion getValue
+
+        //#region setValue
+
+        setValue(instance: any, value: any): void {
+            Assert.isDefined(instance);
+
+            if (this.isStatic) {
+                this.declaringType.ctor[this.name] = value;
+                return;
+            }
+
+            var type = typeOf(instance.constructor);
+            var property = type.getProperty(this.name);
+
+            if (Utilities.isNullOrUndefined(property))
+                throw Utilities.format('The property does not exist on type {0}.', type.name);
+            else if (!property.canWrite)
+                throw 'The property cannot be written to.';
+
+            instance[this.name] = value;
+        }
+
+        //#endregion setValue
+
+        //#endregion Methods
+    }
+
+    //#endregion Field
+
     //#region Variable
 
     export class Variable extends Property {
@@ -1512,7 +1675,7 @@ module Classical.Reflection {
         constructor(password: number, name: string, module: Module) {
             Assert.isDefined(module);
 
-            super(password, name, undefined, true, true, false, true);
+            super(password, name, null, null, true, true, false, false, true);
         }
 
         //#endregion Constructors
@@ -1533,8 +1696,8 @@ module Classical.Reflection {
 
         //#region Constructors
 
-        constructor(password: number, name: string, declaringType: Type, canWrite: boolean, underlyingFunction: IFunction, isStatic: boolean) {
-            super(password, name, declaringType, true, canWrite, true, isStatic);
+        constructor(password: number, name: string, declaringType: Type, propertyDescriptor: PropertyDescriptor, canWrite: boolean, underlyingFunction: IFunction, isStatic: boolean) {
+            super(password, name, declaringType, propertyDescriptor, true, canWrite, true, false, isStatic);
 
             this._underlyingFunction = underlyingFunction;
         }
@@ -1606,7 +1769,7 @@ module Classical.Reflection {
         //#region Constructors
 
         constructor(password: number, name: string, canWrite: boolean, underlyingFunction: IFunction) {
-            super(password, name, undefined, canWrite, underlyingFunction, true);
+            super(password, name, null, null, canWrite, underlyingFunction, true);
         }
 
         //#endregion Constructors

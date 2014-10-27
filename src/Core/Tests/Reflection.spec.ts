@@ -584,6 +584,8 @@ module Classical.Reflection.Spec {
         private _name: string;
         private _getSetProperty: string;
         private _setProperty: string;
+        private _testField: string = 'Chris';
+        private _testAge: number = 5;
 
         public get name(): string {
             return this._name;

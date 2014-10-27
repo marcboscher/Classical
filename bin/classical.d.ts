@@ -166,8 +166,8 @@ declare module Classical.Reflection {
         private _base;
         private _module;
         private _name;
-        private _members;
         private _properties;
+        private _fields;
         private _methods;
         public isPublic : boolean;
         public isPrivate : boolean;
@@ -185,6 +185,8 @@ declare module Classical.Reflection {
         public getHashCode(): number;
         public isAssignableTo(other: Type): boolean;
         public isAssignableFrom(other: Type): boolean;
+        public getFields(...options: Modifier[]): IQueryable<Field>;
+        public getField(name: string, ...options: Modifier[]): Field;
         public getProperties(...options: Modifier[]): IQueryable<Property>;
         public getProperty(name: string, ...options: Modifier[]): Property;
         public getMethods(...options: Modifier[]): IQueryable<Method>;
@@ -209,13 +211,26 @@ declare module Classical.Reflection {
         private _canWrite;
         private _canRead;
         private _isMethod;
+        private _isField;
+        private _propertyDescriptor;
         public isPublic : boolean;
         public isPrivate : boolean;
         public isProtected : boolean;
         public canWrite : boolean;
         public canRead : boolean;
+        public enumerable : boolean;
+        public configurable : boolean;
         public isMethod : boolean;
-        constructor(password: number, name: string, declaringType: Type, canRead: boolean, canWrite: boolean, isMethod: boolean, isStatic: boolean);
+        public isField : boolean;
+        constructor(password: number, name: string, declaringType: Type, propertyDescriptor: PropertyDescriptor, canRead: boolean, canWrite: boolean, isMethod: boolean, isField: boolean, isStatic: boolean);
+        public getValue(instance: any): any;
+        public setValue(instance: any, value: any): void;
+    }
+    class Field extends Property {
+        public isPublic : boolean;
+        public isPrivate : boolean;
+        public isProtected : boolean;
+        constructor(password: number, name: string, declaringType: Type, isStatic: boolean);
         public getValue(instance: any): any;
         public setValue(instance: any, value: any): void;
     }
@@ -227,7 +242,7 @@ declare module Classical.Reflection {
     class Method extends Property {
         private _underlyingFunction;
         private _parameters;
-        constructor(password: number, name: string, declaringType: Type, canWrite: boolean, underlyingFunction: IFunction, isStatic: boolean);
+        constructor(password: number, name: string, declaringType: Type, propertyDescriptor: PropertyDescriptor, canWrite: boolean, underlyingFunction: IFunction, isStatic: boolean);
         public invoke(instance: any, ...args: any[]): any;
         public getParameters(): IQueryable<Parameter>;
         private _initializeParameters();
