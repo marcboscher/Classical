@@ -37,7 +37,7 @@ module Classical.Binding.New {
 
         //#region Methods
 
-        has(source: any): boolean {
+        hasSource(source: any): boolean {
             var sources = this._sources;
             for (var i = 0; i < sources.length; i++) {
                 if (source === sources[i])
@@ -47,7 +47,7 @@ module Classical.Binding.New {
             return false;
         }
 
-        add(source: any): void {
+        addSource(source: any): void {
             Assert.isDefined(source, 'The source is not defined.');
             this._sources.add(source);
         }
@@ -272,7 +272,7 @@ module Classical.Binding.New {
 
         add(update: TTargetUpdate) {
             Assert.isDefined(update, 'The update is not defined.');
-            update.add(this._target);
+            update.addSource(this._target);
             this._updates.add(update);
         }
 
@@ -282,7 +282,7 @@ module Classical.Binding.New {
 
         filter(updates: IEnumerable<TTargetUpdate>): Array<TTargetUpdate> {
             var target = this._target;
-            return updates.query().where(u => !u.has(target)).array();
+            return updates.query().where(u => !u.hasSource(target)).array();
         } 
 
         //#endregion filter
@@ -315,7 +315,7 @@ module Classical.Binding.New {
                     return;
 
                 updates.query().forEach(update => {
-                    if (!update.has(binder.source)) {
+                    if (!update.hasSource(binder.source)) {
                         var sourceUpdate = converter.convertBack(update);
                         update.transferTo(sourceUpdate);
                         sourceUpdates.add(sourceUpdate);
@@ -359,7 +359,7 @@ module Classical.Binding.New {
                 sourcesQuery = sources.query(),
                 bindingHandler = () => {
                     var update = binder.converter.convert(sources);
-                    sourcesQuery.forEach(source => update.add(source));
+                    sourcesQuery.forEach(source => update.addSource(source));
                     return this.target.apply([update]);
                 };
 
@@ -742,7 +742,7 @@ module Classical.Binding.New {
             super();
             this.value = value;
             if (sources)
-                sources.query().forEach(source => this.add(source));
+                sources.query().forEach(source => this.addSource(source));
         }
     }
 

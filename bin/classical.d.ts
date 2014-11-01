@@ -602,8 +602,8 @@ declare module Classical.Binding.New {
     }
     class Update {
         private _sources;
-        public has(source: any): boolean;
-        public add(source: any): void;
+        public hasSource(source: any): boolean;
+        public addSource(source: any): void;
         public transferTo<TUpdate extends Update>(update: TUpdate): TUpdate;
     }
     interface IBinder<TTargetUpdate extends Update> extends IObject {

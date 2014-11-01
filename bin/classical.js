@@ -3509,7 +3509,7 @@ var Classical;
                 function Update() {
                     this._sources = [];
                 }
-                Update.prototype.has = function (source) {
+                Update.prototype.hasSource = function (source) {
                     var sources = this._sources;
                     for (var i = 0; i < sources.length; i++) {
                         if (source === sources[i])
@@ -3519,7 +3519,7 @@ var Classical;
                     return false;
                 };
 
-                Update.prototype.add = function (source) {
+                Update.prototype.addSource = function (source) {
                     Assert.isDefined(source, 'The source is not defined.');
                     this._sources.add(source);
                 };
@@ -3660,14 +3660,14 @@ var Classical;
 
                 Synchronizer.prototype.add = function (update) {
                     Assert.isDefined(update, 'The update is not defined.');
-                    update.add(this._target);
+                    update.addSource(this._target);
                     this._updates.add(update);
                 };
 
                 Synchronizer.prototype.filter = function (updates) {
                     var target = this._target;
                     return updates.query().where(function (u) {
-                        return !u.has(target);
+                        return !u.hasSource(target);
                     }).array();
                 };
 
@@ -3698,7 +3698,7 @@ var Classical;
                             return;
 
                         updates.query().forEach(function (update) {
-                            if (!update.has(binder.source)) {
+                            if (!update.hasSource(binder.source)) {
                                 var sourceUpdate = converter.convertBack(update);
                                 update.transferTo(sourceUpdate);
                                 sourceUpdates.add(sourceUpdate);
@@ -3730,7 +3730,7 @@ var Classical;
                     var sources = binder.sources, sourcesQuery = sources.query(), bindingHandler = function () {
                         var update = binder.converter.convert(sources);
                         sourcesQuery.forEach(function (source) {
-                            return update.add(source);
+                            return update.addSource(source);
                         });
                         return _this.target.apply([update]);
                     };
@@ -3975,7 +3975,7 @@ var Classical;
                     this.value = value;
                     if (sources)
                         sources.query().forEach(function (source) {
-                            return _this.add(source);
+                            return _this.addSource(source);
                         });
                 }
                 return PropertyUpdate;

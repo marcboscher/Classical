@@ -18,30 +18,30 @@ module Classical.Binding.New.Spec {
 
             describe('Update', () => {
 
-                //#region add
+                //#region addSource
 
-                describe('add', () => {
+                describe('addSource', () => {
                     it('to have the sources that have been added', () => {
                         var update = new IntegerUpdate(),
                             first = {},
                             second = [],
                             third = new Integer();
 
-                        expect(update.has(first)).toBe(false);
-                        expect(update.has(second)).toBe(false);
-                        expect(update.has(third)).toBe(false);
+                        expect(update.hasSource(first)).toBe(false);
+                        expect(update.hasSource(second)).toBe(false);
+                        expect(update.hasSource(third)).toBe(false);
 
-                        update.add(first);
-                        update.add(second);
-                        update.add(third);
+                        update.addSource(first);
+                        update.addSource(second);
+                        update.addSource(third);
 
-                        expect(update.has(first)).toBe(true);
-                        expect(update.has(second)).toBe(true);
-                        expect(update.has(third)).toBe(true);
+                        expect(update.hasSource(first)).toBe(true);
+                        expect(update.hasSource(second)).toBe(true);
+                        expect(update.hasSource(third)).toBe(true);
                     });
                 });
 
-                //#endregion add
+                //#endregion addSource
 
                 //#region transferTo
 
@@ -54,18 +54,18 @@ module Classical.Binding.New.Spec {
                             third = new Integer();
 
                         sourceUpdate.transferTo(targetUpdate);
-                        expect(targetUpdate.has(first)).toBe(false);
-                        expect(targetUpdate.has(second)).toBe(false);
-                        expect(targetUpdate.has(third)).toBe(false);
+                        expect(targetUpdate.hasSource(first)).toBe(false);
+                        expect(targetUpdate.hasSource(second)).toBe(false);
+                        expect(targetUpdate.hasSource(third)).toBe(false);
 
-                        sourceUpdate.add(first);
-                        sourceUpdate.add(second);
-                        sourceUpdate.add(third);
+                        sourceUpdate.addSource(first);
+                        sourceUpdate.addSource(second);
+                        sourceUpdate.addSource(third);
 
                         sourceUpdate.transferTo(targetUpdate);
-                        expect(targetUpdate.has(first)).toBe(true);
-                        expect(targetUpdate.has(second)).toBe(true);
-                        expect(targetUpdate.has(third)).toBe(true);
+                        expect(targetUpdate.hasSource(first)).toBe(true);
+                        expect(targetUpdate.hasSource(second)).toBe(true);
+                        expect(targetUpdate.hasSource(third)).toBe(true);
                     });
                     it('should add sources to an update that already has sources', () => {
                         var sourceUpdate = new IntegerUpdate(),
@@ -74,14 +74,14 @@ module Classical.Binding.New.Spec {
                             second = [],
                             third = new Integer();
 
-                        targetUpdate.add(first);
-                        sourceUpdate.add(second);
-                        sourceUpdate.add(third);
+                        targetUpdate.addSource(first);
+                        sourceUpdate.addSource(second);
+                        sourceUpdate.addSource(third);
 
                         sourceUpdate.transferTo(targetUpdate)
-                        expect(targetUpdate.has(first)).toBe(true);
-                        expect(targetUpdate.has(second)).toBe(true);
-                        expect(targetUpdate.has(third)).toBe(true);
+                        expect(targetUpdate.hasSource(first)).toBe(true);
+                        expect(targetUpdate.hasSource(second)).toBe(true);
+                        expect(targetUpdate.hasSource(third)).toBe(true);
                     });
                 });
 
@@ -684,7 +684,7 @@ module Classical.Binding.New.Spec {
                         },
                         init: (target, source) => {
                             target.as<Integer>().value =
-                                source.as<Integer>().value;
+                            source.as<Integer>().value;
                         }
                     });
                 }
@@ -987,7 +987,7 @@ module Classical.Binding.New.Spec {
             super();
             this.value = value;
             if (sources)
-                sources.query().forEach(source => this.add(source));
+                sources.query().forEach(source => this.addSource(source));
         }
 
         //#endregion Constructor
