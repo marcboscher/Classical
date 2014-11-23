@@ -602,9 +602,10 @@ declare module Classical.Binding.New {
     }
     class Update {
         private _sources;
+        constructor(sources: IEnumerable<any>);
         public hasSource(source: any): boolean;
         public addSource(source: any): void;
-        public transferTo<TUpdate extends Update>(update: TUpdate): TUpdate;
+        public transferSourcesTo<TUpdate extends Update>(update: TUpdate): TUpdate;
     }
     interface IBinder<TTargetUpdate extends Update> extends IObject {
         source: ISynchronizable<Update>;
@@ -628,7 +629,7 @@ declare module Classical.Binding.New {
         public target : ISynchronizable<TTargetUpdate>;
         public updates : TTargetUpdate[];
         public updateDepth : number;
-        constructor(source: ISynchronizable<TTargetUpdate>);
+        constructor(target: ISynchronizable<TTargetUpdate>);
         public hasTarget(target: ISynchronizable<TTargetUpdate>): boolean;
         public hasSource(source: ISynchronizable<any>): boolean;
         public bind(binder: IBinder<TTargetUpdate>): void;
@@ -642,7 +643,6 @@ declare module Classical.Binding.New {
         public sync(immediate?: boolean): boolean;
         public syncStart(): void;
         private _createComplexBinding(binder);
-        private _runUpdates(groupUpdate);
         private _executeUpdates(groupUpdate);
         private _executeOnUpdate(updates);
     }
@@ -687,6 +687,6 @@ declare module Classical.Binding.New {
     }
     class PropertyUpdate<TValue> extends Update {
         public value: TValue;
-        constructor(value: TValue, ...sources: any[]);
+        constructor(value: TValue, sources?: IEnumerable<any>);
     }
 }

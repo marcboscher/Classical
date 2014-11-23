@@ -24,9 +24,9 @@ module Classical.Binding.New.Collections {
 
         constructor(items?: IEnumerable<T>) {
             if (!items)
-                items = [];
-
-            this._items = items.array().slice(0);
+                this._items = [];
+            else
+                this._items = items.array().slice(0);
         }
 
         //#endregion Constructor
@@ -64,54 +64,77 @@ module Classical.Binding.New.Collections {
 
         //Adds an item to the collection.
         add(item: T): ICollection<T> {
-            this._items.add(item);
-            this._synchronizer.add({
-                type: CollectionUpdateType.Add,
-                newValue: item
-            });
+            this._add(
+                new CollectionUpdate<T>().create(
+                    CollectionUpdateType.Add, null, item, null));
 
-            this._synchronizer.sync();
             return this;
+        }
+
+        private _add(update: CollectionUpdate<T>) {
+            var s = this._synchronizer;
+            s.add(update);
+            this._items.add(update.newValue);
+            s.sync();
         }
 
         //Adds a sequence of items to the collection.
         addRange(items: IEnumerable<T>): ICollection<T> {
             items = items || [];
+            var s = this._synchronizer;
+
+            s.syncStart();
             items.forEach(item => this.add(item));
+            s.sync();
+
             return this;
         }
 
         //Removes all instances of the item from the collection.
         remove(item: T): ICollection<T> {
-            this._items.remove(item);
-            this._synchronizer.add({
-                type: CollectionUpdateType.Remove,
-                oldValue: item
-            });
+            this._remove(
+                new CollectionUpdate<T>().create(
+                    CollectionUpdateType.Remove, item, null, null));
+
+            return this;
+        }
+
+        private _remove(update: CollectionUpdate<T>) {
+            var s = this._synchronizer;
+            this._items.remove(update.oldValue);
+            s.add(update);
+            s.sync();
+        }
+
+        //Removes the element at the specified index.
+        removeAt(index: number): ICollection<T> {
+            this._removeAt(
+                new CollectionUpdate<T>().create(
+                    CollectionUpdateType.RemoveAt, null, null, index));
 
             this._synchronizer.sync();
             return this;
         }
 
         //Removes the element at the specified index.
-        removeAt(index: number): ICollection<T> {
-            this._items.removeAt(index);
-            this._synchronizer.add({
-                type: CollectionUpdateType.RemoveAt,
-                index: index
-            });
-
-            this._synchronizer.sync();
-            return this;
+        private _removeAt(update: CollectionUpdate<T>) {
+            var s = this._synchronizer;
+            this._items.removeAt(update.index);
+            s.add(update);
+            s.sync();
         }
 
         //Clears all elements from the collection.
         clear(): ICollection<T> {
-            var items = this._items;
+            var items = this._items,
+                s = this._synchronizer;
             items.clear();
+
+            s.syncStart();
             while (items.length > 0) {
                 items.removeAt(items.length - 1);
             }
+            s.sync();
             
             return this;
         }
@@ -123,14 +146,18 @@ module Classical.Binding.New.Collections {
 
         //Returns the element at the specified index.
         set(index: number, item: T): ICollection<T> {
-            this._items.set(index, item);
-            this._synchronizer.add({
-                newValue: item,
-                index: index
-            });
-
-            this._synchronizer.sync();
+            this._set(
+                new CollectionUpdate<T>(this).create(
+                CollectionUpdateType.Set, null, item, index));
             return this;
+        }
+
+        private _set(update: CollectionUpdate<T>) {
+            this._items.set(update.index, update.newValue);
+            var s = this._synchronizer;
+
+            s.add(update);
+            s.sync();
         }
 
         //#endregion ICollection Members
@@ -145,7 +172,8 @@ module Classical.Binding.New.Collections {
             return this._synchronizer.hasSource(source);
         }
 
-        bind(binder: ICollectionBinder<T>): void;
+        bind(source: Collection<T>): void;
+        bind(collectionBinder: ICollectionBinder<T>): void;
         bind(sources: Array<ISynchronizable<Update>>, selector: (sources: Array<any>) => any);
         bind(binder: IBinder<CollectionUpdate<T>>): void;
         bind(binder: IComplexBinder<CollectionUpdate<T>>): void;
@@ -157,11 +185,12 @@ module Classical.Binding.New.Collections {
             if (u.isArray(arg1)) /*sources*/ {
                 var complexBinder = this._createComplexBinder(arg1, arg2);
                 return this._synchronizer.bind(complexBinder);
+            } else if (arg1.sources) {
+                return this._synchronizer.bind(arg1);
             } else if (arg1.getType && this.getType().isAssignableFrom(arg1.getType())) /*target*/ {
-                var source: Collection<T> = arg1;
-                currentBinder = this._sourceToBinder(source);
-            } else if (arg1.property) /*propertyBinder*/ {
-                var propertyBinder: ICollectionBinder<T> = arg1;
+                var target: Collection<T> = arg1;
+                currentBinder = this._sourceToBinder(target);
+            } else if (arg1.collection) /*collectionBinder*/ {
                 currentBinder = this._collectionBinderToBinder(arg1);
             } else  /*binder*/ {
                 currentBinder = arg1;
@@ -181,14 +210,13 @@ module Classical.Binding.New.Collections {
         apply(updates: IEnumerable<CollectionUpdate<T>>): void {
             var synchronizer = this._synchronizer,
                 updates = updates || [],
-                updateQuery = updates.query();
+                updateQuery = synchronizer
+                    .filter(updates).query()
 
             this._applyAdd(updateQuery.where(u => u.type === CollectionUpdateType.Add));
-            this._applyAdd(updateQuery.where(u => u.type === CollectionUpdateType.Add));
-            this._applyAdd(updateQuery.where(u => u.type === CollectionUpdateType.Add));
-            this._applyAdd(updateQuery.where(u => u.type === CollectionUpdateType.Add));
-
-            updateQuery.forEach(u => synchronizer.add(u));
+            this._applySet(updateQuery.where(u => u.type === CollectionUpdateType.Set));
+            this._applyRemove(updateQuery.where(u => u.type === CollectionUpdateType.Remove));
+            this._applyRemoveAt(updateQuery.where(u => u.type === CollectionUpdateType.RemoveAt));
             synchronizer.sync();
         }
 
@@ -197,6 +225,14 @@ module Classical.Binding.New.Collections {
         }
 
         //#endregion ISynchronizable Members
+
+        //#region Base Class Overrides
+
+        toString() {
+            return this._items.toString();
+        }
+
+        //#endregion Base Class Overrides
 
         //#region Utilities
 
@@ -236,17 +272,15 @@ module Classical.Binding.New.Collections {
 
             converter = {
                 convert: sourceUpdate => {
-                    return <CollectionUpdate<T>><any>sourceUpdate.transferTo(
-                        new CollectionUpdate(collectionBinder.collection));
+                    return sourceUpdate.transferSourcesTo(
+                        converter.convert(sourceUpdate));
                 }
             };
 
             if (valueConverter.convertBack) {
                 converter.convertBack = targetUpdate => {
-                    var value = valueConverter.convertBack(
-                        targetUpdate.newValue);
-                    return targetUpdate.transferTo(
-                        new CollectionUpdate(value));
+                    return targetUpdate.transferSourcesTo(
+                        converter.convertBack(targetUpdate))
                 }
             }
 
@@ -255,9 +289,7 @@ module Classical.Binding.New.Collections {
                 converter: converter,
                 init: () => {
                     this.clear();
-                    collectionBinder.collection.forEach(item => {
-                        this.add(item);
-                    });
+                    collectionBinder.collection.addRange(this);
                 }
             };
         }
@@ -268,27 +300,27 @@ module Classical.Binding.New.Collections {
 
         private _applyAdd(updates: IQueryable<CollectionUpdate<T>>) {
             updates.forEach(update => {
-                this.add(update.newValue);
+                this._add(update);
             });
         }
 
         //#endregion applyAdd
 
-        //#region _applySet
+        //#region applySet
 
-        private applySet(updates: IQueryable<CollectionUpdate<T>>) {
+        private _applySet(updates: IQueryable<CollectionUpdate<T>>) {
             updates.forEach(update => {
-                this.set(update.index, update.newValue);
+                this._set(update);
             });
         }
 
-        //#endregion _applySet
+        //#endregion applySet
 
         //#region applyRemove
 
         private _applyRemove(updates: IQueryable<CollectionUpdate<T>>) {
             updates.forEach(update => {
-                this.remove(update.oldValue);
+                this._remove(update);
             });
         }
 
@@ -298,7 +330,7 @@ module Classical.Binding.New.Collections {
 
         private _applyRemoveAt(updates: IQueryable<CollectionUpdate<T>>) {
             updates.forEach(update => {
-                this.removeAt(update.index);
+                this._removeAt(update);
             });
         }
 
@@ -333,22 +365,21 @@ module Classical.Binding.New.Collections {
 
         //#region Constructor
 
-        constructor(...sources: Array<any>) {
-            super();
-            if (sources)
-                sources.query().forEach(source => this.addSource(source));
+        constructor(sources: IEnumerable<any> = []) {
+            super(sources);
         }
 
         //#endregion Constructor
 
         //#region Methods
 
-        create(type: CollectionUpdateType, oldValue?: T, newValue?: T, index?: number) {
+        create(type: CollectionUpdateType, oldValue: T, newValue: T, index: number): CollectionUpdate<T> {
             Assert.isDefined(type, 'A CollectionUpdateType is required');
             this.type = type;
             this.oldValue = oldValue;
             this.newValue = newValue;
             this.index = index;
+            return this;
         }
 
         //#endregion Methods

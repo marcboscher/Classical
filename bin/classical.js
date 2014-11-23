@@ -3506,8 +3506,14 @@ var Classical;
             
 
             var Update = (function () {
-                function Update() {
+                function Update(sources) {
+                    var _this = this;
                     this._sources = [];
+                    Assert.isDefined(sources, "The sources of the update are undefined.");
+                    if (sources)
+                        sources.query().forEach(function (s) {
+                            return _this._sources.add(s);
+                        });
                 }
                 Update.prototype.hasSource = function (source) {
                     var sources = this._sources;
@@ -3521,12 +3527,21 @@ var Classical;
 
                 Update.prototype.addSource = function (source) {
                     Assert.isDefined(source, 'The source is not defined.');
-                    this._sources.add(source);
+                    if (this._sources.query().hasNone(function (s) {
+                        return s === source;
+                    }))
+                        this._sources.add(source);
                 };
 
-                Update.prototype.transferTo = function (update) {
+                Update.prototype.transferSourcesTo = function (update) {
                     Assert.isDefined(update, 'The update is not defined.');
-                    update._sources.addRange(this._sources.slice());
+                    var sources = update._sources.query();
+                    update._sources.addRange(this._sources.query().where(function (s) {
+                        return !sources.hasAny(function (s2) {
+                            return s2 == s;
+                        });
+                    }));
+
                     return update;
                 };
                 return Update;
@@ -3540,13 +3555,13 @@ var Classical;
             
 
             var Synchronizer = (function () {
-                function Synchronizer(source) {
+                function Synchronizer(target) {
                     this._updateDepth = 0;
                     this._updates = [];
                     this._binders = [];
-                    Assert.isDefined(source, 'The source was not specified.');
-                    this._target = source;
-                    this._onUpdateEvent = new e.Event(source);
+                    Assert.isDefined(target, 'The target was not specified.');
+                    this._target = target;
+                    this._onUpdateEvent = new e.Event(target);
                 }
                 Object.defineProperty(Synchronizer.prototype, "target", {
                     get: function () {
@@ -3672,6 +3687,7 @@ var Classical;
                 };
 
                 Synchronizer.prototype.sync = function (immediate) {
+                    var _this = this;
                     if (typeof immediate === "undefined") { immediate = false; }
                     if (!immediate) {
                         this._updateDepth--;
@@ -3692,30 +3708,30 @@ var Classical;
                     };
 
                     this._binders.query().forEach(function (binder) {
-                        var sourceUpdates = [];
                         var converter = binder.converter;
                         if (!converter.convertBack)
                             return;
 
-                        updates.query().forEach(function (update) {
-                            if (!update.hasSource(binder.source)) {
-                                var sourceUpdate = converter.convertBack(update);
-                                update.transferTo(sourceUpdate);
-                                sourceUpdates.add(sourceUpdate);
-                            }
-                        });
+                        var sourceUpdates = updates.query().where(function (update) {
+                            return !update.hasSource(binder.source);
+                        }).forEach(function (update) {
+                            var sourceUpdate = converter.convertBack(update);
+                            update.transferSourcesTo(sourceUpdate);
+                            update.addSource(_this.target);
+                        }).array();
 
                         var sourceGroupUpdate = {
                             binder: binder,
                             updates: sourceUpdates
                         };
 
-                        if (sourceGroupUpdate.updates.query().hasAny())
+                        if (sourceGroupUpdate.updates.query().hasAny()) {
                             groupUpdate.data.add(sourceGroupUpdate);
+                        }
                     });
 
                     if (groupUpdate.data.query().hasAny())
-                        this._runUpdates(groupUpdate);
+                        this._executeUpdates(groupUpdate);
 
                     this._executeOnUpdate(updates.slice());
                 };
@@ -3741,17 +3757,15 @@ var Classical;
                     bindingHandler();
                 };
 
-                Synchronizer.prototype._runUpdates = function (groupUpdate) {
-                    return this._executeUpdates(groupUpdate);
-                };
-
                 Synchronizer.prototype._executeUpdates = function (groupUpdate) {
                     if (groupUpdate.isExecuted)
                         return;
 
                     groupUpdate.data.query().forEach(function (sourceUpdate) {
-                        if (sourceUpdate.updates.query().hasAny())
+                        var sourceUpdateQuery = sourceUpdate.updates.query();
+                        if (sourceUpdateQuery.hasAny()) {
                             sourceUpdate.binder.source.apply(sourceUpdate.updates);
+                        }
                     });
 
                     groupUpdate.isExecuted = true;
@@ -3871,14 +3885,14 @@ var Classical;
                     converter = {
                         convert: function (sourceUpdate) {
                             var value = valueConverter.convert(sourceUpdate.value);
-                            return sourceUpdate.transferTo(new PropertyUpdate(value));
+                            return sourceUpdate.transferSourcesTo(new PropertyUpdate(value));
                         }
                     };
 
                     if (valueConverter.convertBack) {
                         converter.convertBack = function (targetUpdate) {
                             var value = valueConverter.convertBack(targetUpdate.value);
-                            return targetUpdate.transferTo(new PropertyUpdate(value));
+                            return targetUpdate.transferSourcesTo(new PropertyUpdate(value));
                         };
                     }
 
@@ -3965,13 +3979,10 @@ var Classical;
 
             var PropertyUpdate = (function (_super) {
                 __extends(PropertyUpdate, _super);
-                function PropertyUpdate(value) {
-                    var sources = [];
-                    for (var _i = 0; _i < (arguments.length - 1); _i++) {
-                        sources[_i] = arguments[_i + 1];
-                    }
+                function PropertyUpdate(value, sources) {
+                    if (typeof sources === "undefined") { sources = []; }
                     var _this = this;
-                    _super.call(this);
+                    _super.call(this, sources);
                     this.value = value;
                     if (sources)
                         sources.query().forEach(function (source) {

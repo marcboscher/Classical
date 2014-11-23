@@ -53,7 +53,7 @@ module Classical.Binding.New.Spec {
                             second = [],
                             third = new Integer();
 
-                        sourceUpdate.transferTo(targetUpdate);
+                        sourceUpdate.transferSourcesTo(targetUpdate);
                         expect(targetUpdate.hasSource(first)).toBe(false);
                         expect(targetUpdate.hasSource(second)).toBe(false);
                         expect(targetUpdate.hasSource(third)).toBe(false);
@@ -62,7 +62,7 @@ module Classical.Binding.New.Spec {
                         sourceUpdate.addSource(second);
                         sourceUpdate.addSource(third);
 
-                        sourceUpdate.transferTo(targetUpdate);
+                        sourceUpdate.transferSourcesTo(targetUpdate);
                         expect(targetUpdate.hasSource(first)).toBe(true);
                         expect(targetUpdate.hasSource(second)).toBe(true);
                         expect(targetUpdate.hasSource(third)).toBe(true);
@@ -78,7 +78,7 @@ module Classical.Binding.New.Spec {
                         sourceUpdate.addSource(second);
                         sourceUpdate.addSource(third);
 
-                        sourceUpdate.transferTo(targetUpdate)
+                        sourceUpdate.transferSourcesTo(targetUpdate)
                         expect(targetUpdate.hasSource(first)).toBe(true);
                         expect(targetUpdate.hasSource(second)).toBe(true);
                         expect(targetUpdate.hasSource(third)).toBe(true);
@@ -640,8 +640,8 @@ module Classical.Binding.New.Spec {
                         var first = new Integer(0),
                             firstUpdate = new IntegerUpdate(1),
                             secondUpdate = new IntegerUpdate(2),
-                            thirdAppliedUpdate = new IntegerUpdate(3, first),
-                            fourthAppliedUpdate = new IntegerUpdate(4, first),
+                            thirdAppliedUpdate = new IntegerUpdate(3),
+                            fourthAppliedUpdate = new IntegerUpdate(4),
                             updates = [
                                 firstUpdate,
                                 secondUpdate,
@@ -649,7 +649,10 @@ module Classical.Binding.New.Spec {
                                 fourthAppliedUpdate
                             ];
 
+                        thirdAppliedUpdate.addSource(first);
+                        fourthAppliedUpdate.addSource(first);
                         var filteredUpdates = first.synchronizer.filter(updates);
+
                         expect(filteredUpdates.length).toBe(2);
                         expect(filteredUpdates.query().hasAny(u => u.value == firstUpdate.value)).toBe(true);
                         expect(filteredUpdates.query().hasAny(u => u.value == secondUpdate.value)).toBe(true);
@@ -983,11 +986,9 @@ module Classical.Binding.New.Spec {
 
         //#region Constructor
 
-        constructor(value: number = 0, ...sources: Array<any>) {
-            super();
+        constructor(value: number = 0, sources: IEnumerable<any> = []) {
+            super(sources);
             this.value = value;
-            if (sources)
-                sources.query().forEach(source => this.addSource(source));
         }
 
         //#endregion Constructor

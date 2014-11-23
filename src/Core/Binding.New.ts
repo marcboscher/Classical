@@ -35,6 +35,16 @@ module Classical.Binding.New {
 
         //#endregion Fields
 
+        //#region Constructor
+
+        constructor(sources: IEnumerable<any>) {
+            Assert.isDefined(sources, "The sources of the update are undefined.");
+            if (sources)
+                sources.query().forEach(s => this._sources.add(s));
+        }
+
+        //#endregion Constructor
+
         //#region Methods
 
         hasSource(source: any): boolean {
@@ -49,12 +59,18 @@ module Classical.Binding.New {
 
         addSource(source: any): void {
             Assert.isDefined(source, 'The source is not defined.');
-            this._sources.add(source);
+            if (this._sources.query().hasNone(s => s === source))
+                this._sources.add(source);
         }
 
-        transferTo<TUpdate extends Update>(update: TUpdate): TUpdate {
+        transferSourcesTo<TUpdate extends Update>(update: TUpdate): TUpdate {
             Assert.isDefined(update, 'The update is not defined.');
-            (<Update>update)._sources.addRange(this._sources.slice());
+            var sources: IQueryable<any> = update._sources.query();
+            (<Update>update)._sources.addRange(
+                this._sources.query()
+                    .where(s =>
+                        !sources.hasAny(s2 => s2 == s)));
+
             return update;
         }
 
@@ -136,11 +152,11 @@ module Classical.Binding.New {
 
         //#region Constructor
 
-        constructor(source: ISynchronizable<TTargetUpdate>) {
-            Assert.isDefined(source,
-                'The source was not specified.');
-            this._target = source;
-            this._onUpdateEvent = new e.Event(source);
+        constructor(target: ISynchronizable<TTargetUpdate>) {
+            Assert.isDefined(target,
+                'The target was not specified.');
+            this._target = target;
+            this._onUpdateEvent = new e.Event(target);
         }
 
         //#endregion Constructor
@@ -309,30 +325,34 @@ module Classical.Binding.New {
             };
 
             this._binders.query().forEach(binder => {
-                var sourceUpdates: Array<Update> = [];
+               
                 var converter = binder.converter;
                 if (!converter.convertBack)
                     return;
 
-                updates.query().forEach(update => {
-                    if (!update.hasSource(binder.source)) {
+                var sourceUpdates = updates.query()
+                    .where(update => !update.hasSource(binder.source))
+                    .forEach(update => {
                         var sourceUpdate = converter.convertBack(update);
-                        update.transferTo(sourceUpdate);
-                        sourceUpdates.add(sourceUpdate);
-                    }
-                });
+                        update.transferSourcesTo(sourceUpdate);
+                        update.addSource(this.target);
+                }).array();
 
                 var sourceGroupUpdate = {
                     binder: binder,
                     updates: sourceUpdates
                 };
 
-                if (sourceGroupUpdate.updates.query().hasAny())
+                if (sourceGroupUpdate.updates.query().hasAny()) {
                     groupUpdate.data.add(sourceGroupUpdate);
+                }
             });
 
+            //TODO: REMOVE
+            //Assert.isTrue(groupUpdate.data.query().hasAny(d => d.updates[0].hasSource(this.target)));
+
             if (groupUpdate.data.query().hasAny())
-                this._runUpdates(groupUpdate);
+                this._executeUpdates(groupUpdate);
 
             this._executeOnUpdate(updates.slice());
         }
@@ -369,14 +389,6 @@ module Classical.Binding.New {
 
         //#endregion createComplexBinding
 
-        //#region runUpdates
-
-        private _runUpdates(groupUpdate: IGroupUpdate<TTargetUpdate>) {
-            return this._executeUpdates(groupUpdate);
-        }
-
-        //#endregion runUpdates
-
         //#region executeUpdates
 
         private _executeUpdates(groupUpdate: IGroupUpdate<TTargetUpdate>) {
@@ -384,8 +396,10 @@ module Classical.Binding.New {
                 return;
 
             groupUpdate.data.query().forEach(sourceUpdate => {
-                if (sourceUpdate.updates.query().hasAny())
+                var sourceUpdateQuery = sourceUpdate.updates.query();
+                if (sourceUpdateQuery.hasAny()) {
                     sourceUpdate.binder.source.apply(sourceUpdate.updates);
+                }
             });
 
             groupUpdate.isExecuted = true;
@@ -593,7 +607,7 @@ module Classical.Binding.New {
                 convert: sourceUpdate => {
                     var value = valueConverter.convert(
                         (<any>sourceUpdate).value);
-                    return sourceUpdate.transferTo(
+                    return sourceUpdate.transferSourcesTo(
                         new PropertyUpdate(value));
                 },
             };
@@ -602,7 +616,7 @@ module Classical.Binding.New {
                 converter.convertBack = targetUpdate => {
                     var value = valueConverter.convertBack(
                         targetUpdate.value);
-                    return targetUpdate.transferTo(
+                    return targetUpdate.transferSourcesTo(
                         new PropertyUpdate(value));
                 }
             }
@@ -738,8 +752,8 @@ module Classical.Binding.New {
 
     export class PropertyUpdate<TValue> extends Update {
         value: TValue;
-        constructor(value: TValue, ...sources: Array<any>) {
-            super();
+        constructor(value: TValue, sources: IEnumerable<any> = []) {
+            super(sources);
             this.value = value;
             if (sources)
                 sources.query().forEach(source => this.addSource(source));
