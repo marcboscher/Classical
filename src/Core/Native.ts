@@ -49,6 +49,30 @@ module Classical.Native {
         writable: true
     });
 
+    var freeze = Object.freeze;
+    Object.freeze = function (o: any) {
+        if (o && o.getHashCode && !Object.isFrozen(0))
+            o.getHashCode();
+        freeze(o);
+    }
+
+    var stringify = JSON.stringify;
+    JSON.stringify = function (value: any) {
+        var hashCode = null;
+        if (value && value._hashCode) {
+            hashCode = value._hashCode;
+            delete value._hashCode;
+        }
+
+        var result = stringify(value);
+
+        if (hashCode)
+            value._hashCode = hashCode;
+
+        return result;
+
+    }
+
     Object.defineProperty(ObjectPrototype, 'is', {
         value: function (type: Function) {
             var u = Classical.Utilities;

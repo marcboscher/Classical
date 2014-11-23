@@ -41,6 +41,29 @@
             writable: true
         });
 
+        var freeze = Object.freeze;
+        Object.freeze = function (o) {
+            if (o && o.getHashCode && !Object.isFrozen(0))
+                o.getHashCode();
+            freeze(o);
+        };
+
+        var stringify = JSON.stringify;
+        JSON.stringify = function (value) {
+            var hashCode = null;
+            if (value && value._hashCode) {
+                hashCode = value._hashCode;
+                delete value._hashCode;
+            }
+
+            var result = stringify(value);
+
+            if (hashCode)
+                value._hashCode = hashCode;
+
+            return result;
+        };
+
         Object.defineProperty(ObjectPrototype, 'is', {
             value: function (type) {
                 var u = Classical.Utilities;
