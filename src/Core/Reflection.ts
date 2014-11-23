@@ -637,6 +637,9 @@ module Classical.Reflection {
 
                 if (Module._isModule(moduleProperty, modulePropertyName)) {
                     var obj = <Object>moduleProperty;
+                    if (Object.isFrozen(obj))
+                        continue;
+
                     var newModule = modules.getValue(obj);
                     if (newModule === undefined) {
                         newModule = new Module(constructorPassword, modulePropertyName, moduleProperty, this);

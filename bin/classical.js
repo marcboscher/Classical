@@ -43,7 +43,7 @@
 
         var freeze = Object.freeze;
         Object.freeze = function (o) {
-            if (o && o.getHashCode && !Object.isFrozen(0))
+            if (o && o.getHashCode && !Object.isFrozen(o))
                 o.getHashCode();
             freeze(o);
         };
@@ -1067,6 +1067,9 @@ var Classical;
 
                     if (Module._isModule(moduleProperty, modulePropertyName)) {
                         var obj = moduleProperty;
+                        if (Object.isFrozen(obj))
+                            continue;
+
                         var newModule = modules.getValue(obj);
                         if (newModule === undefined) {
                             newModule = new Module(constructorPassword, modulePropertyName, moduleProperty, this);

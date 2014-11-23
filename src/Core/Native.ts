@@ -51,7 +51,7 @@ module Classical.Native {
 
     var freeze = Object.freeze;
     Object.freeze = function (o: any) {
-        if (o && o.getHashCode && !Object.isFrozen(0))
+        if (o && o.getHashCode && !Object.isFrozen(o))
             o.getHashCode();
         freeze(o);
     }
