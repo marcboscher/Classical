@@ -1,14 +1,715 @@
 
 module Classical.Binding.Spec {
 
-    //#region Variables
+    //#region Imports
 
-    var nullConverter = getNullConverter<number>();
+    import u = Classical.Utilities;
+    import e = Classical.Events;
+    import Assert = Classical.Assert;
 
-    //#endregion Variables
+    //#endregion Imports
+
+    //#region Binding
 
     describe('Classical', () => {
         describe('Binding', () => {
+
+            //#region Update
+
+            describe('Update', () => {
+
+                //#region addSource
+
+                describe('addSource', () => {
+                    it('to have the sources that have been added', () => {
+                        var update = new IntegerUpdate(),
+                            first = {},
+                            second = [],
+                            third = new Integer();
+
+                        expect(update.hasSource(first)).toBe(false);
+                        expect(update.hasSource(second)).toBe(false);
+                        expect(update.hasSource(third)).toBe(false);
+
+                        update.addSource(first);
+                        update.addSource(second);
+                        update.addSource(third);
+
+                        expect(update.hasSource(first)).toBe(true);
+                        expect(update.hasSource(second)).toBe(true);
+                        expect(update.hasSource(third)).toBe(true);
+                    });
+                });
+
+                //#endregion addSource
+
+                //#region transferTo
+
+                describe('transferTo', () => {
+                    it('should transfer the sources to the target update', () => {
+                        var sourceUpdate = new IntegerUpdate(),
+                            targetUpdate = new IntegerUpdate(),
+                            first = {},
+                            second = [],
+                            third = new Integer();
+
+                        sourceUpdate.transferSourcesTo(targetUpdate);
+                        expect(targetUpdate.hasSource(first)).toBe(false);
+                        expect(targetUpdate.hasSource(second)).toBe(false);
+                        expect(targetUpdate.hasSource(third)).toBe(false);
+
+                        sourceUpdate.addSource(first);
+                        sourceUpdate.addSource(second);
+                        sourceUpdate.addSource(third);
+
+                        sourceUpdate.transferSourcesTo(targetUpdate);
+                        expect(targetUpdate.hasSource(first)).toBe(true);
+                        expect(targetUpdate.hasSource(second)).toBe(true);
+                        expect(targetUpdate.hasSource(third)).toBe(true);
+                    });
+                    it('should add sources to an update that already has sources', () => {
+                        var sourceUpdate = new IntegerUpdate(),
+                            targetUpdate = new IntegerUpdate(),
+                            first = {},
+                            second = [],
+                            third = new Integer();
+
+                        targetUpdate.addSource(first);
+                        sourceUpdate.addSource(second);
+                        sourceUpdate.addSource(third);
+
+                        sourceUpdate.transferSourcesTo(targetUpdate)
+                        expect(targetUpdate.hasSource(first)).toBe(true);
+                        expect(targetUpdate.hasSource(second)).toBe(true);
+                        expect(targetUpdate.hasSource(third)).toBe(true);
+                    });
+                });
+
+                //#endregion transferTo
+            });
+
+            //#endregion Update
+
+            //#region Synchronizer
+
+            describe('Synchronizer', () => {
+
+                //#region hasSource
+
+                describe('hasSource', () => {
+                    it('should return false for the source and true for the target in one-way binding', () => {
+                        var first = new Integer(0),
+                            second = new Integer(1);
+
+                        bindOneWay(second, first);
+                        expect(first.hasSource(second)).toBe(false);
+                        expect(second.hasSource(first)).toBe(true);
+                    });
+                    it('should return true for the source and true for the target in two-way binding', () => {
+                        var first = new Integer(0),
+                            second = new Integer(1);
+
+                        bindTwoWay(second, first);
+                        expect(first.hasSource(second)).toBe(true);
+                        expect(second.hasSource(first)).toBe(true);
+                    });
+                });
+
+                //#endregion hasSource
+
+                //#region hasTarget
+
+                describe('hasTarget', () => {
+                    it('should return true for the source and false for the target in one-way binding', () => {
+                        var first = new Integer(0),
+                            second = new Integer(1);
+
+                        bindOneWay(second, first);
+                        expect(first.hasTarget(second)).toBe(true);
+                        expect(second.hasTarget(first)).toBe(false);
+                    });
+                    it('should return true for the source and true for the target in two-way binding', () => {
+                        var first = new Integer(0),
+                            second = new Integer(1);
+
+                        bindTwoWay(second, first);
+                        expect(first.hasTarget(second)).toBe(true);
+                        expect(second.hasTarget(first)).toBe(true);
+                    });
+                });
+
+                //#endregion hasTarget
+
+                //#region bind
+
+                describe('bind', () => {
+                    it('should not allow an object to be bound to itself', () => {
+                        var first = new Integer(1);
+                        expect(() => {
+                            first.synchronizer.bind({
+                                source: first
+                            });
+                        }).toThrow();
+                    });
+                    it('should provide two-way binding when a converter is not specified', () => {
+                        var first = new Integer(1),
+                            second = new Integer(2);
+
+                        first.synchronizer.bind({
+                            source: second
+                        });
+
+                        first.value = 1;
+                        expect(first.value).toBe(1);
+                        expect(first.value).toBe(second.value);
+
+                        second.value = 2;
+                        expect(second.value).toBe(2);
+                        expect(second.value).toBe(first.value);
+                    });
+                    it('should provide two-way binding when both converter methods are specified', () => {
+                        var first = new Integer(1),
+                            second = new Integer(2);
+
+                        first.synchronizer.bind({
+                            source: second,
+                            converter: {
+                                convert: update => update,
+                                convertBack: update => update
+                            }
+                        });
+
+                        first.value = 1;
+                        expect(first.value).toBe(1);
+                        expect(first.value).toBe(second.value);
+
+                        second.value = 2;
+                        expect(second.value).toBe(2);
+                        expect(second.value).toBe(first.value);
+                    });
+                    it('should provide one-way binding when one converter method is specified', () => {
+                        var first = new Integer(1),
+                            second = new Integer(2);
+
+                        first.synchronizer.bind({
+                            source: second,
+                            converter: {
+                                convert: update => update
+                            }
+                        });
+
+                        second.value = 2;
+                        expect(second.value).toBe(2);
+                        expect(second.value).toBe(first.value);
+
+                        first.value = 1;
+                        expect(second.value).toBe(2);
+                        expect(first.value).toBe(1);
+                    });
+                    it('should run the init method on the target', () => {
+                        var first = new Integer(1),
+                            second = new Integer(2);
+
+                        expect(first.value).toBe(1);
+
+                        first.synchronizer.bind({
+                            source: second,
+                            init: (target, source) => (<any>target).value = (<any>source).value
+                        });
+
+                        expect(first.value).toBe(second.value);
+                    });
+                    it('should provide complex binding', () => {
+                        var first = new Integer(1),
+                            second = new Integer(2),
+                            sum = new Integer(0);
+
+                        sum.synchronizer.bind({
+                            sources: [first, second],
+                            converter: {
+                                convert: sources => new IntegerUpdate(
+                                    sources.query().sum(s => s.value))
+                            }
+                        });
+
+                        first.value = 3;
+                        second.value = 4;
+                        expect(sum.value).toBe(first.value + second.value);
+                    });
+                    it('should run the initialize the complex binding target', () => {
+                        var first = new Integer(1),
+                            second = new Integer(2),
+                            sum = new Integer(0);
+
+                        expect(sum.value).toBe(0);
+                        expect(first.value + second.value).toBe(1 + 2);
+
+                        sum.synchronizer.bind({
+                            sources: [first, second],
+                            converter: {
+                                convert: sources => new IntegerUpdate(
+                                    sources.query().sum(s => s.value))
+                            }
+                        });
+
+                        expect(sum.value).toBe(first.value + second.value);
+                    });
+                    it('should provide two-way binding for more than two objects', () => {
+                        var first = new Integer(0),
+                            second = new Integer(1),
+                            third = new Integer(2),
+                            fourth = new Integer(3);  
+
+                        bindTwoWay(second, first);
+                        bindTwoWay(third, first);
+                        bindTwoWay(fourth, first);
+                        bindTwoWay(third, second);
+
+                        expectEquality(first, 0);
+
+                        first.value = 1;
+                        expectEquality(first, 1);
+
+                        second.value = 2;
+                        expectEquality(second, 2);
+
+                        third.value = 3;
+                        expectEquality(third, 3);
+
+                        fourth.value = 4;
+                        expectEquality(fourth, 4);
+
+                        function expectEquality(test: Integer, testValue: number) {
+                            expect(test.value).toBe(testValue);
+                            expect(first.value).toBe(second.value);
+                            expect(first.value).toBe(third.value);
+                            expect(first.value).toBe(fourth.value);
+                        }
+                    });
+                    it('should provide one-way binding for more than two objects', () => {
+                        var first = new Integer(0),
+                            second = new Integer(1),
+                            third = new Integer(2),
+                            fourth = new Integer(3);
+
+                        bindOneWay(second, first);
+                        bindOneWay(third, first);
+                        bindOneWay(fourth, first);
+
+                        expectEquality(first, 0);
+
+                        first.value = 1;
+                        expectEquality(first, 1);
+
+                        second.value = 2;
+                        expectInequality(second, 2, 1);
+                        first.value = 1;
+
+                        third.value = 3;
+                        expectInequality(third, 3, 1);
+                        first.value = 1;
+
+                        fourth.value = 4;
+                        expectInequality(fourth, 4, 1);
+                        first.value = 1;
+
+                        first.value = 0;
+                        expectEquality(first, 0);
+
+                        //All objects are affected by the change
+                        function expectEquality(test: Integer, testValue: number) {
+                            expect(test.value).toBe(testValue);
+                            expect(first.value).toBe(second.value);
+                            expect(first.value).toBe(third.value);
+                            expect(first.value).toBe(fourth.value);
+                        }
+
+                        //No object except the modified object are affected by the change
+                        function expectInequality(test: Integer, testValue: number, defaultValue: number) {
+                            expect(test.value).toBe(testValue);
+                            expect(first.value).toBe(defaultValue);
+                            expect(test === second || second.value === defaultValue).toBe(true);
+                            expect(test === third || third.value === defaultValue).toBe(true);
+                            expect(test === fourth || fourth.value === defaultValue).toBe(true);
+                        }
+                    });
+                });
+
+                //#endregion bind
+
+                //#region unbind
+
+                describe('unbind', () => {
+                    it('should prevent the source from updating the target  in one-way binding', () => {
+                        var first = new Integer(0),
+                            second = new Integer(1),
+                            third = new Integer(2);
+
+                        bindOneWay(second, first);
+                        bindOneWay(third, first);
+
+                        expectEquality(0);
+
+                        first.value = 1;
+                        expectEquality(1);
+
+                        first.value = 0;
+                        expectEquality(0);
+
+                        expect(second.unbind(first)).toBe(true);
+                        expect(third.unbind(first)).toBe(true);
+
+                        first.value = 1;
+                        expectInequality(first, 1, 0);
+                        first.value = 0;
+
+                        second.value = 2;
+                        expectInequality(second, 2, 0);
+                        second.value = 0;
+
+                        third.value = 3;
+                        expectInequality(third, 3, 0);
+                        third.value = 0;
+
+                        //All objects are affected by the change
+                        function expectEquality(testValue: number) {
+                            expect(first.value).toBe(testValue);
+                            expect(second.value).toBe(testValue);
+                            expect(third.value).toBe(testValue);
+                        }
+
+                        //No object except the modified object are affected by the change
+                        function expectInequality(test: Integer, testValue: number, defaultValue: number) {
+                            expect(test.value).toBe(testValue);
+                            expect(test === first || first.value === defaultValue).toBe(true);
+                            expect(test === second || second.value === defaultValue).toBe(true);
+                            expect(test === third || third.value === defaultValue).toBe(true);
+                        }
+                    });
+                    it('should prevent the target from updating the source in two-way binding', () => {
+                        var first = new Integer(0),
+                            second = new Integer(1),
+                            third = new Integer(2);
+
+                        bindTwoWay(second, first);
+                        bindTwoWay(third, first);
+
+                        expectEquality(first, 0);
+
+                        second.value = 2;
+                        expectEquality(second, 2);
+
+                        third.value = 3;
+                        expectEquality(third, 3);
+
+                        first.value = 0;
+                        expectEquality(first, 0);
+
+                        first.unbind(second)
+                        first.unbind(third);
+
+                        first.value = 1;
+                        expectInequality(first, 1, 0);
+
+                        //All objects are affected by the change
+                        function expectEquality(test: Integer, testValue: number) {
+                            expect(test.value).toBe(testValue);
+                            expect(first.value).toBe(second.value);
+                            expect(first.value).toBe(third.value);
+                        }
+
+                        //No object except the modified object are affected by the change
+                        function expectInequality(test: Integer, testValue: number, defaultValue: number) {
+                            expect(test.value).toBe(testValue);
+                            expect(test === first || first.value === defaultValue).toBe(true);
+                            expect(test === second || second.value === defaultValue).toBe(true);
+                            expect(test === third || third.value === defaultValue).toBe(true);
+                        }
+                    });
+                });
+
+                //#endregion unbind
+
+                //#region detach
+
+                describe('detach', () => {
+                    it('should prevent the source from updating the target in one-way binding', () => {
+                        var first = new Integer(0),
+                            second = new Integer(1),
+                            third = new Integer(2);
+
+                        bindOneWay(second, first);
+                        bindOneWay(third, first);
+
+                        expectEquality(0);
+
+                        first.value = 1;
+                        expectEquality(1);
+
+                        first.value = 0;
+                        expectEquality(0);
+
+                        first.detach();
+
+                        first.value = 1;
+                        expectInequality(first, 1, 0);
+                        first.value = 0;
+
+                        second.value = 2;
+                        expectInequality(second, 2, 0);
+                        second.value = 0;
+
+                        third.value = 3;
+                        expectInequality(third, 3, 0);
+                        third.value = 0;
+
+                        //All objects are affected by the change
+                        function expectEquality(testValue: number) {
+                            expect(first.value).toBe(testValue);
+                            expect(second.value).toBe(testValue);
+                            expect(third.value).toBe(testValue);
+                        }
+
+                        //No object except the modified object are affected by the change
+                        function expectInequality(test: Integer, testValue: number, defaultValue: number) {
+                            expect(test.value).toBe(testValue);
+                            expect(test === first || first.value === defaultValue).toBe(true);
+                            expect(test === second || second.value === defaultValue).toBe(true);
+                            expect(test === third || third.value === defaultValue).toBe(true);
+                        }
+                    });
+                    it('should prevent the target from updating the source in two-way binding', () => {
+                        var first = new Integer(0),
+                            second = new Integer(1),
+                            third = new Integer(2);
+
+                        bindTwoWay(second, first);
+                        bindTwoWay(third, first);
+
+                        expectEquality(first, 0);
+
+                        second.value = 2;
+                        expectEquality(second, 2);
+
+                        third.value = 3;
+                        expectEquality(third, 3);
+
+                        first.value = 0;
+                        expectEquality(first, 0);
+
+                        first.detach();
+
+                        first.value = 1;
+                        expectInequality(first, 1, 0);
+
+                        //All objects are affected by the change
+                        function expectEquality(test: Integer, testValue: number) {
+                            expect(test.value).toBe(testValue);
+                            expect(first.value).toBe(second.value);
+                            expect(first.value).toBe(third.value);
+                        }
+
+                        //No object except the modified object are affected by the change
+                        function expectInequality(test: Integer, testValue: number, defaultValue: number) {
+                            expect(test.value).toBe(testValue);
+                            expect(test === first || first.value === defaultValue).toBe(true);
+                            expect(test === second || second.value === defaultValue).toBe(true);
+                            expect(test === third || third.value === defaultValue).toBe(true);
+                        }
+                    });
+                });
+
+                //#endregion unbind
+
+                //#region observe
+
+                describe('observe', () => {
+                    it('should be triggered on update for two-way binding', () => {
+                        var first = new Integer(0),
+                            second = new Integer(0),
+                            executed = false;
+
+                        bindTwoWay(second, first);
+                        second.observe(updates => {
+                            expect(updates.length).toBe(1);
+                            expect(updates.query().single().value).toBe(second.value);
+                            executed = true
+                        });
+
+                        expect(executed).toBe(false);
+                        first.value = 1;
+                        expect(second.value).toBe(first.value);
+                        expect(executed).toBe(true)
+                        executed = false;
+
+                        expect(executed).toBe(false);
+                        second.value = 2;
+                        expect(second.value).toBe(first.value);
+                        expect(executed).toBe(true)
+                        executed = false;
+                    });
+                    it('should be triggered on update for one-way binding', () => {
+                        var first = new Integer(0),
+                            second = new Integer(0),
+                            executed = false;
+
+                        bindOneWay(second, first);
+                        second.observe(updates => {
+                            expect(updates.length).toBe(1);
+                            expect(updates.query().single().value).toBe(second.value);
+                            executed = true
+                        });
+
+                        expect(executed).toBe(false);
+                        first.value = 1;
+                        expect(second.value).toBe(first.value);
+                        expect(executed).toBe(true)
+                        executed = false;
+
+                        var firstValue = first.value;
+                        expect(executed).toBe(false);
+                        second.value = 2;
+                        expect(first.value).toBe(firstValue);
+                        expect(executed).toBe(true)
+                        executed = false;
+                    });
+                    it('should not be triggered during bracketed calls to sync', () => {
+                        var first = new Integer(0),
+                            second = new Integer(0),
+                            executed = false;
+
+                        bindOneWay(second, first);
+                        second.observe(updates => {
+                            expect(updates.length).toBe(1);
+                            expect(updates.query().single().value).toBe(second.value);
+                            executed = true
+                        });
+
+                        var secondValue = second.value;
+                        expect(executed).toBe(false);
+                        first.synchronizer.syncStart();
+                        first.value = 1;
+                        expect(second.value).toBe(secondValue);
+                        expect(executed).toBe(false)
+
+                        first.synchronizer.sync();
+
+                        expect(second.value).toBe(first.value);
+                        expect(executed).toBe(true);
+                    });
+                });
+
+                //#endregion observe
+
+                //#region syncStart
+
+                describe('syncStart', () => {
+                    it('should delay the update until sync is called manually', () => {
+                        var first = new Integer(0),
+                            second = new Integer(0);
+
+                        bindOneWay(second, first);
+
+                        expect(first.synchronizer.updateDepth).toBe(0);
+                        first.synchronizer.syncStart();
+                        expect(first.synchronizer.updateDepth).toBe(1);
+                        first.synchronizer.syncStart();
+                        expect(first.synchronizer.updateDepth).toBe(2);
+
+                        var secondValue = second.value;
+                        first.value = 1;
+                        expect(second.value).toBe(secondValue);
+
+                        expect(first.synchronizer.updateDepth).toBe(1);
+                        first.synchronizer.sync();
+                        expect(second.value).toBe(secondValue);
+                        expect(first.synchronizer.updateDepth).toBe(0);
+                        first.synchronizer.sync();
+                        expect(first.synchronizer.updateDepth).toBe(0);
+
+                        expect(second.value).toBe(first.value);
+                    });
+                });
+
+                //#endregion syncStart
+
+                //#region filter
+
+                describe('filter', () => {
+                    it('should remove all updates that have already been applied to the source', () => {
+                        var first = new Integer(0),
+                            firstUpdate = new IntegerUpdate(1),
+                            secondUpdate = new IntegerUpdate(2),
+                            thirdAppliedUpdate = new IntegerUpdate(3),
+                            fourthAppliedUpdate = new IntegerUpdate(4),
+                            updates = [
+                                firstUpdate,
+                                secondUpdate,
+                                thirdAppliedUpdate,
+                                fourthAppliedUpdate
+                            ];
+
+                        thirdAppliedUpdate.addSource(first);
+                        fourthAppliedUpdate.addSource(first);
+                        var filteredUpdates = first.synchronizer.filter(updates);
+
+                        expect(filteredUpdates.length).toBe(2);
+                        expect(filteredUpdates.query().hasAny(u => u.value == firstUpdate.value)).toBe(true);
+                        expect(filteredUpdates.query().hasAny(u => u.value == secondUpdate.value)).toBe(true);
+                    });
+                });
+
+                //#endregion filter
+
+                //#region add
+
+                describe('add', () => {
+                    it('should insert an update into the synchronizer', () => {
+                        var first = new Integer(0),
+                            update = new IntegerUpdate(1);
+
+                        expect(first.synchronizer.updates.length).toBe(0);
+                        first.synchronizer.add(update);
+                        expect(first.synchronizer.updates.length).toBe(1);
+
+                    });
+                });
+
+                //#endregion filter
+
+                //#region Utilities
+
+                function bindOneWay(target: Integer, source: Integer) {
+                    target.synchronizer.bind({
+                        source: source,
+                        converter: {
+                            convert: update => update,
+                        },
+                        init: (target, source) => {
+                            target.as<Integer>().value =
+                            source.as<Integer>().value;
+                        }
+                    });
+                }
+
+                function bindTwoWay(target: Integer, source: Integer) {
+                    target.synchronizer.bind({
+                        source: source,
+                        converter: {
+                            convert: update => update,
+                            convertBack: update => update
+                        },
+                        init: (target, source) => {
+                            target.as<Integer>().value =
+                            source.as<Integer>().value;
+                        }
+                    });
+                }
+
+                //#endregion Utilities
+            });
+
+            //#endregion Synchronizer
 
             //#region Property
 
@@ -17,872 +718,400 @@ module Classical.Binding.Spec {
                 //#region value
 
                 describe('value', () => {
-                    it('should return the value of the property', () => {
-                        var property = new Property<any, number>({}, 1);
+                    it('should get the value of the property', () => {
+                        var property = new Property(1);
                         expect(property.value).toBe(1);
                     });
-                    it('should call the specified getter', () => {
-                        var property = new Property<any, number>({}, 1, value => value + 1);
+                    it('should set the value of the property', () => {
+                        var property = new Property(1);
+                        property.value = 2;
                         expect(property.value).toBe(2);
                     });
-                    it('should call the specified setter', () => {
-                        var property = new Property<any, number>({}, 0, null, value => value + 1);
-                        property.value = 1;
+                    it('should update a bound property when set', () => {
+                        var property = new Property(1),
+                            target = new Property(0);
 
-                        expect(property.value).toBe(2);
-                    });
-                    it('should call propertyChanged when the value is changed', () => {
-                        var property = new Property<any, number>({}, 1),
-                            changed = false,
-                            newValue: number;
-
-                        property.propertyChanged.subscribe((host?, value?) => {
-                            changed = true;
-                            newValue = value;
-                        });
+                        target.bind(property);
 
                         property.value = 2;
-                        expect(changed).toBe(true);
-                        expect(newValue).toBe(2);
-                    });
-                    it('should not call propertyChanged when the value remains the same', () => {
-                        var property = new Property<any, number>({}, 1),
-                            changed = false;
-
-                        property.propertyChanged.subscribe((host?, value?) => {
-                            changed = true;
-                        });
-
-                        property.value = 1;
-                        expect(changed).toBe(false);
+                        expect(property.value).toBe(2);
+                        expect(target.value).toBe(2);
                     });
                 });
 
                 //#endregion value
 
-                //#region name
+                //#region bind
 
-                describe('name', () => {
-                    it('should return the name of the property on the owner', () => {
-                        var owner: any = {};
-                        owner.property = new Property<any, number>(owner, 1);
-                        expect(owner.property.name).toBe('property');
+                describe('bind', () => {
+                    it('should provide two-way binding when another property is passed as the argument', () => {
+                        var source = new Property(0),
+                            target = new Property(-1);
+
+                        target.bind(source);
+                        expect(target.value).toBe(0);
+
+                        source.value = 1;
+                        expect(target.value).toBe(1);
+
+                        target.value = 2;
+                        expect(source.value).toBe(2);
                     });
-                    it('should be undefined when the property cannot be found on the owner.', () => {
-                        var owner = {},
-                            property = new Property<any, number>(owner, 1);
+                    it('should provide complex one-way binding when multiple sources and a selector are passed as the arguments', () => {
+                        var source1 = new Property(1),
+                            source2 = new Property(1),
+                            source3 = new Property(1),
+                            source4 = new Property(1),
+                            target = new Property(-1);
 
-                        expect(property.name).toBe(undefined);
+                        target.bind([source1, source2, source3, source4],
+                            sources => sources.query().sum(s => s.value));
+
+                        expect(target.value).toBe(4);
+
+                        source1.value = 0;
+                        expect(target.value).toBe(3);
+
+                        source2.value = 0;
+                        expect(target.value).toBe(2);
+
+                        source3.value = 0;
+                        expect(target.value).toBe(1);
+
+                        source4.value = 0;
+                        expect(target.value).toBe(0);
+                    });
+                    it('should provide two-way binding when a PropertyBinder is passed as the argument', () => {
+                        var source = new Property(0),
+                            target = new Property(-1);
+
+                        target.bind({
+                            property: source,
+                            converter: {
+                                convert: x => x,
+                                convertBack: x => x
+                            }
+                        });
+                        expect(target.value).toBe(0);
+
+                        source.value = 1;
+                        expect(target.value).toBe(1);
+
+                        target.value = 2;
+                        expect(source.value).toBe(2);
+                    });
+                    it('should provide two-way binding when both converter methods are specified', () => {
+                        var first = new Property(1),
+                            second = new Property(2);
+
+                        first.bind({
+                            source: second,
+                            converter: {
+                                convert: update => update,
+                                convertBack: update => update
+                            }
+                        });
+
+                        first.value = 1;
+                        expect(first.value).toBe(1);
+                        expect(first.value).toBe(second.value);
+
+                        second.value = 2;
+                        expect(second.value).toBe(2);
+                        expect(second.value).toBe(first.value);
+                    });
+                    it('should provide one-way binding when one converter method is specified', () => {
+                        var first = new Property(1),
+                            second = new Property(2);
+
+                        first.bind({
+                            source: second,
+                            converter: {
+                                convert: update => update
+                            }
+                        });
+
+                        second.value = 2;
+                        expect(second.value).toBe(2);
+                        expect(second.value).toBe(first.value);
+
+                        first.value = 1;
+                        expect(second.value).toBe(2);
+                        expect(first.value).toBe(1);
+                    });
+                    it('should run the init method on the target', () => {
+                        var first = new Property(1),
+                            second = new Property(2);
+
+                        expect(first.value).toBe(1);
+
+                        first.bind({
+                            source: second,
+                            init: (target, source) => (<any>target).value = (<any>source).value
+                        });
+
+                        expect(first.value).toBe(second.value);
+                    });
+                    it('should provide complex binding', () => {
+                        var first = new Property(1),
+                            second = new Property(2),
+                            sum = new Property(0);
+
+                        sum.bind({
+                            sources: [first, second],
+                            converter: {
+                                convert: sources => new IntegerUpdate(
+                                    sources.query().sum(s => s.value))
+                            }
+                        });
+
+                        first.value = 3;
+                        second.value = 4;
+                        expect(sum.value).toBe(first.value + second.value);
                     });
                 });
 
-                //#endregion name
+                //#endregion bind
             });
 
             //#endregion Property
 
-            //#region PropertyBinder
+            //#region ConfirmationProperty
 
-            describe('PropertyBinder', () => {
+            describe('ConfirmationProperty', () => {
 
-                //#region bind
+                describe('newValue', () => {
+                    it('should contain the value of the pending change.', () => {
+                        var first = new ConfirmationProperty(1);
+                        var second = new ConfirmationProperty(2);
+                        first.bind(second);
 
-                describe('bind', () => {
-                    it('should update the target when the source is bound one way and changes', () => {
-                        var source = new Property<any, number>({}, 1);
-                        var target = new Property<any, number>({}, source.value);
-                        var binder = new PropertyBinder<number, number>(source, nullConverter, BindingType.OneWay);
+                        expect(first.value).toBe(1);
+                        expect(first.newValue).toBe(2);
+                        first.accept();
+                        expect(first.value).toBe(2);
+                        expect(first.newValue).toBe(2);
 
-                        binder.target = target;
-                        binder.bind();
+                        second.value = 0;
+                        second.accept();
 
-                        source.value = 2;
-                        expect(target.value).toBe(2);
-                    });
-                    it('should update the target when the source is bound two way and changes', () => {
-                        var source = new Property<any, number>({}, 1);
-                        var target = new Property<any, number>({}, source.value);
-                        var binder = new PropertyBinder<number, number>(source, nullConverter, BindingType.TwoWay);
+                        expect(first.value).toBe(2);
+                        expect(first.newValue).toBe(0);
+                        first.reject();
+                        expect(first.value).toBe(2);
+                        expect(first.newValue).toBe(2);
 
-                        binder.target = target;
-                        binder.bind();
+                        second.value = 0;
+                        second.accept();
 
-                        source.value = 2;
-                        expect(target.value).toBe(2);
-                    });
-                    it('should update the source when the target is bound two way and changes', () => {
-                        var source = new Property<any, number>({}, 1);
-                        var target = new Property<any, number>({}, source.value);
-                        var binder = new PropertyBinder<number, number>(source, nullConverter, BindingType.TwoWay);
-
-                        binder.target = target;
-                        binder.bind();
-
-                        target.value = 2;
-                        expect(source.value).toBe(2);
-                    });
-                    it('should use the converter to convert from the source to the target', () => {
-                        var source = new Property<any, number>({}, 1);
-                        var target = new Property<any, string>({}, source.value.toString());
-                        var binder = new PropertyBinder<number, string>(source, {
-                            convert: value => value.toString(),
-                            convertBack: value => +value
-                        }, BindingType.TwoWay);
-
-                        binder.target = target;
-                        binder.bind();
-
-                        source.value = 2;
-                        expect(target.value).toBe('2');
-                    });
-                    it('should use the converter to convert from the target to the source', () => {
-                        var source = new Property<any, number>({}, 1);
-                        var target = new Property<any, string>({}, source.value.toString());
-                        var binder = new PropertyBinder<number, string>(source, {
-                            convert: value => value.toString(),
-                            convertBack: value => +value
-                        }, BindingType.TwoWay);
-
-                        binder.target = target;
-                        binder.bind();
-
-                        target.value = '2';
-                        expect(source.value).toBe(2);
+                        expect(first.value).toBe(2);
+                        expect(first.newValue).toBe(0);
+                        first.accept();
+                        expect(first.value).toBe(0);
+                        expect(first.newValue).toBe(0);
                     });
                 });
 
-                //#endregion bind
+                describe('accept', () => {
+                    it('should only update the value when accept is called.', () => {
+                        var first = new ConfirmationProperty(1);
+                        var second = new ConfirmationProperty(2);
+                        first.bind(second);
+
+                        expect(first.value).toBe(1);
+                        first.accept();
+                        expect(first.value).toBe(2);
+
+                        second.value = 0;
+                        second.accept();
+
+                        expect(first.value).toBe(2);
+                        first.accept();
+                        expect(first.value).toBe(0);
+                    });
+                });
+
+                describe('reject', () => {
+                    it('should keep the original value when reject is called.', () => {
+                        var first = new ConfirmationProperty(1);
+                        var second = new ConfirmationProperty(2);
+                        first.bind(second);
+
+                        expect(first.value).toBe(1);
+                        first.reject();
+                        expect(first.value).toBe(1);
+
+                        second.value = 0;
+                        second.accept();
+
+                        expect(first.value).toBe(1);
+                        first.reject();
+                        expect(first.value).toBe(1);
+                    });
+                });
             });
 
-            //#endregion PropertyBinder
-
-            //#region SimplePropertyBinder
-
-            describe('SimplePropertyBinder', () => {
-
-                //#region bind
-
-                describe('bind', () => {
-                    it('should update the target when the source is bound one way and changes', () => {
-                        var source = new Property<any, number>({}, 1);
-                        var target = new Property<any, number>({}, source.value);
-                        var binder = new SimplePropertyBinder<number>(source, BindingType.OneWay);
-
-                        binder.target = target;
-                        binder.bind();
-
-                        source.value = 2;
-                        expect(target.value).toBe(2);
-                    });
-                    it('should update the target when the source is bound two way and changes', () => {
-                        var source = new Property<any, number>({}, 1);
-                        var target = new Property<any, number>({}, source.value);
-                        var binder = new SimplePropertyBinder<number>(source, BindingType.TwoWay);
-
-                        binder.target = target;
-                        binder.bind();
-
-                        source.value = 2;
-                        expect(target.value).toBe(2);
-                    });
-                    it('should update the source when the target is bound two way and changes', () => {
-                        var source = new Property<any, number>({}, 1);
-                        var target = new Property<any, number>({}, source.value);
-                        var binder = new SimplePropertyBinder<number>(source, BindingType.TwoWay);
-
-                        binder.target = target;
-                        binder.bind();
-
-                        target.value = 2;
-                        expect(source.value).toBe(2);
-                    });
-                });
-
-                //#endregion bind
-            });
-
-            //#endregion SimplePropertyBinder
-
-            //#region ObjectBinder
-
-            describe('ObjectBinder', () => {
-
-                //#region bind
-
-                describe('bind', () => {
-                    it('should update the target when the source is bound one way and changes', () => {
-                        var source = new Notifier();
-                        var target = new Property<any, number>({}, source.property);
-                        var binder = new ObjectBinder<number, number>(source, 'property', nullConverter, BindingType.OneWay);
-
-                        binder.target = target;
-                        binder.bind();
-
-                        source.property = 2;
-                        expect(target.value).toBe(2);
-                    });
-                    it('should update the target when the source is bound two way and changes', () => {
-                        var source = new Notifier();
-                        var target = new Property<any, number>({}, source.property);
-                        var binder = new ObjectBinder<number, number>(source, 'property', nullConverter, BindingType.TwoWay);
-
-                        binder.target = target;
-                        binder.bind();
-
-                        source.property = 2;
-                        expect(target.value).toBe(2);
-                    });
-                    it('should update the source when the target is bound two way and changes', () => {
-                        var source = new Notifier();
-                        var target = new Property<any, number>({}, source.property);
-                        var binder = new ObjectBinder<number, number>(source, 'property', nullConverter, BindingType.TwoWay);
-
-                        binder.target = target;
-                        binder.bind();
-
-                        target.value = 2;
-                        expect(source.property).toBe(2);
-                    });
-                    it('should use the converter to convert from the source to the target', () => {
-                        var source = new Notifier();
-                        var target = new Property<any, string>({}, source.property.toString());
-                        var binder = new ObjectBinder<number, string>(source, 'property', {
-                            convert: value => value.toString(),
-                            convertBack: value => +value
-                        }, BindingType.TwoWay);
-
-                        binder.target = target;
-                        binder.bind();
-
-                        source.property = 2;
-                        expect(target.value).toBe('2');
-                    });
-                    it('should use the converter to convert from the target to the source', () => {
-                        var source = new Notifier();
-                        var target = new Property<any, string>({}, source.property.toString());
-                        var binder = new ObjectBinder<number, string>(source, 'property', {
-                            convert: value => value.toString(),
-                            convertBack: value => +value
-                        }, BindingType.TwoWay);
-
-                        binder.target = target;
-                        binder.bind();
-
-                        target.value = '2';
-                        expect(source.property).toBe(2);
-                    });
-                });
-
-                //#endregion bind
-            });
-
-            //#endregion ObjectBinder
-
-            //#region SimpleObjectBinder
-
-            describe('SimpleObjectBinder', () => {
-
-                //#region bind
-
-                describe('bind', () => {
-                    it('should update the target when the source is bound one way and changes', () => {
-                        var source = new Notifier();
-                        var target = new Property<any, number>({}, source.property);
-                        var binder = new SimpleObjectBinder<number>(source, 'property', BindingType.OneWay);
-
-                        binder.target = target;
-                        binder.bind();
-
-                        source.property = 2;
-                        expect(target.value).toBe(2);
-                    });
-                    it('should update the target when the source is bound two way and changes', () => {
-                        var source = new Notifier();
-                        var target = new Property<any, number>({}, source.property);
-                        var binder = new SimpleObjectBinder<number>(source, 'property', BindingType.TwoWay);
-
-                        binder.target = target;
-                        binder.bind();
-
-                        source.property = 2;
-                        expect(target.value).toBe(2);
-                    });
-                    it('should update the source when the target is bound two way and changes', () => {
-                        var source = new Notifier();
-                        var target = new Property<any, number>({}, source.property);
-                        var binder = new SimpleObjectBinder<number>(source, 'property', BindingType.TwoWay);
-
-                        binder.target = target;
-                        binder.bind();
-
-                        target.value = 2;
-                        expect(source.property).toBe(2);
-                    });
-                });
-
-                //#endregion bind
-            });
-
-            //#endregion SimpleObjectBinder
-
-            //#region Collection
-
-            describe('Collection', () => {
-
-                //#region add
-
-                describe('add', () => {
-                    it('should add an element to the end of an collection', () => {
-                        var collection = new Collection<number>([]);
-                        collection.add(0).add(1);
-
-                        expect(collection.count()).toBe(2);
-                        expect(collection.get(0)).toBe(0);
-                        expect(collection.get(1)).toBe(1);
-                    });
-                    it('should notify that an element has been added', () => {
-                        var collection = new Collection<number>([]),
-                            newItem = null,
-                            newIndex = null;
-
-                        collection.collectionChanged.subscribe((c, args) => {
-                            expect(args.action).toBe(CollectionAction.Add);
-                            newItem = args.newItem;
-                            newIndex = args.newIndex;
-                        });
-
-                        collection.add(0);
-                        expect(newItem).toBe(collection.get(0));
-                        expect(newIndex).toBe(0);
-
-                        collection.add(1);
-                        expect(newItem).toBe(collection.get(1));
-                        expect(newIndex).toBe(1);
-                    });
-                } );
-
-                //#endregion add
-
-                //#region addRange
-
-                describe('addRange', () => {
-                    it('should add a sequence of elements to the end of a collection', () => {
-                        var collection = new Collection<number>([]);
-                        collection.addRange([0, 1]);
-
-                        expect(collection.count()).toBe(2);
-                        expect(collection.get(0)).toBe(0);
-                        expect(collection.get(1)).toBe(1);
-                    });
-
-                } );
-
-                //#endregion add
-
-                //#region remove
-
-                describe('remove', () => {
-                    it('should remove all elements in the collection that match the specified element', () => {
-                        var collection = new Collection([0, 2, 1, 2]);
-                        collection.remove(2);
-
-                        expect(collection.count()).toBe(2);
-                        expect(collection.get(0)).toBe(0);
-                        expect(collection.get(1)).toBe(1);
-                    });
-                    it('should not remove any elements when the element is not found in the collection', () => {
-                        var collection = new Collection([0, 1]);
-                        collection.remove(3);
-
-                        expect(collection.count()).toBe(2);
-                        expect(collection.get(0)).toBe(0);
-                        expect(collection.get(1)).toBe(1);
-                    });
-                    it('should notify that an element has been removed', () => {
-                        var collection = new Collection<number>([1, 2]),
-                            oldItem = null,
-                            oldIndex = null;
-
-                        collection.collectionChanged.subscribe((c, args) => {
-                            expect(args.action).toBe(CollectionAction.Remove);
-                            oldItem = args.oldItem;
-                            oldIndex = args.oldIndex;
-                        });
-
-                        collection.remove(2);
-                        expect(oldItem).toBe(2);
-                        expect(oldIndex).toBe(1);
-
-                        collection.remove(1);
-                        expect(oldItem).toBe(1);
-                        expect(oldIndex).toBe(0);
-                    });
-                });
-
-                //#endregion remove
-
-                //#region removeAt
-
-                describe('removeAt', () => {
-                    it('should remove the element at the specified index', () => {
-                        var collection = new Collection([0, 5, 1]);
-                        collection.removeAt(1);
-
-                        expect(collection.count()).toBe(2);
-                        expect(collection.get(0)).toBe(0);
-                        expect(collection.get(1)).toBe(1);
-                    });
-                    it('should throw an exception when the index is out of bounds', () => {
-                        var collection = new Collection([0, 1]);
-                        expect(() => collection.removeAt(-1)).toThrow();
-                        expect(() => collection.removeAt(3)).toThrow();
-                    });
-                    it('should notify that an element has been removed', () => {
-                        var collection = new Collection<number>([0, 5, 1]),
-                            oldItem = null,
-                            oldIndex = null;
-
-                        collection.collectionChanged.subscribe((c, args) => {
-                            expect(args.action).toBe(CollectionAction.Remove);
-                            oldItem = args.oldItem;
-                            oldIndex = args.oldIndex;
-                        });
-
-                        collection.removeAt(1);
-                        expect(oldItem).toBe(5);
-                        expect(oldIndex).toBe(1);
-
-                        collection.removeAt(0);
-                        expect(oldItem).toBe(0);
-                        expect(oldIndex).toBe(0);
-                    });
-                });
-
-                //#endregion removeAt
-
-                //#region clear
-
-                describe('clear', () => {
-                    it('should remove all elements from the collection', () => {
-                        var collection = new Collection([0, 1, 2]);
-                        collection.clear();
-
-                        expect(collection.count()).toBe(0);
-                    });
-                });
-
-                //#endregion clear
-
-                //#region get
-
-                describe('get', () => {
-                    it('should get the element from the specified index', () => {
-                        var collection = new Collection([0, 1, 2]);
-
-                        expect(collection.get(0)).toBe(0);
-                        expect(collection.get(1)).toBe(1);
-                        expect(collection.get(2)).toBe(2);
-                    });
-                });
-
-                //#endregion get
-
-                //#region set
-
-                describe('set', () => {
-                    it('should set the element at the specified index to the specified value', () => {
-                        var collection = new Collection([0, 1, 2]);
-                        collection
-                            .set(0, 2)
-                            .set(1, 1)
-                            .set(2, 0);
-
-                        expect(collection.get(0)).toBe(2);
-                        expect(collection.get(1)).toBe(1);
-                        expect(collection.get(2)).toBe(0);
-                    });
-                });
-
-                //#endregion get
-
-                //#region bindingOff
-
-                describe('bindingOff', () => {
-                    it('should prevent updates.', () => {
-                        var collection: Collection<number>,
-                            wasCalled: boolean;
-
-                        collection = new Collection<number>();
-                        collection.collectionChanged.subscribe(() => {
-                            wasCalled = true;
-                        });
-
-                        wasCalled = false;
-                        collection.set(0, 1);
-                        expect(wasCalled).toBe(true);
-
-                        wasCalled = false;
-                        collection.add(2);
-                        expect(wasCalled).toBe(true);
-
-                        wasCalled = false;
-                        collection.remove(2);
-                        expect(wasCalled).toBe(true);
-
-                        wasCalled = false;
-                        collection.removeAt(0);
-                        expect(wasCalled).toBe(true);
-
-                        collection.clear();
-                        collection.bindingOff();
-
-                        wasCalled = false;
-                        collection.set(0, 1);
-                        expect(wasCalled).toBe(false);
-
-                        wasCalled = false;
-                        collection.add(2);
-                        expect(wasCalled).toBe(false);
-
-                        wasCalled = false;
-                        collection.remove(2);
-                        expect(wasCalled).toBe(false);
-
-                        wasCalled = false;
-                        collection.removeAt(0);
-                        expect(wasCalled).toBe(false);
-                    });
-                });
-
-                //#endregion bindingOff
-
-                //#region bindingOn
-
-                describe('bindingOn', () => {
-                    it('should enable updates.', () => {
-                        var collection: Collection<number>,
-                            wasCalled: boolean;
-
-                        collection = new Collection<number>();
-                        collection.collectionChanged.subscribe(() => {
-                            wasCalled = true;
-                        });
-
-                        collection.bindingOff();
-
-                        wasCalled = false;
-                        collection.set(0, 1);
-                        expect(wasCalled).toBe(false);
-
-                        wasCalled = false;
-                        collection.add(2);
-                        expect(wasCalled).toBe(false);
-
-                        wasCalled = false;
-                        collection.remove(2);
-                        expect(wasCalled).toBe(false);
-
-                        wasCalled = false;
-                        collection.removeAt(0);
-                        expect(wasCalled).toBe(false);
-
-
-                        collection.clear();
-                        collection.bindingOn();
-
-                        wasCalled = false;
-                        collection.set(0, 1);
-                        expect(wasCalled).toBe(true);
-
-                        wasCalled = false;
-                        collection.add(2);
-                        expect(wasCalled).toBe(true);
-
-                        wasCalled = false;
-                        collection.remove(2);
-                        expect(wasCalled).toBe(true);
-
-                        wasCalled = false;
-                        collection.removeAt(0);
-                        expect(wasCalled).toBe(true);
-                    });
-                });
-
-                //#endregion bindingOn
-            });
-
-            //#endregion Collection
-
-            //#region CollectionBinder
-
-            describe('CollectionBinder', () => {
-
-                //#region bind
-
-                describe('bind', () => {
-                    it('should update the target when the source is bound one way and an element is added', () => {
-                        var source = new Collection([1, 2, 3]),
-                            target = new Collection([1, 2, 3]),
-                            binder = new CollectionBinder(source, nullConverter, BindingType.OneWay);
-
-                        binder.target = target;
-                        binder.bind();
-
-                        source.add(4);
-                        expect(target.count()).toBe(source.count());
-                        expect(target.get(3)).toBe(source.get(3));
-                    });
-                    it('should update the target when the source is bound one way and an element is removed', () => {
-                        var source = new Collection([1, 2, 4, 3, 4]),
-                            target = new Collection([1, 2, 4, 3, 4]),
-                            binder = new CollectionBinder(source, nullConverter, BindingType.OneWay);
-
-                        binder.target = target;
-                        binder.bind();
-
-                        source.remove(4);
-                        expect(target.count()).toBe(source.count());
-                        expect(target.get(0)).toBe(1);
-                        expect(target.get(1)).toBe(2);
-                        expect(target.get(2)).toBe(3);
-                    });
-                    it('should update the target when the source is bound two way and an element is added', () => {
-                        var source = new Collection([1, 2, 3]),
-                            target = new Collection([1, 2, 3]),
-                            binder = new CollectionBinder(source, nullConverter, BindingType.TwoWay);
-
-                        binder.target = target;
-                        binder.bind();
-
-                        source.add(4);
-                        expect(target.count()).toBe(source.count());
-                        expect(target.get(3)).toBe(source.get(3));
-                    });
-                    it('should update the source when the target is bound two way and an element is added', () => {
-                        var source = new Collection([1, 2, 3]),
-                            target = new Collection([1, 2, 3]),
-                            binder = new CollectionBinder(source, nullConverter, BindingType.TwoWay);
-
-                        binder.target = target;
-                        binder.bind();
-
-                        target.add(4);
-                        expect(source.count()).toBe(target.count());
-                        expect(source.get(3)).toBe(target.get(3));
-                    });
-                    it('should update the source when the target is bound two way and an element is removed', () => {
-                        var source = new Collection([1, 2, 4, 3, 4]),
-                            target = new Collection([1, 2, 4, 3, 4]),
-                            binder = new CollectionBinder(source, nullConverter, BindingType.TwoWay);
-
-                        binder.target = target;
-                        binder.bind();
-
-                        target.remove(4);
-                        expect(source.count()).toBe(target.count());
-                        expect(source.get(0)).toBe(1);
-                        expect(source.get(1)).toBe(2);
-                        expect(source.get(2)).toBe(3);
-                    });
-                });
-
-                //#endregion bind
-            });
-
-            //#endregion CollectionBinder
+            //#endregion ConfirmationProperty
         });
     });
 
-    //#region bind
-
-    describe('bind', () => {
-        it('should return a PropertyBinder when given a Property instance.', () => {
-            var property = new Property(0, 0),
-                binder: IBinder<number>,
-                converter = getNullConverter<number>();
-
-            binder = bind(property);
-            expect(binder.is(PropertyBinder)).toBe(true);
-
-            binder = bind(property, BindingType.OneWay);
-            expect(binder.is(PropertyBinder)).toBe(true);
-
-            binder = bind(property, nullConverter);
-            expect(binder.is(PropertyBinder)).toBe(true);
-
-            binder = bind(property, nullConverter, BindingType.OneWay);
-            expect(binder.is(PropertyBinder)).toBe(true);
-        });
-        it('should return a PropertyBinder with the appropriate BindingType.', () => {
-            var property = new Property(0, 0),
-                binder: PropertyBinder<number, number>,
-                converter = getNullConverter<number>();
-
-            binder = <PropertyBinder<number, number>>bind(property);
-            expect(binder.bindingType).toBe(BindingType.TwoWay);
-
-            binder = <PropertyBinder<number, number>>bind(property, BindingType.OneWay);
-            expect(binder.bindingType).toBe(BindingType.OneWay);
-
-            binder = <PropertyBinder<number, number>>bind(property, nullConverter);
-            expect(binder.bindingType).toBe(BindingType.TwoWay);
-
-            binder = <PropertyBinder<number, number>>bind(property, nullConverter, BindingType.OneWay);
-            expect(binder.bindingType).toBe(BindingType.OneWay);
-        });
-        it('should return a PropertyBinder with the appropriate converter.', () => {
-            var property = new Property(0, 0),
-                binder: PropertyBinder<number, number>,
-                nullConverter = getNullConverter<number>(),
-                converter: IValueConverter<number, number> = {
-                    convert: value => value,
-                    convertBack: value => value
-                };
-
-            binder = <PropertyBinder<number, number>>bind(property);
-            expect(binder.converter).toBe(nullConverter);
-
-            binder = <PropertyBinder<number, number>>bind(property, BindingType.OneWay);
-            expect(binder.converter).toBe(nullConverter);
-
-            binder = <PropertyBinder<number, number>>bind(property, converter);
-            expect(binder.converter).toBe(converter);
-
-            binder = <PropertyBinder<number, number>>bind(property, converter, BindingType.OneWay);
-            expect(binder.converter).toBe(converter);
-        });
-        it('should return a CollectionBinder when given a Collection instance.', () => {
-            var collection = new Collection([0]),
-                binder: ICollectionBinder<number>,
-                converter = getNullConverter<number>();
-
-            binder = bind(collection);
-            expect(binder.is(CollectionBinder)).toBe(true);
-
-            binder = bind(collection, BindingType.OneWay);
-            expect(binder.is(CollectionBinder)).toBe(true);
-
-            binder = bind(collection, nullConverter);
-            expect(binder.is(CollectionBinder)).toBe(true);
-
-            binder = bind(collection, nullConverter, BindingType.OneWay);
-            expect(binder.is(CollectionBinder)).toBe(true);
-        });
-        it('should return a CollectionBinder with the appropriate BindingType.', () => {
-            var collection = new Collection([0]),
-                binder: CollectionBinder<number, number>,
-                converter = getNullConverter<number>();
-
-            binder = <CollectionBinder<number, number>>bind(collection);
-            expect(binder.bindingType).toBe(BindingType.TwoWay);
-
-            binder = <CollectionBinder<number, number>>bind(collection, BindingType.OneWay);
-            expect(binder.bindingType).toBe(BindingType.OneWay);
-
-            binder = <CollectionBinder<number, number>>bind(collection, nullConverter);
-            expect(binder.bindingType).toBe(BindingType.TwoWay);
-
-            binder = <CollectionBinder<number, number>>bind(collection, nullConverter, BindingType.OneWay);
-            expect(binder.bindingType).toBe(BindingType.OneWay);
-        });
-        it('should return a CollectionBinder with the appropriate converter.', () => {
-            var collection = new Collection([0]),
-                binder: CollectionBinder<number, number>,
-                nullConverter = getNullConverter<number>(),
-                converter: IValueConverter<number, number> = {
-                    convert: value => value,
-                    convertBack: value => value
-                };
-
-            binder = <CollectionBinder<number, number>>bind(collection);
-            expect(binder.converter).toBe(nullConverter);
-
-            binder = <CollectionBinder<number, number>>bind(collection, BindingType.OneWay);
-            expect(binder.converter).toBe(nullConverter);
-
-            binder = <CollectionBinder<number, number>>bind(collection, converter);
-            expect(binder.converter).toBe(converter);
-
-            binder = <CollectionBinder<number, number>>bind(collection, converter, BindingType.OneWay);
-            expect(binder.converter).toBe(converter);
-        });
-        it('should return an ObjectBinder when given an instance that implements INotifyPropertyChanged.', () => {
-            var source = new Notifier(),
-                binder: IBinder<number>,
-                converter = getNullConverter<number>();
-
-            binder = bind<number>(source, 'property');
-            expect(binder.is(ObjectBinder)).toBe(true);
-
-            binder = bind<number>(source, 'property', BindingType.OneWay);
-            expect(binder.is(ObjectBinder)).toBe(true);
-
-            binder = bind(source, 'property', nullConverter);
-            expect(binder.is(ObjectBinder)).toBe(true);
-
-            binder = bind(source, 'property', nullConverter, BindingType.OneWay);
-            expect(binder.is(ObjectBinder)).toBe(true);
-        });
-        it('should return an ObjectBinder with the appropriate BindingType.', () => {
-            var source = new Notifier(),
-                binder: ObjectBinder<number, number>,
-                converter = getNullConverter<number>();
-
-            binder = <ObjectBinder<number, number>>bind(source, 'property');
-            expect(binder.bindingType).toBe(BindingType.TwoWay);
-
-            binder = <ObjectBinder<number, number>>bind(source, 'property', BindingType.OneWay);
-            expect(binder.bindingType).toBe(BindingType.OneWay);
-
-            binder = <ObjectBinder<number, number>>bind(source, 'property', nullConverter);
-            expect(binder.bindingType).toBe(BindingType.TwoWay);
-
-            binder = <ObjectBinder<number, number>>bind(source, 'property', nullConverter, BindingType.OneWay);
-            expect(binder.bindingType).toBe(BindingType.OneWay);
-        });
-        it('should return an ObjectBinder with the appropriate converter.', () => {
-            var source = new Notifier(),
-                binder: ObjectBinder<number, number>,
-                nullConverter = getNullConverter<number>(),
-                converter: IValueConverter<number, number> = {
-                    convert: value => value,
-                    convertBack: value => value
-                };
-
-            binder = <ObjectBinder<number, number>>bind(source, 'property');
-            expect(binder.converter).toBe(nullConverter);
-
-            binder = <ObjectBinder<number, number>>bind(source, 'property', BindingType.OneWay);
-            expect(binder.converter).toBe(nullConverter);
-
-            binder = <ObjectBinder<number, number>>bind(source, 'property', converter);
-            expect(binder.converter).toBe(converter);
-
-            binder = <ObjectBinder<number, number>>bind(source, 'property', converter, BindingType.OneWay);
-            expect(binder.converter).toBe(converter);
-        });
-    });
-
-    //#endregion bind
+    //#endregion Binding
 
     //#region Test Classes
 
-    class Notifier implements INotifyPropertyChanged {
-        propertyChanged: IEvent<INotifyPropertyChanged, string>;
+    //#region IntegerUpdate
 
-        private _property = 1;
-        get property(): number { return this._property; }
-        set property(value: number) {
-            if (!this._property.equals(value)) {
-                this._property = value;
-                this.propertyChanged.execute('property');
-            }
+    class IntegerUpdate extends Update {
+
+        //#region fields
+
+        private _value: number = 0;
+
+        //#endregion fields
+
+        //#region properties
+
+        get value() {
+            var value = this._value;
+            Assert.isTrue(u.isInteger(value));
+            return value;
         }
 
-        constructor() {
-            this.propertyChanged = new Events.Event(this);
+        set value(value: number) {
+            Assert.isTrue(u.isInteger(value));
+            this._value = value;
         }
+
+        //#endregion properties
+
+        //#region Constructor
+
+        constructor(value: number = 0, sources: IEnumerable<any> = []) {
+            super(sources);
+            this.value = value;
+        }
+
+        //#endregion Constructor
     }
+
+    //#endregion IntegerUpdate
+
+    //#region Integer
+
+    class Integer implements ISynchronizable<IntegerUpdate> {
+
+        //#region fields
+
+        private _value: number;
+        private _synchronizer = new Synchronizer<IntegerUpdate>(this);
+
+        //#endregion fields
+
+        //#region properties
+
+        get value() {
+            return this._value;
+        }
+
+        set value(value: number) {
+            Assert.isTrue(u.isInteger(value));
+            this._value = value;
+            this._synchronizer.add(new IntegerUpdate(value));
+            this._synchronizer.sync();
+        }
+
+        get synchronizer() {
+            return this._synchronizer;
+        }
+
+        //#endregion properties
+
+        //#region Constructor
+
+        public constructor(value: number = 0) {
+            this.value = value;
+        }
+
+        //#endregion Constructor
+
+        //#region ISynchronizable
+
+        //#region hasTarget
+
+        hasTarget(target: ISynchronizable<IntegerUpdate>): boolean {
+            return this._synchronizer.hasTarget(target);
+        }
+
+        //#endregion hasTarget
+
+        //#region hasSource
+
+        hasSource(source: ISynchronizable<any>): boolean {
+            return this._synchronizer.hasSource(source);
+        }
+
+        //#endregion hasSource
+
+        //#region bind
+
+        bind(binder: b.IBinder<IntegerUpdate>);
+        bind(binder: IComplexBinder<IntegerUpdate>): void;
+
+        //For overload resolution only.
+        bind(binder: any) {
+            this._synchronizer.bind(binder);
+        }
+
+        //#endregion bind
+
+        //#region unbind
+
+        unbind(partner: ISynchronizable<any>): boolean {
+            return this._synchronizer.unbind(partner);
+        }
+
+        //#endregion unbind
+
+        //#region observe
+
+        observe(registration: (update: Array<IntegerUpdate>, source: Integer) => void) {
+            this._synchronizer.observe(registration);
+        }
+
+        //#endregion observe
+
+        //#region apply
+
+        apply(updates: IEnumerable<IntegerUpdate>) {
+            var synchronizer = this._synchronizer;
+
+            var update = synchronizer
+                .filter(updates).query()
+                .lastOrDefault();
+
+            if (!u.isDefined(update) ||
+                u.areEqual(this.value, update.value))
+                return;
+
+            this.value = update.value;
+            synchronizer.add(update);
+            synchronizer.sync(true);
+        }
+
+        //#endregion apply
+
+        //#region detach
+
+        detach() {
+            this._synchronizer.detach();
+        }
+
+        //#endregion detach
+
+        //#endregion ISynchronizable
+    }
+
+    //#endregion Integer
 
     //#endregion Test Classes
 }

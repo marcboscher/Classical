@@ -1221,7 +1221,12 @@ var Classical;
 
                 for (var i = 0; i < ownProperties.length; i++) {
                     var ownProperty = ownProperties[i];
-                    if (this._isType(moduleCandidate[ownProperty]))
+                    try  {
+                        var moduleProperty = moduleCandidate[ownProperty];
+                    } catch (e) {
+                        continue;
+                    }
+                    if (this._isType(moduleProperty))
                         return true;
                 }
 
@@ -2936,36 +2941,8 @@ var Classical;
     })(Classical.Events || (Classical.Events = {}));
     var Events = Classical.Events;
 })(Classical || (Classical = {}));
-var BindingType = (function (_super) {
-    __extends(BindingType, _super);
-    function BindingType(value) {
-        _super.call(this, value);
-    }
-    BindingType.OneWay = new BindingType('OneWay');
-
-    BindingType.TwoWay = new BindingType('TwoWay');
-    return BindingType;
-})(Classical.Enum);
-
-
-
-
-
-
-
-
-
-function bind(source, arg2, arg3, arg4) {
-    if (typeof arg2 === "undefined") { arg2 = undefined; }
-    if (typeof arg3 === "undefined") { arg3 = undefined; }
-    if (typeof arg4 === "undefined") { arg4 = undefined; }
-    Classical.Assert.isDefined(source, 'No source was specified.');
-    if (Classical.Utilities.isString(arg2))
-        return Classical.Binding.bindObject(source, arg2, arg3, arg4);
-    else if (source.collectionChanged)
-        return Classical.Binding.bindCollection(source, arg2, arg3);
-    else
-        return Classical.Binding.bindProperty(source, arg2, arg3);
+function bind(property) {
+    return null;
 }
 
 var Classical;
@@ -2973,1053 +2950,497 @@ var Classical;
     (function (Binding) {
         var u = Classical.Utilities;
         var e = Classical.Events;
-        var ce = Classical.Collections.Enumerable;
+        var Assert = Classical.Assert;
 
-        var anonymousPropertyName = '<Anonymous>';
+        
+
+        var Update = (function () {
+            function Update(sources) {
+                var _this = this;
+                this._sources = [];
+                Assert.isDefined(sources, "The sources of the update are undefined.");
+                if (sources)
+                    sources.query().forEach(function (s) {
+                        return _this._sources.add(s);
+                    });
+            }
+            Update.prototype.hasSource = function (source) {
+                var sources = this._sources;
+                for (var i = 0; i < sources.length; i++) {
+                    if (source === sources[i])
+                        return true;
+                }
+
+                return false;
+            };
+
+            Update.prototype.addSource = function (source) {
+                Assert.isDefined(source, 'The source is not defined.');
+                if (this._sources.query().hasNone(function (s) {
+                    return s === source;
+                }))
+                    this._sources.add(source);
+            };
+
+            Update.prototype.transferSourcesTo = function (update) {
+                Assert.isDefined(update, 'The update is not defined.');
+                var sources = update._sources.query();
+                update._sources.addRange(this._sources.query().where(function (s) {
+                    return !sources.hasAny(function (s2) {
+                        return s2 == s;
+                    });
+                }));
+
+                return update;
+            };
+            return Update;
+        })();
+        Binding.Update = Update;
+
+        
+
+        
+
+        
+
+        var Synchronizer = (function () {
+            function Synchronizer(target) {
+                this._updateDepth = 0;
+                this._updates = [];
+                this._binders = [];
+                Assert.isDefined(target, 'The target was not specified.');
+                this._target = target;
+                this._onUpdateEvent = new e.Event(target);
+            }
+            Object.defineProperty(Synchronizer.prototype, "target", {
+                get: function () {
+                    return this._target;
+                },
+                enumerable: true,
+                configurable: true
+            });
+
+            Object.defineProperty(Synchronizer.prototype, "updates", {
+                get: function () {
+                    return this._updates.array();
+                },
+                enumerable: true,
+                configurable: true
+            });
+
+            Object.defineProperty(Synchronizer.prototype, "updateDepth", {
+                get: function () {
+                    return this._updateDepth;
+                },
+                enumerable: true,
+                configurable: true
+            });
+
+            Synchronizer.prototype.hasTarget = function (target) {
+                return target && this._binders.query().hasAny(function (b) {
+                    return b.source === target;
+                });
+            };
+
+            Synchronizer.prototype.hasSource = function (source) {
+                return source && source.hasTarget(this._target);
+            };
+
+            Synchronizer.prototype.bind = function (arg) {
+                Assert.isDefined(arg, 'The binder was not specified.');
+                if (arg.sources)
+                    return this._createComplexBinding(arg);
+
+                var binder = arg;
+                Assert.isTrue(u.isDefined(binder.source), 'The binder source was not specified.');
+                Assert.isFalse(this.target.equals(binder.source), 'An object cannot be bound to itself');
+
+                if (this._binders.query().hasAny(function (b) {
+                    return b.source.equals(binder.source);
+                }))
+                    return;
+
+                if (!binder.converter) {
+                    binder.converter = {
+                        convert: function (sourceUpdate) {
+                            return sourceUpdate;
+                        },
+                        convertBack: function (targetUpdate) {
+                            return targetUpdate;
+                        }
+                    };
+                }
+
+                var converter = binder.converter;
+                if (converter.convertBack)
+                    this._binders.add(binder);
+
+                if (binder.init)
+                    binder.init(this._target, binder.source);
+
+                var inverseBinder = {
+                    source: this._target,
+                    converter: {
+                        convert: converter.convertBack,
+                        convertBack: converter.convert
+                    }
+                };
+
+                binder.source.bind(inverseBinder);
+            };
+
+            Synchronizer.prototype.unbind = function (source) {
+                var sourceHasTarget = source.hasTarget(this._target), sourceBinder = this._binders.query().singleOrDefault(function (b) {
+                    return b.source === source;
+                });
+
+                if (sourceBinder)
+                    this._binders.remove(sourceBinder);
+
+                if (!sourceHasTarget)
+                    return false;
+
+                source.unbind(this._target);
+                return true;
+            };
+
+            Synchronizer.prototype.apply = function (updates) {
+                throw Assert.notImplemented("apply must be implemented by the parent ISynchronizable object rather than the child synchronizer.");
+            };
+
+            Synchronizer.prototype.observe = function (registration) {
+                this._onUpdateEvent.subscribe(function (host, info) {
+                    registration(info, host);
+                });
+            };
+
+            Synchronizer.prototype.detach = function () {
+                var binders = this._binders, source = this._target;
+
+                while (binders.length > 0) {
+                    binders.pop().source.unbind(source);
+                }
+            };
+
+            Synchronizer.prototype.add = function (update) {
+                Assert.isDefined(update, 'The update is not defined.');
+                update.addSource(this._target);
+                this._updates.add(update);
+            };
+
+            Synchronizer.prototype.filter = function (updates) {
+                var target = this._target;
+                return updates.query().where(function (u) {
+                    return !u.hasSource(target);
+                }).array();
+            };
+
+            Synchronizer.prototype.sync = function (immediate) {
+                var _this = this;
+                if (typeof immediate === "undefined") { immediate = false; }
+                if (!immediate) {
+                    this._updateDepth--;
+                    if (this._updateDepth >= 0)
+                        return false;
+                }
+
+                this._updateDepth = 0;
+                var updates = this._updates;
+                if (updates.length === 0)
+                    return true;
+
+                this._updates = [];
+
+                var groupUpdate = {
+                    isExecuted: false,
+                    data: []
+                };
+
+                this._binders.query().forEach(function (binder) {
+                    var converter = binder.converter;
+                    if (!converter.convertBack)
+                        return;
+
+                    var sourceUpdates = updates.query().where(function (update) {
+                        return !update.hasSource(binder.source);
+                    }).forEach(function (update) {
+                        var sourceUpdate = converter.convertBack(update);
+                        update.transferSourcesTo(sourceUpdate);
+                        update.addSource(_this.target);
+                    }).array();
+
+                    var sourceGroupUpdate = {
+                        binder: binder,
+                        updates: sourceUpdates
+                    };
+
+                    if (sourceGroupUpdate.updates.query().hasAny()) {
+                        groupUpdate.data.add(sourceGroupUpdate);
+                    }
+                });
+
+                if (groupUpdate.data.query().hasAny())
+                    this._executeUpdates(groupUpdate);
+
+                this._executeOnUpdate(updates.slice());
+            };
+
+            Synchronizer.prototype.syncStart = function () {
+                this._updateDepth++;
+            };
+
+            Synchronizer.prototype._createComplexBinding = function (binder) {
+                var _this = this;
+                Assert.isDefined(binder.sources, 'The sources of the ComplexBinder are not defined');
+                var sources = binder.sources, sourcesQuery = sources.query(), bindingHandler = function () {
+                    var update = binder.converter.convert(sources);
+                    sourcesQuery.forEach(function (source) {
+                        return update.addSource(source);
+                    });
+                    return _this.target.apply([update]);
+                };
+
+                sourcesQuery.forEach(function (source) {
+                    return source.observe(bindingHandler);
+                });
+                bindingHandler();
+            };
+
+            Synchronizer.prototype._executeUpdates = function (groupUpdate) {
+                if (groupUpdate.isExecuted)
+                    return;
+
+                groupUpdate.data.query().forEach(function (sourceUpdate) {
+                    var sourceUpdateQuery = sourceUpdate.updates.query();
+                    if (sourceUpdateQuery.hasAny()) {
+                        sourceUpdate.binder.source.apply(sourceUpdate.updates);
+                    }
+                });
+
+                groupUpdate.isExecuted = true;
+            };
+
+            Synchronizer.prototype._executeOnUpdate = function (updates) {
+                this._onUpdateEvent.execute(updates);
+            };
+            return Synchronizer;
+        })();
+        Binding.Synchronizer = Synchronizer;
+
+        
 
         var Property = (function () {
-            function Property(owner, initialValue, beforeGet, beforeSet) {
-                if (typeof initialValue === "undefined") { initialValue = null; }
-                Classical.Assert.isDefined(owner);
-                this._propertyChanged = new e.Event(this);
-
-                this._owner = owner;
-                this._beforeGet = beforeGet;
-                this._beforeSet = beforeSet;
-                if (Classical.Utilities.isDefined(beforeSet))
-                    initialValue = beforeSet(initialValue);
-                this._value = initialValue;
+            function Property(value) {
+                if (typeof value === "undefined") { value = null; }
+                this._synchronizer = new Synchronizer(this);
+                this._value = value;
             }
             Object.defineProperty(Property.prototype, "value", {
                 get: function () {
-                    var beforeGet = this._beforeGet;
-                    if (Classical.Utilities.isDefined(this._beforeGet))
-                        return beforeGet(this._value);
-
                     return this._value;
                 },
                 set: function (value) {
-                    var beforeSet = this._beforeSet, oldValue = this._value;
-
-                    if (beforeSet)
-                        value = beforeSet(value);
-
-                    if (!u.areEqual(value, oldValue)) {
-                        this._value = value;
-                        this._propertyChanged.execute(value);
-                    }
+                    this._value = value;
+                    this._synchronizer.add(new PropertyUpdate(value));
+                    this._synchronizer.sync();
                 },
                 enumerable: true,
                 configurable: true
             });
 
-
-            Object.defineProperty(Property.prototype, "propertyChanged", {
-                get: function () {
-                    return this._propertyChanged;
-                },
-                enumerable: true,
-                configurable: true
-            });
-
-            Object.defineProperty(Property.prototype, "owner", {
-                get: function () {
-                    return this._owner;
-                },
-                enumerable: true,
-                configurable: true
-            });
-
-            Object.defineProperty(Property.prototype, "name", {
-                get: function () {
-                    var owner = this._owner;
-                    for (var property in owner) {
-                        if (this.equals(owner[property]))
-                            return property;
-                    }
-
-                    return undefined;
-                },
-                enumerable: true,
-                configurable: true
-            });
 
             Property.prototype.toString = function () {
-                return Classical.Utilities.coalesce(this.name, anonymousPropertyName);
+                return u.coalesce(this.value, '').toString();
+            };
+
+            Property.prototype.hasTarget = function (target) {
+                return this._synchronizer.hasTarget(target);
+            };
+
+            Property.prototype.hasSource = function (source) {
+                return this._synchronizer.hasSource(source);
+            };
+
+            Property.prototype.bind = function (arg1, arg2) {
+                var currentBinder;
+
+                if (u.isArray(arg1)) {
+                    var complexBinder = this._createComplexBinder(arg1, arg2);
+                    return this._synchronizer.bind(complexBinder);
+                } else if (arg1.getType && this.getType().isAssignableFrom(arg1.getType())) {
+                    var source = arg1;
+                    currentBinder = this._sourceToBinder(source);
+                } else if (arg1.property) {
+                    var propertyBinder = arg1;
+                    currentBinder = this._propertyBinderToBinder(arg1);
+                } else {
+                    currentBinder = arg1;
+                }
+
+                this._synchronizer.bind(currentBinder);
+            };
+
+            Property.prototype.unbind = function (partner) {
+                return this._synchronizer.unbind(partner);
+            };
+
+            Property.prototype.observe = function (registration) {
+                this._synchronizer.observe(registration);
+            };
+
+            Property.prototype.apply = function (updates) {
+                var synchronizer = this._synchronizer;
+
+                var update = synchronizer.filter(updates).query().lastOrDefault();
+
+                if (!u.isDefined(update) || u.areEqual(this._value, update.value))
+                    return;
+
+                this._value = update.value;
+                synchronizer.add(update);
+                synchronizer.sync();
+            };
+
+            Property.prototype.detach = function () {
+                this._synchronizer.detach();
+            };
+
+            Property.prototype._createComplexBinder = function (sources, selector) {
+                return {
+                    sources: sources,
+                    converter: {
+                        convert: function (sources) {
+                            var value = selector(sources);
+                            return new PropertyUpdate(value);
+                        }
+                    }
+                };
+            };
+
+            Property.prototype._sourceToBinder = function (source) {
+                var _this = this;
+                return {
+                    source: source,
+                    init: function () {
+                        _this.value = source.value;
+                    }
+                };
+            };
+
+            Property.prototype._propertyBinderToBinder = function (propertyBinder) {
+                var _this = this;
+                var converter = null, valueConverter = propertyBinder.converter;
+
+                converter = {
+                    convert: function (sourceUpdate) {
+                        var value = valueConverter.convert(sourceUpdate.value);
+                        return sourceUpdate.transferSourcesTo(new PropertyUpdate(value));
+                    }
+                };
+
+                if (valueConverter.convertBack) {
+                    converter.convertBack = function (targetUpdate) {
+                        var value = valueConverter.convertBack(targetUpdate.value);
+                        return targetUpdate.transferSourcesTo(new PropertyUpdate(value));
+                    };
+                }
+
+                return {
+                    source: propertyBinder.property,
+                    converter: converter,
+                    init: function () {
+                        _this.value = valueConverter.convert(propertyBinder.property.value);
+                    }
+                };
             };
             return Property;
         })();
         Binding.Property = Property;
 
-        var Binder = (function () {
-            function Binder(bindingType) {
-                Classical.Assert.isDefined(bindingType);
-                this._bindingType = bindingType;
-            }
-            Object.defineProperty(Binder.prototype, "bindingType", {
-                get: function () {
-                    return this._bindingType;
-                },
-                enumerable: true,
-                configurable: true
-            });
-
-            Binder.prototype.bind = function () {
-                throw Classical.Assert.notImplemented();
-            };
-            return Binder;
-        })();
-        Binding.Binder = Binder;
-
-        var PropertyBinder = (function (_super) {
-            __extends(PropertyBinder, _super);
-            function PropertyBinder(source, converter, bindingType) {
-                if (typeof bindingType === "undefined") { bindingType = BindingType.TwoWay; }
-                _super.call(this, bindingType);
-                Classical.Assert.isDefined(source);
-                Classical.Assert.isDefined(converter);
-
-                this._source = source;
-                this._converter = converter;
-            }
-            Object.defineProperty(PropertyBinder.prototype, "source", {
-                get: function () {
-                    return this._source;
-                },
-                enumerable: true,
-                configurable: true
-            });
-
-            Object.defineProperty(PropertyBinder.prototype, "converter", {
-                get: function () {
-                    return this._converter;
-                },
-                enumerable: true,
-                configurable: true
-            });
-
-            PropertyBinder.prototype.bind = function () {
-                var target = this.target;
-                Classical.Assert.isDefined(target);
-
-                this._source.propertyChanged.subscribe(this.updateTarget.bind(this));
-                if (this.bindingType.equals(BindingType.TwoWay))
-                    target.propertyChanged.subscribe(this.updateSource.bind(this));
-
-                target.value = this.converter.convert(this._source.value);
-            };
-
-            PropertyBinder.prototype.updateSource = function (host, value) {
-                var converter = this._converter;
-                this._source.value = converter.convertBack(value);
-            };
-
-            PropertyBinder.prototype.updateTarget = function (host, value) {
-                var converter = this._converter;
-                this.target.value = this._converter.convert(value);
-            };
-            return PropertyBinder;
-        })(Binder);
-        Binding.PropertyBinder = PropertyBinder;
-
-        var ComplexPropertyBinder = (function (_super) {
-            __extends(ComplexPropertyBinder, _super);
-            function ComplexPropertyBinder(sources, converter) {
-                _super.call(this, BindingType.OneWay);
-            }
-            return ComplexPropertyBinder;
-        })(Binder);
-        Binding.ComplexPropertyBinder = ComplexPropertyBinder;
-
-        var SimplePropertyBinder = (function (_super) {
-            __extends(SimplePropertyBinder, _super);
-            function SimplePropertyBinder(source, bindingType) {
-                if (typeof bindingType === "undefined") { bindingType = BindingType.TwoWay; }
-                _super.call(this, source, NullValueConverter.instance(), bindingType);
-            }
-            return SimplePropertyBinder;
-        })(PropertyBinder);
-        Binding.SimplePropertyBinder = SimplePropertyBinder;
-
-        var ObjectBinder = (function (_super) {
-            __extends(ObjectBinder, _super);
-            function ObjectBinder(source, sourcePropertyName, converter, bindingType) {
-                if (typeof bindingType === "undefined") { bindingType = BindingType.TwoWay; }
-                _super.call(this, bindingType);
-                Classical.Assert.isDefined(source);
-                Classical.Assert.isDefined(sourcePropertyName);
-                Classical.Assert.isDefined(converter);
-
-                this._source = source;
-                this._sourcePropertyName = sourcePropertyName;
-                this._converter = converter;
-            }
-            Object.defineProperty(ObjectBinder.prototype, "source", {
-                get: function () {
-                    return this._source;
-                },
-                enumerable: true,
-                configurable: true
-            });
-
-            Object.defineProperty(ObjectBinder.prototype, "sourcePropertyName", {
-                get: function () {
-                    return this._sourcePropertyName;
-                },
-                enumerable: true,
-                configurable: true
-            });
-
-            Object.defineProperty(ObjectBinder.prototype, "converter", {
-                get: function () {
-                    return this._converter;
-                },
-                enumerable: true,
-                configurable: true
-            });
-
-            ObjectBinder.prototype.bind = function () {
-                var target = this.target;
-                Classical.Assert.isDefined(target);
-
-                this._source.propertyChanged.subscribe(this.updateTarget.bind(this));
-                if (this.bindingType.equals(BindingType.TwoWay))
-                    target.propertyChanged.subscribe(this.updateSource.bind(this));
-
-                target.value = this.converter.convert(this._source[this._sourcePropertyName]);
-            };
-
-            ObjectBinder.prototype.updateSource = function (host, value) {
-                var converter = this._converter;
-                this._source[this._sourcePropertyName] = converter.convertBack(value);
-            };
-
-            ObjectBinder.prototype.updateTarget = function (owner, property) {
-                this.target.value = this._converter.convert(owner[property]);
-            };
-            return ObjectBinder;
-        })(Binder);
-        Binding.ObjectBinder = ObjectBinder;
-
-        var SimpleObjectBinder = (function (_super) {
-            __extends(SimpleObjectBinder, _super);
-            function SimpleObjectBinder(source, sourcePropertyName, bindingType) {
-                if (typeof bindingType === "undefined") { bindingType = BindingType.TwoWay; }
-                _super.call(this, source, sourcePropertyName, NullValueConverter.instance(), bindingType);
-            }
-            return SimpleObjectBinder;
-        })(ObjectBinder);
-        Binding.SimpleObjectBinder = SimpleObjectBinder;
-
-        var NullValueConverter = (function () {
-            function NullValueConverter() {
-            }
-            NullValueConverter.prototype.convert = function (value) {
-                return value;
-            };
-
-            NullValueConverter.prototype.convertBack = function (value) {
-                return value;
-            };
-
-            NullValueConverter.instance = function () {
-                if (!nullConverterInstance)
-                    nullConverterInstance = new NullValueConverter();
-
-                return nullConverterInstance;
-            };
-            return NullValueConverter;
-        })();
-
-        var nullConverterInstance;
-
-        var CollectionAction = (function (_super) {
-            __extends(CollectionAction, _super);
-            function CollectionAction(value) {
+        var ConfirmationProperty = (function (_super) {
+            __extends(ConfirmationProperty, _super);
+            function ConfirmationProperty(value) {
+                if (typeof value === "undefined") { value = null; }
                 _super.call(this, value);
+                this._newValue = value;
             }
-            CollectionAction.Add = new CollectionAction('Add');
-            CollectionAction.Remove = new CollectionAction('Remove');
-            return CollectionAction;
-        })(Classical.Enum);
-        Binding.CollectionAction = CollectionAction;
-
-        var Collection = (function () {
-            function Collection(items) {
-                this.items = [];
-                this._binding = true;
-                this.collectionChanged = new Classical.Events.Event(this);
-
-                if (items)
-                    this.items.addRange(items);
-            }
-            Collection.prototype.add = function (item) {
-                var items = this.items;
-
-                items.add(item);
-                if (this._binding) {
-                    this.collectionChanged.execute({
-                        action: CollectionAction.Add,
-                        newIndex: items.length - 1,
-                        oldIndex: null,
-                        newItem: item,
-                        oldItem: null
-                    });
-                }
-
-                return this;
-            };
-
-            Collection.prototype.addRange = function (items) {
-                var _this = this;
-                Classical.Assert.isDefined(items);
-                items.forEach(function (item) {
-                    return _this.add(item);
-                });
-                return this;
-            };
-
-            Collection.prototype.remove = function (item) {
-                this.array;
-                var items = this.items, currentItem;
-
-                for (var i = 0, length = items.length; i < length; i++) {
-                    currentItem = items[i];
-                    if (u.areEqual(item, currentItem)) {
-                        items.splice(i, 1);
-                        if (this._binding) {
-                            this.collectionChanged.execute({
-                                action: CollectionAction.Remove,
-                                newIndex: null,
-                                oldIndex: i,
-                                newItem: null,
-                                oldItem: currentItem
-                            });
-                        }
-                        i--;
-                        length--;
-                    }
-                }
-                return this;
-            };
-
-            Collection.prototype.removeAt = function (index) {
-                var items = this.items, oldItem = items[index];
-
-                this.items.removeAt(index);
-                if (this._binding) {
-                    this.collectionChanged.execute({
-                        action: CollectionAction.Remove,
-                        newIndex: null,
-                        oldIndex: index,
-                        newItem: null,
-                        oldItem: oldItem
-                    });
-                }
-
-                return this;
-            };
-
-            Collection.prototype.clear = function () {
-                var items = this.items;
-                while (items.length > 0) {
-                    items.remove(items[0]);
-                }
-                return this;
-            };
-
-            Collection.prototype.get = function (index) {
-                return this.items[index];
-            };
-
-            Collection.prototype.set = function (index, item) {
-                this.items[index] = item;
-                if (this._binding) {
-                    this.collectionChanged.execute({
-                        action: CollectionAction.Add,
-                        newIndex: index,
-                        oldIndex: null,
-                        newItem: item,
-                        oldItem: null
-                    });
-                }
-
-                return this;
-            };
-
-            Collection.prototype.getEnumerator = function () {
-                return this.items.getEnumerator();
-            };
-
-            Collection.prototype.query = function () {
-                return this.items.query();
-            };
-
-            Collection.prototype.forEach = function (operation) {
-                ce.forEach(this, operation);
-            };
-
-            Collection.prototype.array = function () {
-                return this.items.slice(0);
-            };
-
-            Collection.prototype.count = function () {
-                return this.items.length;
-            };
-
-            Collection.prototype.bindingOff = function () {
-                this._binding = false;
-            };
-
-            Collection.prototype.bindingOn = function () {
-                this._binding = true;
-            };
-            return Collection;
-        })();
-        Binding.Collection = Collection;
-
-        var CollectionBinder = (function () {
-            function CollectionBinder(source, converter, bindingType) {
-                if (typeof converter === "undefined") { converter = NullValueConverter.instance(); }
-                if (typeof bindingType === "undefined") { bindingType = BindingType.TwoWay; }
-                Classical.Assert.isDefined(source);
-                Classical.Assert.isDefined(converter);
-                Classical.Assert.isDefined(bindingType);
-
-                this._source = source;
-                this._converter = converter;
-                this._bindingType = bindingType;
-            }
-            Object.defineProperty(CollectionBinder.prototype, "source", {
+            Object.defineProperty(ConfirmationProperty.prototype, "value", {
                 get: function () {
-                    return this._source;
+                    return this._getValue();
                 },
-                enumerable: true,
-                configurable: true
-            });
-
-            Object.defineProperty(CollectionBinder.prototype, "converter", {
-                get: function () {
-                    return this._converter;
-                },
-                enumerable: true,
-                configurable: true
-            });
-
-            Object.defineProperty(CollectionBinder.prototype, "bindingType", {
-                get: function () {
-                    return this._bindingType;
-                },
-                enumerable: true,
-                configurable: true
-            });
-
-            CollectionBinder.prototype.bind = function () {
-                var _this = this;
-                var target = this.target, source = this._source, converter = this._converter, isTwoWay = this.bindingType.equals(BindingType.TwoWay), sourceRegistration, targetRegistration;
-
-                Classical.Assert.isDefined(target);
-
-                target.clear();
-                target.addRange(source.query().select(function (source) {
-                    return converter.convert(source);
-                }));
-
-                sourceRegistration = function (host, args) {
-                    if (isTwoWay)
-                        target.collectionChanged.unsubscribe(targetRegistration);
-                    _this.updateTarget(host, args);
-                    if (isTwoWay)
-                        target.collectionChanged.subscribe(targetRegistration);
-                };
-
-                if (isTwoWay) {
-                    targetRegistration = function (host, args) {
-                        source.collectionChanged.unsubscribe(sourceRegistration);
-                        _this.updateSource(host, args);
-                        source.collectionChanged.subscribe(sourceRegistration);
-                    };
-                }
-
-                source.collectionChanged.subscribe(sourceRegistration);
-                if (this.bindingType.equals(BindingType.TwoWay)) {
-                    target.collectionChanged.subscribe(targetRegistration);
-                }
-            };
-
-            CollectionBinder.prototype.updateSource = function (host, args) {
-                if (args.action.equals(CollectionAction.Add)) {
-                    this._source.set(args.newIndex, this.converter.convertBack(args.newItem));
-                } else if (args.action.equals(CollectionAction.Remove)) {
-                    this._source.removeAt(args.oldIndex);
-                } else {
-                    Classical.Assert.isInvalid("The CollectionAction was not recognized.");
-                }
-            };
-
-            CollectionBinder.prototype.updateTarget = function (host, args) {
-                if (args.action.equals(CollectionAction.Add)) {
-                    this.target.set(args.newIndex, this.converter.convert(args.newItem));
-                } else if (args.action.equals(CollectionAction.Remove)) {
-                    this.target.removeAt(args.oldIndex);
-                } else {
-                    Classical.Assert.isInvalid("The CollectionAction was not recognized.");
-                }
-            };
-            return CollectionBinder;
-        })();
-        Binding.CollectionBinder = CollectionBinder;
-
-        
-
-        function bindProperty(source, converter, bindingType) {
-            if (typeof converter === "undefined") { converter = NullValueConverter.instance(); }
-            if (typeof bindingType === "undefined") { bindingType = BindingType.TwoWay; }
-            if (converter.getType && converter.getType() === bindingTypeType) {
-                bindingType = converter;
-                converter = NullValueConverter.instance();
-            }
-
-            return new PropertyBinder(source, converter, bindingType);
-        }
-        Binding.bindProperty = bindProperty;
-
-        
-
-        function bindObject(source, property, converter, bindingType) {
-            if (typeof converter === "undefined") { converter = NullValueConverter.instance(); }
-            if (typeof bindingType === "undefined") { bindingType = BindingType.TwoWay; }
-            if (converter.getType && converter.getType() === bindingTypeType) {
-                bindingType = converter;
-                converter = NullValueConverter.instance();
-            }
-
-            return new ObjectBinder(source, property, converter, bindingType);
-        }
-        Binding.bindObject = bindObject;
-
-        
-
-        function bindCollection(source, converter, bindingType) {
-            if (typeof converter === "undefined") { converter = NullValueConverter.instance(); }
-            if (typeof bindingType === "undefined") { bindingType = BindingType.TwoWay; }
-            if (converter.getType && converter.getType() === bindingTypeType) {
-                bindingType = converter;
-                converter = NullValueConverter.instance();
-            }
-
-            return new CollectionBinder(source, converter, bindingType);
-        }
-        Binding.bindCollection = bindCollection;
-
-        function getNullConverter() {
-            return NullValueConverter.instance();
-        }
-        Binding.getNullConverter = getNullConverter;
-
-        var bindingTypeType = typeOf(BindingType);
-    })(Classical.Binding || (Classical.Binding = {}));
-    var Binding = Classical.Binding;
-})(Classical || (Classical = {}));
-var Classical;
-(function (Classical) {
-    (function (Binding) {
-        (function (New) {
-            var u = Classical.Utilities;
-            var e = Classical.Events;
-            var Assert = Classical.Assert;
-
-            
-
-            var Update = (function () {
-                function Update(sources) {
-                    var _this = this;
-                    this._sources = [];
-                    Assert.isDefined(sources, "The sources of the update are undefined.");
-                    if (sources)
-                        sources.query().forEach(function (s) {
-                            return _this._sources.add(s);
-                        });
-                }
-                Update.prototype.hasSource = function (source) {
-                    var sources = this._sources;
-                    for (var i = 0; i < sources.length; i++) {
-                        if (source === sources[i])
-                            return true;
-                    }
-
-                    return false;
-                };
-
-                Update.prototype.addSource = function (source) {
-                    Assert.isDefined(source, 'The source is not defined.');
-                    if (this._sources.query().hasNone(function (s) {
-                        return s === source;
-                    }))
-                        this._sources.add(source);
-                };
-
-                Update.prototype.transferSourcesTo = function (update) {
-                    Assert.isDefined(update, 'The update is not defined.');
-                    var sources = update._sources.query();
-                    update._sources.addRange(this._sources.query().where(function (s) {
-                        return !sources.hasAny(function (s2) {
-                            return s2 == s;
-                        });
-                    }));
-
-                    return update;
-                };
-                return Update;
-            })();
-            New.Update = Update;
-
-            
-
-            
-
-            
-
-            var Synchronizer = (function () {
-                function Synchronizer(target) {
-                    this._updateDepth = 0;
-                    this._updates = [];
-                    this._binders = [];
-                    Assert.isDefined(target, 'The target was not specified.');
-                    this._target = target;
-                    this._onUpdateEvent = new e.Event(target);
-                }
-                Object.defineProperty(Synchronizer.prototype, "target", {
-                    get: function () {
-                        return this._target;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
-
-                Object.defineProperty(Synchronizer.prototype, "updates", {
-                    get: function () {
-                        return this._updates.array();
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
-
-                Object.defineProperty(Synchronizer.prototype, "updateDepth", {
-                    get: function () {
-                        return this._updateDepth;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
-
-                Synchronizer.prototype.hasTarget = function (target) {
-                    return target && this._binders.query().hasAny(function (b) {
-                        return b.source === target;
-                    });
-                };
-
-                Synchronizer.prototype.hasSource = function (source) {
-                    return source && source.hasTarget(this._target);
-                };
-
-                Synchronizer.prototype.bind = function (arg) {
-                    Assert.isDefined(arg, 'The binder was not specified.');
-                    if (arg.sources)
-                        return this._createComplexBinding(arg);
-
-                    var binder = arg;
-                    Assert.isTrue(u.isDefined(binder.source), 'The binder source was not specified.');
-                    Assert.isFalse(this.target.equals(binder.source), 'An object cannot be bound to itself');
-
-                    if (this._binders.query().hasAny(function (b) {
-                        return b.source.equals(binder.source);
-                    }))
-                        return;
-
-                    if (!binder.converter) {
-                        binder.converter = {
-                            convert: function (sourceUpdate) {
-                                return sourceUpdate;
-                            },
-                            convertBack: function (targetUpdate) {
-                                return targetUpdate;
-                            }
-                        };
-                    }
-
-                    var converter = binder.converter;
-                    if (converter.convertBack)
-                        this._binders.add(binder);
-
-                    if (binder.init)
-                        binder.init(this._target, binder.source);
-
-                    var inverseBinder = {
-                        source: this._target,
-                        converter: {
-                            convert: converter.convertBack,
-                            convertBack: converter.convert
-                        }
-                    };
-
-                    binder.source.bind(inverseBinder);
-                };
-
-                Synchronizer.prototype.unbind = function (source) {
-                    var sourceHasTarget = source.hasTarget(this._target), sourceBinder = this._binders.query().singleOrDefault(function (b) {
-                        return b.source === source;
-                    });
-
-                    if (sourceBinder)
-                        this._binders.remove(sourceBinder);
-
-                    if (!sourceHasTarget)
-                        return false;
-
-                    source.unbind(this._target);
-                    return true;
-                };
-
-                Synchronizer.prototype.apply = function (updates) {
-                    throw Assert.notImplemented("apply must be implemented by the parent ISynchronizable object rather than the child synchronizer.");
-                };
-
-                Synchronizer.prototype.observe = function (registration) {
-                    this._onUpdateEvent.subscribe(function (host, info) {
-                        registration(info, host);
-                    });
-                };
-
-                Synchronizer.prototype.detach = function () {
-                    var binders = this._binders, source = this._target;
-
-                    while (binders.length > 0) {
-                        binders.pop().source.unbind(source);
-                    }
-                };
-
-                Synchronizer.prototype.add = function (update) {
-                    Assert.isDefined(update, 'The update is not defined.');
-                    update.addSource(this._target);
-                    this._updates.add(update);
-                };
-
-                Synchronizer.prototype.filter = function (updates) {
-                    var target = this._target;
-                    return updates.query().where(function (u) {
-                        return !u.hasSource(target);
-                    }).array();
-                };
-
-                Synchronizer.prototype.sync = function (immediate) {
-                    var _this = this;
-                    if (typeof immediate === "undefined") { immediate = false; }
-                    if (!immediate) {
-                        this._updateDepth--;
-                        if (this._updateDepth >= 0)
-                            return false;
-                    }
-
-                    this._updateDepth = 0;
-                    var updates = this._updates;
-                    if (updates.length === 0)
-                        return true;
-
-                    this._updates = [];
-
-                    var groupUpdate = {
-                        isExecuted: false,
-                        data: []
-                    };
-
-                    this._binders.query().forEach(function (binder) {
-                        var converter = binder.converter;
-                        if (!converter.convertBack)
-                            return;
-
-                        var sourceUpdates = updates.query().where(function (update) {
-                            return !update.hasSource(binder.source);
-                        }).forEach(function (update) {
-                            var sourceUpdate = converter.convertBack(update);
-                            update.transferSourcesTo(sourceUpdate);
-                            update.addSource(_this.target);
-                        }).array();
-
-                        var sourceGroupUpdate = {
-                            binder: binder,
-                            updates: sourceUpdates
-                        };
-
-                        if (sourceGroupUpdate.updates.query().hasAny()) {
-                            groupUpdate.data.add(sourceGroupUpdate);
-                        }
-                    });
-
-                    if (groupUpdate.data.query().hasAny())
-                        this._executeUpdates(groupUpdate);
-
-                    this._executeOnUpdate(updates.slice());
-                };
-
-                Synchronizer.prototype.syncStart = function () {
-                    this._updateDepth++;
-                };
-
-                Synchronizer.prototype._createComplexBinding = function (binder) {
-                    var _this = this;
-                    Assert.isDefined(binder.sources, 'The sources of the ComplexBinder are not defined');
-                    var sources = binder.sources, sourcesQuery = sources.query(), bindingHandler = function () {
-                        var update = binder.converter.convert(sources);
-                        sourcesQuery.forEach(function (source) {
-                            return update.addSource(source);
-                        });
-                        return _this.target.apply([update]);
-                    };
-
-                    sourcesQuery.forEach(function (source) {
-                        return source.observe(bindingHandler);
-                    });
-                    bindingHandler();
-                };
-
-                Synchronizer.prototype._executeUpdates = function (groupUpdate) {
-                    if (groupUpdate.isExecuted)
-                        return;
-
-                    groupUpdate.data.query().forEach(function (sourceUpdate) {
-                        var sourceUpdateQuery = sourceUpdate.updates.query();
-                        if (sourceUpdateQuery.hasAny()) {
-                            sourceUpdate.binder.source.apply(sourceUpdate.updates);
-                        }
-                    });
-
-                    groupUpdate.isExecuted = true;
-                };
-
-                Synchronizer.prototype._executeOnUpdate = function (updates) {
-                    this._onUpdateEvent.execute(updates);
-                };
-                return Synchronizer;
-            })();
-            New.Synchronizer = Synchronizer;
-
-            
-
-            var Property = (function () {
-                function Property(value) {
-                    if (typeof value === "undefined") { value = null; }
-                    this._synchronizer = new Synchronizer(this);
-                    this._value = value;
-                }
-                Object.defineProperty(Property.prototype, "value", {
-                    get: function () {
-                        return this._value;
-                    },
-                    set: function (value) {
-                        this._value = value;
-                        this._synchronizer.add(new PropertyUpdate(value));
-                        this._synchronizer.sync();
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
-
-
-                Property.prototype.toString = function () {
-                    return u.coalesce(this.value, '').toString();
-                };
-
-                Property.prototype.hasTarget = function (target) {
-                    return this._synchronizer.hasTarget(target);
-                };
-
-                Property.prototype.hasSource = function (source) {
-                    return this._synchronizer.hasSource(source);
-                };
-
-                Property.prototype.bind = function (arg1, arg2) {
-                    var currentBinder;
-
-                    if (u.isArray(arg1)) {
-                        var complexBinder = this._createComplexBinder(arg1, arg2);
-                        return this._synchronizer.bind(complexBinder);
-                    } else if (arg1.getType && this.getType().isAssignableFrom(arg1.getType())) {
-                        var source = arg1;
-                        currentBinder = this._sourceToBinder(source);
-                    } else if (arg1.property) {
-                        var propertyBinder = arg1;
-                        currentBinder = this._propertyBinderToBinder(arg1);
-                    } else {
-                        currentBinder = arg1;
-                    }
-
-                    this._synchronizer.bind(currentBinder);
-                };
-
-                Property.prototype.unbind = function (partner) {
-                    return this._synchronizer.unbind(partner);
-                };
-
-                Property.prototype.observe = function (registration) {
-                    this._synchronizer.observe(registration);
-                };
-
-                Property.prototype.apply = function (updates) {
-                    var synchronizer = this._synchronizer;
-
-                    var update = synchronizer.filter(updates).query().lastOrDefault();
-
-                    if (!u.isDefined(update) || u.areEqual(this._value, update.value))
-                        return;
-
-                    this._value = update.value;
-                    synchronizer.add(update);
-                    synchronizer.sync();
-                };
-
-                Property.prototype.detach = function () {
-                    this._synchronizer.detach();
-                };
-
-                Property.prototype._createComplexBinder = function (sources, selector) {
-                    return {
-                        sources: sources,
-                        converter: {
-                            convert: function (sources) {
-                                var value = selector(sources);
-                                return new PropertyUpdate(value);
-                            }
-                        }
-                    };
-                };
-
-                Property.prototype._sourceToBinder = function (source) {
-                    var _this = this;
-                    return {
-                        source: source,
-                        init: function () {
-                            _this.value = source.value;
-                        }
-                    };
-                };
-
-                Property.prototype._propertyBinderToBinder = function (propertyBinder) {
-                    var _this = this;
-                    var converter = null, valueConverter = propertyBinder.converter;
-
-                    converter = {
-                        convert: function (sourceUpdate) {
-                            var value = valueConverter.convert(sourceUpdate.value);
-                            return sourceUpdate.transferSourcesTo(new PropertyUpdate(value));
-                        }
-                    };
-
-                    if (valueConverter.convertBack) {
-                        converter.convertBack = function (targetUpdate) {
-                            var value = valueConverter.convertBack(targetUpdate.value);
-                            return targetUpdate.transferSourcesTo(new PropertyUpdate(value));
-                        };
-                    }
-
-                    return {
-                        source: propertyBinder.property,
-                        converter: converter,
-                        init: function () {
-                            _this.value = valueConverter.convert(propertyBinder.property.value);
-                        }
-                    };
-                };
-                return Property;
-            })();
-            New.Property = Property;
-
-            var ConfirmationProperty = (function (_super) {
-                __extends(ConfirmationProperty, _super);
-                function ConfirmationProperty(value) {
-                    if (typeof value === "undefined") { value = null; }
-                    _super.call(this, value);
+                set: function (value) {
                     this._newValue = value;
-                }
-                Object.defineProperty(ConfirmationProperty.prototype, "value", {
-                    get: function () {
-                        return this._getValue();
-                    },
-                    set: function (value) {
-                        this._newValue = value;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
+                },
+                enumerable: true,
+                configurable: true
+            });
 
 
-                Object.defineProperty(ConfirmationProperty.prototype, "newValue", {
-                    get: function () {
-                        return this._newValue;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
+            Object.defineProperty(ConfirmationProperty.prototype, "newValue", {
+                get: function () {
+                    return this._newValue;
+                },
+                enumerable: true,
+                configurable: true
+            });
 
-                Object.defineProperty(ConfirmationProperty.prototype, "synchronizer", {
-                    get: function () {
-                        return this._synchronizer;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
+            Object.defineProperty(ConfirmationProperty.prototype, "synchronizer", {
+                get: function () {
+                    return this._synchronizer;
+                },
+                enumerable: true,
+                configurable: true
+            });
 
-                ConfirmationProperty.prototype.apply = function (updates) {
-                    var synchronizer = this.synchronizer;
+            ConfirmationProperty.prototype.apply = function (updates) {
+                var synchronizer = this.synchronizer;
 
-                    var update = synchronizer.filter(updates).query().lastOrDefault();
+                var update = synchronizer.filter(updates).query().lastOrDefault();
 
-                    if (!u.isDefined(update) || u.areEqual(this._getValue(), update.value))
-                        return;
+                if (!u.isDefined(update) || u.areEqual(this._getValue(), update.value))
+                    return;
 
-                    this._newValue = update.value;
-                };
+                this._newValue = update.value;
+            };
 
-                ConfirmationProperty.prototype.accept = function () {
-                    this._setValue(this._newValue);
-                    this.synchronizer.add(new PropertyUpdate(this._newValue));
-                    this.synchronizer.sync();
-                };
+            ConfirmationProperty.prototype.accept = function () {
+                this._setValue(this._newValue);
+                this.synchronizer.add(new PropertyUpdate(this._newValue));
+                this.synchronizer.sync();
+            };
 
-                ConfirmationProperty.prototype.reject = function () {
-                    this._newValue = this.value;
-                };
+            ConfirmationProperty.prototype.reject = function () {
+                this._newValue = this.value;
+            };
 
-                ConfirmationProperty.prototype._getValue = function () {
-                    return this._value;
-                };
+            ConfirmationProperty.prototype._getValue = function () {
+                return this._value;
+            };
 
-                ConfirmationProperty.prototype._setValue = function (value) {
-                    this._value = value;
-                };
-                return ConfirmationProperty;
-            })(Property);
-            New.ConfirmationProperty = ConfirmationProperty;
+            ConfirmationProperty.prototype._setValue = function (value) {
+                this._value = value;
+            };
+            return ConfirmationProperty;
+        })(Property);
+        Binding.ConfirmationProperty = ConfirmationProperty;
 
-            
+        
 
-            var PropertyUpdate = (function (_super) {
-                __extends(PropertyUpdate, _super);
-                function PropertyUpdate(value, sources) {
-                    if (typeof sources === "undefined") { sources = []; }
-                    var _this = this;
-                    _super.call(this, sources);
-                    this.value = value;
-                    if (sources)
-                        sources.query().forEach(function (source) {
-                            return _this.addSource(source);
-                        });
-                }
-                return PropertyUpdate;
-            })(Update);
-            New.PropertyUpdate = PropertyUpdate;
-        })(Binding.New || (Binding.New = {}));
-        var New = Binding.New;
+        var PropertyUpdate = (function (_super) {
+            __extends(PropertyUpdate, _super);
+            function PropertyUpdate(value, sources) {
+                if (typeof sources === "undefined") { sources = []; }
+                var _this = this;
+                _super.call(this, sources);
+                this.value = value;
+                if (sources)
+                    sources.query().forEach(function (source) {
+                        return _this.addSource(source);
+                    });
+            }
+            return PropertyUpdate;
+        })(Update);
+        Binding.PropertyUpdate = PropertyUpdate;
     })(Classical.Binding || (Classical.Binding = {}));
     var Binding = Classical.Binding;
 })(Classical || (Classical = {}));

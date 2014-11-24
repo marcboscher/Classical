@@ -11,12 +11,18 @@ module Classical.Html.Template {
 
 module Classical.Html.Template {
 
+    //#region Imports
+
+    import b = Classical.Binding;
+
+    //#endregion Imports
+
     //#region ICssConfig
 
     //Example
     export interface ICssConfig {
         x?: string;
-        xBinder?: IBinder<string>;
+        xBinder?: b.IBinder<b.PropertyUpdate<string>>;
     }
 
     export class Css {
@@ -38,6 +44,13 @@ module Classical.Html.Template {
 
 module Classical.Html.Template {
 
+    //#region Imports
+
+    import b = Classical.Binding;
+    import bc = Classical.Binding.Collections;
+
+    //#endregion Imports
+
     //#region IHtmlNodeConfig
 
     export interface IHtmlNodeConfig { }
@@ -48,7 +61,7 @@ module Classical.Html.Template {
 
     export interface ITextNodeConfig extends IHtmlNodeConfig {
         text?: string;
-        textBinder?: IBinder<string>;
+        textBinder?: b.IBinder<b.PropertyUpdate<string>>;
     }
 
     //#endregion ITextConfig
@@ -72,10 +85,10 @@ module Classical.Html.Template {
 
     export interface IHtmlElementContainerConfig extends IHtmlElementConfig {
         text?: string;
-        textBinder?: IBinder<string>;
+        textBinder?: b.IBinder<b.PropertyUpdate<string>>;
         child?: Elements.HtmlNode;
         children?: Elements.HtmlNode[];
-        childrenBinder?: ICollectionBinder<Elements.HtmlNode>;
+        childrenBinder?: b.IBinder<bc.CollectionUpdate<Elements.HtmlNode>>;
 
         //## HtmlElementContainerConfigProperties
     }
@@ -93,6 +106,8 @@ module Classical.Html.Template.Elements {
     //#region Imports
 
     import events = Classical.Events;
+    import b = Classical.Binding;
+    import bc = Classical.Binding.Collections;
 
     //#endregion Imports
 
@@ -266,7 +281,7 @@ module Classical.Html.Template.Elements {
                                 propertyName = attributeName;
                             this[propertyName] = this.element[attributeName];
                         } else/*if (record.type === 'childList')*/ {
-                            var children = <IBindingCollection<HtmlNode>>(<any>this).children,
+                            var children = new bc.Collection<HtmlNode>([this]),
                                 addedNodes = <Node[]>Array.prototype.slice.call(record.addedNodes),
                                 removedNodes = record.removedNodes,
                                 childNodes = this._element.childNodes,
@@ -436,13 +451,13 @@ module Classical.Html.Template.Elements {
 
         //#region Fields
 
-        private _textProperty: IBindingProperty<string>;
+        private _textProperty: b.Property<string>;
 
         //#endregion Fields
 
         //#region Properties
 
-        get textProperty(): IBindingProperty<string> {
+        get textProperty(): b.Property<string> {
             if (!this._textProperty)
                 initializeProperty(this, 'text', 'textContent');
             return this._textProperty;
@@ -555,7 +570,7 @@ module Classical.Html.Template.Elements {
 
         //#region Fields
 
-        private _children: IBindingCollection<HtmlNode>;
+        private _children: bc.Collection<HtmlNode>;
         private _childrenAreInitialized: boolean;
         //## HtmlElementContainerFields
 
@@ -692,10 +707,12 @@ module Classical.Html.Template.Elements {
             fieldName = '_' + bindingProperyName,
             htmlElement = element.element,
             htmlValue = htmlElement[htmlPropertyName],
-            property = new Binding.Property<HtmlNode, string>(element, htmlValue);
+            property = new b.Property<HtmlNode>(element);
+        property['htmlValue'] = htmlValue;
 
-        property.propertyChanged.subscribe((host, value) => {
-            var currentHtmlValue = htmlElement[htmlPropertyName];
+        property.observe((values, host) => {
+            var value = values[0],
+                currentHtmlValue = htmlElement[htmlPropertyName];
 
             var valueWasNotChanged = false;
             try {
@@ -730,11 +747,11 @@ module Classical.Html.Template.Elements {
         var htmlElement = element.getElement<HTMLElement>(),
             htmlElementChildren = htmlElement.childNodes,
             htmlElementChildrenArray = <Node[]>Array.prototype.slice.call(htmlElementChildren),
-            collectionProperty = new Binding.Collection<HtmlNode>(htmlElementChildrenArray.map(node => {
+            collectionProperty = new bc.Collection<HtmlNode>(htmlElementChildrenArray.map(node => {
                 return HtmlNode.getHtmlNode(node);
             }));
-        collectionProperty.collectionChanged.subscribe((collection, info) => {
-            if (info.action.equals(Binding.CollectionAction.Add)) {
+        collectionProperty.observe((collection, info) => {
+            if (info.action.equals(bc.CollectionUpdateType.Add)) {
                 var oldChild = htmlElementChildren[info.newIndex],
                     newIndex = info.newIndex,
                     newItem = info.newItem,
@@ -754,7 +771,7 @@ module Classical.Html.Template.Elements {
                 else
                     htmlElement.replaceChild(newElement, oldChild);
                     
-            } else if (info.action.equals(Binding.CollectionAction.Remove)) {
+            } else if (info.action.equals(bc.CollectionUpdateType.Remove)) {
                 var oldChild = htmlElementChildren[info.oldIndex];
                 Assert.isDefined(oldChild,
                     'The element to remove could not be found.');
@@ -780,13 +797,13 @@ module Classical.Html.Template.Elements {
         var binderPropertyName = propertyName + 'Binder',
             bindingPropertyName = propertyName + 'Property',
             configValue = config[propertyName],
-            configBinder = <IBinder<any>>config[binderPropertyName];
+            configBinder = <b.IBinder<any>>config[binderPropertyName];
 
         if (configValue !== undefined && !configBinder && isInitializable) {
             element[propertyName] = configValue;
         } else if (configBinder) {
-            configBinder.target = element[bindingPropertyName];
-            configBinder.bind();
+            var property = <b.Property<HtmlNode>>element[bindingPropertyName];
+            property.bind(configBinder);
         }
     }
 
@@ -805,8 +822,7 @@ module Classical.Html.Template.Elements {
         if (children && !childrenBinder) {
             childrenCollection.addRange(children);
         } else if (childrenBinder) {
-            childrenBinder.target = childrenCollection;
-            childrenBinder.bind();
+            childrenCollection.bind(childrenBinder);
         }
     }
 
@@ -935,7 +951,7 @@ module Classical.Html.Template {
     //#region text
 
     export function text(text: string): Elements.TextNode;
-    export function text(textBinder: IBinder<string>): Elements.TextNode;
+    export function text(textBinder: b.IBinder<b.PropertyUpdate<string>>): Elements.TextNode;
     export function text(content: any): Elements.TextNode {
         if (!Utilities.isDefined(content))
             content = '';
@@ -946,7 +962,7 @@ module Classical.Html.Template {
             return new Elements.TextNode({ text: <string>content });
         }
 
-        return new Elements.TextNode({ textBinder: <IBinder<string>>content });
+        return new Elements.TextNode({ textBinder: <b.IBinder<b.PropertyUpdate<string>>>content });
     }
 
     //#endregion text

@@ -835,7 +835,13 @@ module Classical.Reflection {
 
             for (var i = 0; i < ownProperties.length; i++) {
                 var ownProperty = ownProperties[i];
-                if (this._isType(moduleCandidate[ownProperty]))
+                try {
+                    var moduleProperty = moduleCandidate[ownProperty];
+                }
+                catch (e) {
+                    continue;
+                }
+                if (this._isType(moduleProperty))
                     return true;
             }
 
@@ -851,9 +857,9 @@ module Classical.Reflection {
 
         private static _isType(typeCandidate: any): boolean {
             return typeCandidate === Object ||
-                   (u.isFunction(typeCandidate) &&
-                    u.isDefined(typeCandidate.prototype) &&
-                    !u.isEmptyObject(typeCandidate.prototype));
+                (u.isFunction(typeCandidate) &&
+                u.isDefined(typeCandidate.prototype) &&
+                !u.isEmptyObject(typeCandidate.prototype));
         }
 
         //#endregion _isType
@@ -1130,7 +1136,7 @@ module Classical.Reflection {
 
         getMethods(...options: Array<Modifier>): IQueryable<Method> {
             return (<IQueryable<Method>>this.getProperties.apply(this, options))
-                    .where(p => p.isMethod).cast<Method>();
+                .where(p => p.isMethod).cast<Method>();
         }
 
         //#endregion getMethods
@@ -1456,7 +1462,7 @@ module Classical.Reflection {
         get isField(): boolean {
             return this._isField;
         }
-        
+
         //#endregion isField
 
         //#endregion Properties
@@ -1836,7 +1842,7 @@ module Classical.Reflection {
     var constructorPassword = Math.random();
 
     //#endregion Initialization
-} 
+}
 
 //#region Anonymous
 

@@ -1,1003 +1,772 @@
-
-//#region BindingType
-
-class BindingType extends Classical.Enum<string> {
-    constructor(value: string) {
-        super(value);
-    }
-
-    //Denotes that the source is bound to the target.
-    static OneWay = new BindingType('OneWay');
-
-    //Denotes that the source and target are bound together.
-    static TwoWay = new BindingType('TwoWay');
-}
-
-//#endregion BindingType
-
-//#region IBindingProperty
-
-interface IBindingProperty<TValue> extends IObject {
-
-    //Invoked when the value of the property is changed.
-    propertyChanged: IEvent<any, TValue>;
-
-    //Gets or sets the value of the property.
-    value: TValue;
-
-    //The owner of the property.
-    owner: any;
-}
-
-//#endregion IBindingProperty
-
-//#region INotifyPropertyChanged
-
-interface INotifyPropertyChanged {
-
-    //An event which is raised when a property value of the host has been changed.
-    propertyChanged: IEvent<INotifyPropertyChanged, string>;
-}
-
-//#endregion INotifyPropertyChanged
-
-//#region IBindingCollection
-
-interface IBindingCollection<T> extends ICollection<T> {
-
-    //Turns off binding updates.
-    bindingOff(): void;
-
-    //Turns on binding updates.
-    bindingOn(): void;
-
-    //An event which is raised when a property value of the host has been changed.
-    collectionChanged: IEvent<IBindingCollection<T>, ICollectionChangedArgs<T>>;
-}
-
-//#endregion IBindingCollection
-
-//#region ICollectionChangedArgs
-
-//Information specified when an observable collection changes state.
-interface ICollectionChangedArgs<T>{
-
-    //The type of action that was performed on the collection.
-    action: Classical.Binding.CollectionAction;
-
-    //The new item, if one was added; undefined otherwise.
-    newItem?: T;
-
-    //The index of the new item, if one was added; underfined otherwise.
-    newIndex?: number;
-
-    //The old item, if one was removed; undefined otherise.
-    oldItem?: T;
-
-    //The index of the old item, if one was removed; undefined otherise.
-    oldIndex?: number;
-}
-
-//#endregion ICollectionChangedArgs
-
-//#region IValueConverter
-
-interface IValueConverter<TSourceValue, TTargetValue> {
-
-    //Converts a source value into a target value.
-    convert(value: TSourceValue): TTargetValue;
-
-    //Converts a target value into a source value.
-    convertBack(value: TTargetValue): TSourceValue;
-
-}
-
-//#endregion IValueConverter
-
-//#region IBinder
-
-interface IBinder<TTargetValue> extends IObject {
-
-    //The target that a source is bound to.
-    target: IBindingProperty<TTargetValue>;
-
-    //Binds the source to the target.
-    bind(): void;
-}
-
-//#endregion IBinder
-
-//#region ICollectionBinder
-
-interface ICollectionBinder<TTargetValue> extends IObject {
-
-    //The target collection that a source collection is bound to.
-    target: IBindingCollection<TTargetValue>;
-
-    //Binds the source to the target.
-    bind(): void;
-}
-
-//#endregion IBinder
-
+﻿
 //#region bind
 
-function bind<TValue>(
-    source: IBindingProperty<TValue>):
-    IBinder<TValue>;
-
-function bind<TValue>(
-    source: IBindingProperty<TValue>,
-    bindingType: BindingType):
-    IBinder<TValue>;
-
-function bind<TSourceValue, TTargetValue>(
-    source: IBindingProperty<TSourceValue>,
-    converter: IValueConverter<TSourceValue, TTargetValue>):
-    IBinder<TTargetValue>;
-
-function bind<TSourceValue, TTargetValue>(
-    source: IBindingProperty<TSourceValue>,
-    converter: IValueConverter<TSourceValue, TTargetValue>,
-    bindingType: BindingType):
-    IBinder<TTargetValue>;
-
-function bind<TValue>(
-    source: INotifyPropertyChanged,
-    property: string):
-    IBinder<TValue>;
-
-function bind<TValue>(
-    source: INotifyPropertyChanged,
-    property: string,
-    bindingType: BindingType):
-    IBinder<TValue>;
-
-function bind<TSourceValue, TTargetValue>(
-    source: INotifyPropertyChanged,
-    property: string,
-    converter: IValueConverter<TSourceValue, TTargetValue>):
-    IBinder<TTargetValue>;
-
-function bind<TSourceValue, TTargetValue>(
-    source: INotifyPropertyChanged,
-    property: string,
-    converter: IValueConverter<TSourceValue, TTargetValue>,
-    bindingType: BindingType):
-    IBinder<TTargetValue>;
-
-function bind<TValue>(
-    source: IBindingCollection<TValue>):
-    ICollectionBinder<TValue>;
-
-function bind<TValue>(
-    source: IBindingCollection<TValue>,
-    bindingType: BindingType):
-    ICollectionBinder<TValue>;
-
-function bind<TSourceValue, TTargetValue>(
-    source: IBindingCollection<TSourceValue>,
-    converter: IValueConverter<TSourceValue, TTargetValue>):
-    ICollectionBinder<TTargetValue>;
-
-function bind<TSourceValue, TTargetValue>(
-    source: IBindingCollection<TSourceValue>,
-    converter: IValueConverter<TSourceValue, TTargetValue>,
-    bindingType: BindingType):
-    ICollectionBinder<TTargetValue>;
-
-/**
-* For overload resolution only.
-*/
-function bind(
-    source: any,
-    arg2: any = undefined,
-    arg3: any = undefined,
-    arg4: any = undefined): any {
-
-    Classical.Assert.isDefined(source, 'No source was specified.');
-    if (Classical.Utilities.isString(arg2))
-        return Classical.Binding.bindObject(source, arg2, arg3, arg4);
-    else if (source.collectionChanged)
-        return Classical.Binding.bindCollection(source, arg2, arg3);
-    else
-        return Classical.Binding.bindProperty(source, arg2, arg3);
+function bind<T>(property: Classical.Binding.Property<T>): Classical.Binding.IPropertyBinder<T> {
+    return null;
 }
 
-    //#endregion bind
+//#endregion bind
 
-//Classes that enable objects to bind to each other.
 module Classical.Binding {
 
     //#region Imports
 
     import u = Classical.Utilities;
     import e = Classical.Events;
-    import ce = Classical.Collections.Enumerable;
+    import Assert = Classical.Assert;
 
     //#endregion Imports
 
-    //#region Variables
+    //#region ISynchronizable
 
-    var anonymousPropertyName = '<Anonymous>';
+    export interface ISynchronizable<TTargetUpdate extends Update> extends IObject {
+        hasTarget(target: ISynchronizable<TTargetUpdate>): boolean;
+        hasSource(source: ISynchronizable<any>): boolean;
+        bind(binder: IBinder<TTargetUpdate>): void;
+        bind(binder: IComplexBinder<TTargetUpdate>): void;
+        unbind(source: ISynchronizable<any>): boolean;
+        observe(registration: (update: Array<TTargetUpdate>, source: any) => void);
+        apply(updates: IEnumerable<TTargetUpdate>): void;
+        detach(): void;
 
-    //#endregion Variables
+    }
 
-    //#region Property
+    //#endregion ISynchronizable
 
-    //A property of an object that can be observed for changes.
-    export class Property<TOwner, TValue>
-        implements IBindingProperty<TValue> {
+    //#region Update
+
+    export class Update {
 
         //#region Fields
 
-        private _beforeGet: (value: TValue) => TValue;
-        private _beforeSet: (value: TValue) => TValue;
-        private _owner: TOwner;
-        private _value: TValue;
-        private _propertyChanged: IEvent<any, TValue>;
+        private _sources: Array<any> = [];
 
-        //#endregion //Fields
-
-        //#region Properties
-
-        //Returns the value of the property.
-        //beforeGet is used to transform the value, if specified.
-        get value(): TValue {
-            var beforeGet = this._beforeGet;
-            if (Utilities.isDefined(this._beforeGet))
-                return beforeGet(this._value);
-
-            return this._value;
-        }
-
-        //Sets the value of the property.
-        //beforeSet is used to transform the value, if specified.
-        //If the specified property value is different from the current property value, the propertyChanged event is raised. 
-        set value(value: TValue) {
-            var beforeSet = this._beforeSet,
-                oldValue = this._value;
-
-            if (beforeSet)
-                value = beforeSet(value);
-
-            if (!u.areEqual(value, oldValue)) {
-                this._value = value;
-                this._propertyChanged.execute(value);
-            }
-        }
-
-        get propertyChanged(): IEvent<any, TValue> {
-            return this._propertyChanged;
-        }
-
-        //The owner of the property.
-        get owner(): any {
-            return this._owner;
-        }
-
-        //Returns the name of the property on the owner, if one is found; undefined otherwise.
-        get name(): string {
-            var owner = this._owner;
-            for (var property in owner) {
-                if (this.equals(owner[property]))
-                    return property;
-            }
-
-            return undefined;
-        }
-
-        //#endregion Properties
+        //#endregion Fields
 
         //#region Constructor
 
-        constructor(
-            owner: TOwner,
-            initialValue: TValue = null,
-            beforeGet?: (value: TValue) => TValue,
-            beforeSet?: (value: TValue) => TValue) {
-
-            Assert.isDefined(owner);
-            this._propertyChanged = new e.Event<any, TValue>(this);
-
-            this._owner = owner;
-            this._beforeGet = beforeGet;
-            this._beforeSet = beforeSet;
-            if (Utilities.isDefined(beforeSet))
-                initialValue = beforeSet(initialValue);
-            this._value = initialValue;
+        constructor(sources: IEnumerable<any>) {
+            Assert.isDefined(sources, "The sources of the update are undefined.");
+            if (sources)
+                sources.query().forEach(s => this._sources.add(s));
         }
 
         //#endregion Constructor
 
         //#region Methods
 
-        //Returns the name of the property.
-        toString(): string {
-            return Utilities.coalesce(this.name, anonymousPropertyName);
+        hasSource(source: any): boolean {
+            var sources = this._sources;
+            for (var i = 0; i < sources.length; i++) {
+                if (source === sources[i])
+                    return true;
+            }
+
+            return false;
+        }
+
+        addSource(source: any): void {
+            Assert.isDefined(source, 'The source is not defined.');
+            if (this._sources.query().hasNone(s => s === source))
+                this._sources.add(source);
+        }
+
+        transferSourcesTo<TUpdate extends Update>(update: TUpdate): TUpdate {
+            Assert.isDefined(update, 'The update is not defined.');
+            var sources: IQueryable<any> = update._sources.query();
+            (<Update>update)._sources.addRange(
+                this._sources.query()
+                    .where(s =>
+                        !sources.hasAny(s2 => s2 == s)));
+
+            return update;
         }
 
         //#endregion Methods
+    }
+
+    //#endregion Update
+
+    //#region IBinder
+
+    export interface IBinder<TTargetUpdate extends Update> extends IObject {
+        source: ISynchronizable<Update>;
+        converter?: IConverter<any, TTargetUpdate>;
+        init?: (target: ISynchronizable<TTargetUpdate>, source: ISynchronizable<Update>) => void;
+    }
+
+    //#endregion IBinder
+
+    //#region IComplexBinder
+
+    export interface IComplexBinder<TTargetUpdate extends Update> extends IObject {
+        sources: Array<ISynchronizable<Update>>;
+        converter: IConverter<Array<any>, TTargetUpdate>;
+    }
+
+    //#endregion IComplexBinder
+
+    //#region IConverter
+
+    export interface IConverter<TSource, TTarget> extends IObject {
+        convert(value: TSource): TTarget;
+        convertBack? (value: TTarget): TSource;
+    }
+
+    //#endregion IConverter
+
+    //#region Synchronizer
+
+    export class Synchronizer<TTargetUpdate extends Update>
+        implements ISynchronizable<TTargetUpdate> {
+
+        //#region Fields
+
+        private _updateDepth: number = 0;
+        private _updates: Array<TTargetUpdate> = [];
+        private _target: ISynchronizable<TTargetUpdate>;
+        private _binders: Array<IBinder<TTargetUpdate>> = [];
+        private _onUpdateEvent: IEvent<any, Array<TTargetUpdate>>;
+
+        //#endregion Fields
+
+        //#region Properties
+
+        //#region target
+
+        get target(): ISynchronizable<TTargetUpdate> {
+            return this._target;
+        }
+
+        //#endregion target
+
+        //#region updates
+
+        get updates(): Array<TTargetUpdate> {
+            return this._updates.array();
+        }
+
+        //#endregion updates
+
+        //#region updateDepth
+
+        get updateDepth(): number {
+            return this._updateDepth;
+        }
+
+        //#endregion updateDepth
+
+        //#endregion Properties
+
+        //#region Constructor
+
+        constructor(target: ISynchronizable<TTargetUpdate>) {
+            Assert.isDefined(target,
+                'The target was not specified.');
+            this._target = target;
+            this._onUpdateEvent = new e.Event(target);
+        }
+
+        //#endregion Constructor
+
+        //#region ISynchronizable
+
+        //#region hasTarget
+
+        hasTarget(target: ISynchronizable<TTargetUpdate>): boolean {
+            return target && this._binders.query().hasAny(b => b.source === target);
+        }
+
+        //#endregion hasTarget
+
+        //#region hasSource
+
+        hasSource(source: ISynchronizable<any>): boolean {
+            return source && source.hasTarget(this._target);
+        }
+
+        //#endregion hasSource
+
+        //#region bind
+
+        bind(binder: IBinder<TTargetUpdate>): void;
+        bind(binder: IComplexBinder<TTargetUpdate>): void;
+
+        //For overload resolution only
+        bind(arg: any): void {
+            Assert.isDefined(arg, 'The binder was not specified.');
+            if (arg.sources)
+                return this._createComplexBinding(arg);
+
+            var binder: IBinder<TTargetUpdate> = arg;
+            Assert.isTrue(u.isDefined(binder.source),
+                'The binder source was not specified.');
+            Assert.isFalse(this.target.equals(binder.source),
+                'An object cannot be bound to itself');
+
+            //Return if the target is already bound to the source
+            if (this._binders.query().hasAny(b => b.source.equals(binder.source)))
+                return;
+
+            //If converters are unspecified, it is assumed that TSourceUpdate is the update type of the target
+            if (!binder.converter) {
+                binder.converter = {
+                    convert: sourceUpdate => <TTargetUpdate>sourceUpdate,
+                    convertBack: targetUpdate => targetUpdate
+                }
+            }
+
+            //Add the source for two way binding
+            var converter = binder.converter;
+            if (converter.convertBack)
+                this._binders.add(binder);
+
+            //Initialize the target
+            if (binder.init)
+                binder.init(this._target, binder.source);
+
+            //The inverse binder uses the target as the source, and inverts the converter
+            var inverseBinder: IBinder<Update> = {
+                source: this._target,
+                converter: {
+                    convert: converter.convertBack,
+                    convertBack: converter.convert
+                }
+            };
+
+            binder.source.bind(inverseBinder);
+        }
+
+        //#endregion bind
+
+        //#region unbind
+
+        unbind(source: ISynchronizable<any>): boolean {
+            var sourceHasTarget = source.hasTarget(this._target),
+                sourceBinder = this._binders.query().singleOrDefault(b => b.source === source);
+
+            if (sourceBinder)
+                this._binders.remove(sourceBinder);
+
+            if (!sourceHasTarget)
+                return false;
+
+            source.unbind(this._target)
+            return true;
+        }
+
+        //#endregion unbind
+
+        //#region apply
+
+        apply(updates: IEnumerable<TTargetUpdate>): void {
+            throw Assert.notImplemented("apply must be implemented by the parent ISynchronizable object rather than the child synchronizer.");
+        }
+
+        //#endregion apply
+
+        //#region observe
+
+        observe(registration: (update: Array<TTargetUpdate>, source: any) => void) {
+            this._onUpdateEvent.subscribe((host, info) => {
+                registration(info, host);
+            });
+        }
+
+        //#endregion observe
+
+        //#region detach
+
+        detach() {
+            var binders = this._binders,
+                source = this._target;
+
+            while (binders.length > 0) {
+                binders.pop().source.unbind(source);
+            }
+        }
+
+        //#endregion detach
+
+        //#endregion ISynchronizable
+
+        //#region Methods
+
+        //#region add
+
+        add(update: TTargetUpdate) {
+            Assert.isDefined(update, 'The update is not defined.');
+            update.addSource(this._target);
+            this._updates.add(update);
+        }
+
+        //#endregion add
+
+        //#region filter
+
+        filter(updates: IEnumerable<TTargetUpdate>): Array<TTargetUpdate> {
+            var target = this._target;
+            return updates.query().where(u => !u.hasSource(target)).array();
+        }
+
+        //#endregion filter
+
+        //#region sync
+
+        sync(immediate: boolean = false): boolean {
+            if (!immediate) {
+                this._updateDepth--;
+                if (this._updateDepth >= 0)
+                    return false;
+            }
+
+            this._updateDepth = 0;
+            var updates = this._updates;
+            if (updates.length === 0)
+                return true;
+
+            this._updates = [];
+
+            var groupUpdate: IGroupUpdate<TTargetUpdate> = {
+                isExecuted: false,
+                data: []
+            };
+
+            this._binders.query().forEach(binder => {
+
+                var converter = binder.converter;
+                if (!converter.convertBack)
+                    return;
+
+                var sourceUpdates = updates.query()
+                    .where(update => !update.hasSource(binder.source))
+                    .forEach(update => {
+                        var sourceUpdate = converter.convertBack(update);
+                        update.transferSourcesTo(sourceUpdate);
+                        update.addSource(this.target);
+                    }).array();
+
+                var sourceGroupUpdate = {
+                    binder: binder,
+                    updates: sourceUpdates
+                };
+
+                if (sourceGroupUpdate.updates.query().hasAny()) {
+                    groupUpdate.data.add(sourceGroupUpdate);
+                }
+            });
+
+            //TODO: REMOVE
+            //Assert.isTrue(groupUpdate.data.query().hasAny(d => d.updates[0].hasSource(this.target)));
+
+            if (groupUpdate.data.query().hasAny())
+                this._executeUpdates(groupUpdate);
+
+            this._executeOnUpdate(updates.slice());
+        }
+
+        //#endregion sync
+
+        //#region syncStart
+
+        syncStart() {
+            this._updateDepth++;
+        }
+
+        //#endregion syncStart
+
+        //#endregion Methods
+
+        //#region Utilities
+
+        //#region createComplexBinding
+
+        private _createComplexBinding(binder: IComplexBinder<TTargetUpdate>) {
+            Assert.isDefined(binder.sources, 'The sources of the ComplexBinder are not defined');
+            var sources = binder.sources,
+                sourcesQuery = sources.query(),
+                bindingHandler = () => {
+                    var update = binder.converter.convert(sources);
+                    sourcesQuery.forEach(source => update.addSource(source));
+                    return this.target.apply([update]);
+                };
+
+            sourcesQuery.forEach(source => source.observe(bindingHandler));
+            bindingHandler();
+        }
+
+        //#endregion createComplexBinding
+
+        //#region executeUpdates
+
+        private _executeUpdates(groupUpdate: IGroupUpdate<TTargetUpdate>) {
+            if (groupUpdate.isExecuted)
+                return;
+
+            groupUpdate.data.query().forEach(sourceUpdate => {
+                var sourceUpdateQuery = sourceUpdate.updates.query();
+                if (sourceUpdateQuery.hasAny()) {
+                    sourceUpdate.binder.source.apply(sourceUpdate.updates);
+                }
+            });
+
+            groupUpdate.isExecuted = true;
+        }
+
+        //#endregion executeUpdates
+
+        //#region executeOnUpdate
+
+        private _executeOnUpdate(updates: Array<TTargetUpdate>) {
+            this._onUpdateEvent.execute(updates);
+        }
+
+        //#endregion executeOnUpdate
+
+        //#endregion Utilities
+    }
+
+    //#region IGroupUpdate
+
+    interface IGroupUpdate<TTargetUpdate extends Update> {
+        isExecuted: boolean;
+        data: Array<{ binder: IBinder<TTargetUpdate>; updates: Array<Update>; }>;
+    }
+
+    //#endregion IGroupUpdate
+
+    //#endregion Synchronizer
+
+    //#region Property
+
+    export class Property<TValue>
+        implements ISynchronizable<PropertyUpdate<TValue>> {
+
+        //#region Fields
+
+        updating: boolean;
+        private _value: TValue;
+        private _synchronizer = new Synchronizer<PropertyUpdate<TValue>>(this);
+
+        //#endregion Fields
+
+        //#region Properties
+
+        get value(): TValue {
+            return this._value;
+        }
+
+        set value(value: TValue) {
+            this._value = value;
+            this._synchronizer.add(new PropertyUpdate(value));
+            this._synchronizer.sync();
+        }
+
+        //#endregion Properties
+
+        //#region Constructor
+
+        constructor(value: TValue = null) {
+            this._value = value;
+        }
+
+        //#endregion Constructor
+
+        //#region Base Class Overrides
+
+        toString(): string {
+            return u.coalesce(this.value, '').toString();
+        }
+
+        //#endregion Base Class Overrides
+
+        //#region ISynchronizable
+
+        //#region hasTarget
+
+        hasTarget(target: ISynchronizable<PropertyUpdate<TValue>>): boolean {
+            return this._synchronizer.hasTarget(target);
+        }
+
+        //#endregion hasTarget
+
+        //#region hasSource
+
+        hasSource(source: ISynchronizable<any>): boolean {
+            return this._synchronizer.hasSource(source);
+        }
+
+        //#endregion hasSource
+
+        //#region bind
+
+        bind(source: Property<TValue>);
+        bind(sources: Array<ISynchronizable<Update>>, selector: (sources: Array<any>) => TValue);
+        bind(propertyBinder: IPropertyBinder<TValue>);
+        bind(binder: IBinder<PropertyUpdate<TValue>>);
+        bind(binder: IComplexBinder<PropertyUpdate<TValue>>): void;
+
+        //For overload resolution only.
+        bind(arg1: any, arg2?: any) {
+            var currentBinder: IBinder<PropertyUpdate<TValue>>;
+
+            if (u.isArray(arg1)) /*sources*/ {
+                var complexBinder = this._createComplexBinder(arg1, arg2);
+                return this._synchronizer.bind(complexBinder);
+            } else if (arg1.getType && this.getType().isAssignableFrom(arg1.getType())) /*target*/ {
+                var source: Property<TValue> = arg1;
+                currentBinder = this._sourceToBinder(source);
+            } else if (arg1.property) /*propertyBinder*/ {
+                var propertyBinder: IPropertyBinder<TValue> = arg1;
+                currentBinder = this._propertyBinderToBinder(arg1);
+            } else  /*binder*/ {
+                currentBinder = arg1;
+            }
+
+            this._synchronizer.bind(currentBinder);
+        }
+
+        //#endregion bind
+
+        //#region unbind
+
+        unbind(partner: ISynchronizable<any>): boolean {
+            return this._synchronizer.unbind(partner);
+        }
+
+        //#endregion unbind
+
+        //#region observe
+
+        observe(registration: (update: Array<PropertyUpdate<TValue>>, source: Property<TValue>) => void) {
+            this._synchronizer.observe(registration);
+        }
+
+        //#endregion observe
+
+        //#region apply
+
+        apply(updates: IEnumerable<PropertyUpdate<TValue>>) {
+            var synchronizer = this._synchronizer;
+
+            var update = synchronizer
+                .filter(updates).query()
+                .lastOrDefault();
+
+            if (!u.isDefined(update) ||
+                u.areEqual(this._value, update.value))
+                return;
+
+            this._value = update.value;
+            synchronizer.add(update);
+            synchronizer.sync();
+        }
+
+        //#endregion apply
+
+        //#region detach
+
+        detach() {
+            this._synchronizer.detach();
+        }
+
+        //#endregion detach
+
+        //#endregion ISynchronizable
+
+        //#region Utilities
+
+        //#region createComplexBinder
+
+        private _createComplexBinder(sources: Array<ISynchronizable<Update>>, selector: (sources: Array<ISynchronizable<Update>>) => TValue): IComplexBinder<PropertyUpdate<TValue>> {
+            return {
+                sources: sources,
+                converter: {
+                    convert: sources => {
+                        var value = selector(sources);
+                        return new PropertyUpdate(value);
+                    }
+                }
+            };
+        }
+
+        //#endregion createComplexBinder
+
+        //#region sourceToBinder
+
+        private _sourceToBinder(source: Property<TValue>): IBinder<PropertyUpdate<TValue>> {
+            return {
+                source: source,
+                init: () => {
+                    this.value = source.value;
+                }
+            };
+        }
+
+        //#endregion sourceToBinder
+
+        //#region propertyBinderToBinder
+
+        private _propertyBinderToBinder(propertyBinder: IPropertyBinder<TValue>): IBinder<PropertyUpdate<TValue>> {
+            var converter: IConverter<Update, PropertyUpdate<TValue>> = null,
+                valueConverter = propertyBinder.converter;
+
+            converter = {
+                convert: sourceUpdate => {
+                    var value = valueConverter.convert(
+                        (<any>sourceUpdate).value);
+                    return sourceUpdate.transferSourcesTo(
+                        new PropertyUpdate(value));
+                },
+            };
+
+            if (valueConverter.convertBack) {
+                converter.convertBack = targetUpdate => {
+                    var value = valueConverter.convertBack(
+                        targetUpdate.value);
+                    return targetUpdate.transferSourcesTo(
+                        new PropertyUpdate(value));
+                }
+            }
+
+            return {
+                source: propertyBinder.property,
+                converter: converter,
+                init: () => {
+                    this.value = valueConverter.convert(
+                        propertyBinder.property.value);
+                }
+            };
+        }
+
+        //#endregion propertyBinderToBinder
+
+        //#endregion Utilities
     }
 
     //#endregion Property
 
-    //#region Binder
+    //#region ConfirmationProperty
 
-    //The base class for all data binders.
-    export class Binder<TTargetValue>
-        implements IBinder<TTargetValue> {
-
-        private _bindingType: BindingType
-
-        //The binding target, generally a property of a view.
-        target: IBindingProperty<TTargetValue>;
-
-        //Denotes the directionality of the binding created by the binder.
-        get bindingType(): BindingType {
-            return this._bindingType;
-        }
-
-        constructor(bindingType: BindingType) {
-            Assert.isDefined(bindingType);
-            this._bindingType = bindingType;
-        }
-
-        //Binds the values of the source and target.
-        bind() {
-            throw Assert.notImplemented();
-        }
-    }
-
-    //#endregion Binder
-
-    //#region PropertyBinder
-
-    export class PropertyBinder<TSourceValue, TTargetValue>
-        extends Binder<TTargetValue> {
-
-        private _source: IBindingProperty<TSourceValue>;
-        private _converter: IValueConverter<TSourceValue, TTargetValue>;
-
-        //The source of the binding, generally a property of a model or a view model.
-        get source(): IBindingProperty<TSourceValue> {
-            return this._source;
-        }
-
-        get converter(): IValueConverter<TSourceValue, TTargetValue> {
-            return this._converter;
-        }
-
-        constructor(
-            source: IBindingProperty<TSourceValue>,
-            converter: IValueConverter<TSourceValue, TTargetValue>,
-            bindingType: BindingType = BindingType.TwoWay) {
-                
-            super(bindingType);
-            Assert.isDefined(source);
-            Assert.isDefined(converter);
-                
-            this._source = source;
-            this._converter = converter;
-        }
-        
-        //Binds the values of the source and target.
-        bind() {
-            var target = this.target;
-            Assert.isDefined(target);
-
-            this._source.propertyChanged.subscribe(this.updateTarget.bind(this));
-            if (this.bindingType.equals(BindingType.TwoWay))
-                target.propertyChanged.subscribe(this.updateSource.bind(this));
-
-            target.value = this.converter.convert(this._source.value);
-        }
-
-        updateSource(host?: IBindingProperty<TTargetValue>, value?: TTargetValue): void {
-            var converter = this._converter;
-            this._source.value = converter.convertBack(value);
-        }
-
-        updateTarget(host?: IBindingProperty<TSourceValue>, value?: TSourceValue): void {
-            var converter = this._converter;
-            this.target.value = this._converter.convert(value);
-        }
-    }
-
-    //#endregion PropertyBinder
-
-    //#region ComplexPropertyBinder
-
-    export class ComplexPropertyBinder<TSourceValue, TTargetValue>
-        extends Binder<TTargetValue> {
-
-        constructor(
-            sources: IEnumerable<IBindingProperty<TSourceValue>>,
-            converter: IValueConverter<TSourceValue, TTargetValue>) {
-            super(BindingType.OneWay);
-        }
-
-    }
-
-    //#endregion ComplexPropertyBinder
-
-    //#region SimplePropertyBinder
-
-    export class SimplePropertyBinder<TValue>
-        extends PropertyBinder<TValue, TValue> {
-
-        constructor(
-            source: IBindingProperty<TValue>,
-            bindingType: BindingType = BindingType.TwoWay) {
-
-            super(source, NullValueConverter.instance<TValue>(), bindingType);
-        }
-    }
-
-    //#endregion SimplePropertyBinder
-
-    //#region ObjectBinder
-
-    export class ObjectBinder<TSourceValue, TTargetValue>
-        extends Binder<TTargetValue> {
-        
-        private _source: INotifyPropertyChanged;
-        private _sourcePropertyName: string
-        private _converter: IValueConverter<TSourceValue, TTargetValue>;
-        
-        //The source of the binding, generally a property of a model or a view model.
-        get source(): INotifyPropertyChanged {
-            return this._source;
-        }
-
-        get sourcePropertyName(): string {
-            return this._sourcePropertyName;
-        }
-
-        get converter(): IValueConverter<TSourceValue, TTargetValue> {
-            return this._converter;
-        }
-
-        constructor(
-            source: INotifyPropertyChanged,
-            sourcePropertyName: string,
-            converter: IValueConverter<TSourceValue, TTargetValue>,
-            bindingType: BindingType = BindingType.TwoWay) {
-
-            super(bindingType);
-            Assert.isDefined(source);
-            Assert.isDefined(sourcePropertyName);
-            Assert.isDefined(converter);
-
-            this._source = source;
-            this._sourcePropertyName = sourcePropertyName;
-            this._converter = converter;
-        }
-
-        //Binds the values of the source and target.
-        bind() {
-            var target = this.target;
-            Assert.isDefined(target);
-
-            this._source.propertyChanged.subscribe(this.updateTarget.bind(this));
-            if (this.bindingType.equals(BindingType.TwoWay))
-                target.propertyChanged.subscribe(this.updateSource.bind(this));
-
-            target.value =
-                this.converter.convert(
-                    <TSourceValue>this._source[this._sourcePropertyName]);
-        }
-
-        updateSource(host?: IBindingProperty<TTargetValue>, value?: TTargetValue): void {
-            var converter = this._converter;
-            this._source[this._sourcePropertyName] = converter.convertBack(value);
-        }
-
-        updateTarget(owner?: INotifyPropertyChanged, property?: string): void {
-            this.target.value = this._converter.convert(<TSourceValue>owner[property]);
-        }
-    }
-
-    //#endregion ObjectBinder
-
-    //#region SimpleObjectBinder
-
-    export class SimpleObjectBinder<TValue>
-        extends ObjectBinder<TValue, TValue> {
-
-        constructor(
-            source: INotifyPropertyChanged,
-            sourcePropertyName: string,
-            bindingType: BindingType = BindingType.TwoWay) {
-
-            super(source, sourcePropertyName, NullValueConverter.instance<TValue>(), bindingType);
-        }
-    }
-
-    //#endregion SimpleObjectBinder
-
-    //#region NullValueConverter
-
-    //The null IValueConverter implementation, which leaves the value unchanged.
-    class NullValueConverter<TValue>
-        implements IValueConverter<TValue, TValue> {
-        
-        //Returns the specified value, unmodified.
-        convert(value: TValue): TValue {
-            return value;
-        }
-
-        //Returns the specified value, unmodified.
-        convertBack(value: TValue): TValue {
-            return value;
-        }
-
-        //Returns the singleton NullValueConverter instance.
-        static instance<TValue>(): NullValueConverter<TValue> {
-            if (!nullConverterInstance)
-                nullConverterInstance = new NullValueConverter<any>();
-
-            return <NullValueConverter<TValue>>nullConverterInstance;
-        }
-    }
-
-    var nullConverterInstance: NullValueConverter<any>;
-
-    //#endregion NullValueConverter
-
-    //#region CollectionAction
-
-    export class CollectionAction extends Enum<string> {
-        constructor(value: string) {
-            super(value);
-        }
-
-        static Add = new CollectionAction('Add');
-        static Remove = new CollectionAction('Remove');
-    }
-
-    //#endregion CollectionAction
-
-    //#region Collection
-
-    export class Collection<T>
-        implements IBindingCollection<T> {
+    export class ConfirmationProperty<TValue>
+        extends Property<TValue> {
 
         //#region Fields
 
-        private items: Array<T> = [];
-        private _binding = true;
-
-        //#endregion Fields
-
-        //#region Constructor
-
-        constructor(items?: IEnumerable<T>) {
-            this.collectionChanged =
-                new Events.Event<
-                    IBindingCollection<T>,
-                    ICollectionChangedArgs<T>>(this);
-
-            if (items)
-                this.items.addRange(items);
-        }
-
-        //#endregion Constructor
-
-        //#region ICollection Members
-
-        //Adds an item to the collection.
-        add(item: T): ICollection<T> {
-            var items = this.items;
-
-            items.add(item);
-            if (this._binding) {
-                this.collectionChanged.execute({
-                    action: CollectionAction.Add,
-                    newIndex: items.length - 1,
-                    oldIndex: null,
-                    newItem: item,
-                    oldItem: null
-                });
-            }
-
-            return this;
-        }
-
-        //Adds a sequence of items to the collection.
-        addRange(items: IEnumerable<T>): ICollection<T> {
-            Assert.isDefined(items);
-            items.forEach(item => this.add(item));
-            return this;
-        }
-
-        //Removes all instances of the item from the collection.
-        remove(item: T): ICollection<T> {
-            this.array
-            var items = this.items,
-                currentItem: T;
-
-            for (var i = 0, length = items.length; i < length; i++) {
-                currentItem = items[i];
-                if (u.areEqual(item, currentItem)) {
-                    items.splice(i, 1);
-                    if (this._binding) {
-                        this.collectionChanged.execute({
-                            action: CollectionAction.Remove,
-                            newIndex: null,
-                            oldIndex: i,
-                            newItem: null,
-                            oldItem: currentItem
-                        });
-                    }
-                    i--;
-                    length--;
-                }
-            }
-            return this;
-        }
-
-        //Removes the element at the specified index.
-        removeAt(index: number): ICollection<T> {
-            //return this.bindingRemoveAt(index, true);
-
-            var items = this.items,
-                oldItem = items[index];
-
-            this.items.removeAt(index);
-            if (this._binding) {
-                this.collectionChanged.execute({
-                    action: CollectionAction.Remove,
-                    newIndex: null,
-                    oldIndex: index,
-                    newItem: null,
-                    oldItem: oldItem
-                });
-            }
-
-            return this;
-        }
-
-        //Clears all elements from the collection.
-        clear(): ICollection<T> {
-            var items = this.items;
-            while (items.length > 0) {
-                items.remove(items[0]);
-            }
-            return this;
-        }
-
-        //Returns the element at the specified index.
-        get(index: number): T {
-            return this.items[index];
-        }
-
-        //Sets the item to the specified index, over-writing the item that was in that location.
-        set(index: number, item: T): ICollection<T> {
-            this.items[index] = item;
-            if (this._binding) {
-                this.collectionChanged.execute({
-                    action: CollectionAction.Add,
-                    newIndex: index,
-                    oldIndex: null,
-                    newItem: item,
-                    oldItem: null
-                });
-            }
-
-            return this;
-        }
-
-        //#endregion IICollection Members
-
-        //#region IEnumerable Members
-
-        //Enumerates the elements of the sequence, calling the enumerator for each.
-        getEnumerator(): IEnumerator<T> {
-            return this.items.getEnumerator();
-        }
-
-        //Returns an IEnumerable implementation that is queryable.
-        query(): IQueryable<T> {
-            return this.items.query();
-        }
-
-        //Enumerates the collection
-        forEach(operation: (item: T) => void): void {
-            ce.forEach(this, operation);
-        }
-
-        //Returns a JavaScript array.
-        array(): T[] {
-            return this.items.slice(0);
-        }
-
-        //Counts the number of elements in a sequence.
-        count(): number {
-            return this.items.length;
-        }
-
-        //#endregion IEnumerable Members
-
-        //#region IBindingCollection Members
-
-        //Turns off binding updates.
-        bindingOff(): void {
-            this._binding = false;
-        }
-
-        //Turns on binding updates.
-        bindingOn(): void {
-            this._binding = true;
-        }
-
-        //An event which is raised when a property value of the host has been changed.
-        collectionChanged: IEvent<IBindingCollection<T>, ICollectionChangedArgs<T>>;
-
-        //#endregion IBindingCollection Members
-    }
-
-    //#endregion CollectionAction
-
-    //#region CollectionBinder
-
-    //A binder for IBindingCollections.
-    export class CollectionBinder<TSourceValue, TTargetValue>
-        implements ICollectionBinder<TTargetValue> {
-
-        //#region Fields
-
-        private _bindingType: BindingType
-        private _source: IBindingCollection<TSourceValue>;
-        private _converter: IValueConverter<TSourceValue, TTargetValue>;
-
-        //The binding target, generally a property of a view.
-        target: IBindingCollection<TTargetValue>;
+        private _newValue: TValue;
+        private hasAccepted: boolean;
 
         //#endregion Fields
 
         //#region Properties
 
-        //The source of the binding, generally a property of a model or a view model.
-        get source(): IBindingCollection<TSourceValue> {
-            return this._source;
+        get value(): TValue {
+            return this._getValue();
         }
 
-        get converter(): IValueConverter<TSourceValue, TTargetValue> {
-            return this._converter;
+        set value(value: TValue) {
+            this._newValue = value;
         }
 
-        //Denotes the directionality of the binding created by the binder.
-        get bindingType(): BindingType {
-            return this._bindingType;
+        get newValue() {
+            return this._newValue;
+        }
+
+        //This breaks our convention of having private members have an underscore.
+        private get synchronizer(): Synchronizer<PropertyUpdate<TValue>> {
+            return (<any>this)._synchronizer;
         }
 
         //#endregion Properties
 
         //#region Constructor
 
-        constructor(
-            source: IBindingCollection<TSourceValue>,
-            converter: IValueConverter<TSourceValue, TTargetValue> = NullValueConverter.instance<any>(),
-            bindingType: BindingType = BindingType.TwoWay) {
-
-            Assert.isDefined(source);
-            Assert.isDefined(converter);
-            Assert.isDefined(bindingType);    
-
-            this._source = source;
-            this._converter = converter;
-            this._bindingType = bindingType;
+        constructor(value: TValue = null) {
+            super(value);
+            this._newValue = value;
         }
 
         //#endregion Constructor
 
+        //#region ISynchronizable
+
+        //#region apply
+
+        apply(updates: IEnumerable<PropertyUpdate<TValue>>) {
+            var synchronizer = this.synchronizer;
+
+            var update = synchronizer
+                .filter(updates).query()
+                .lastOrDefault();
+
+            if (!u.isDefined(update) ||
+                u.areEqual(this._getValue(), update.value))
+                return;
+
+            this._newValue = update.value;
+        }
+
+        //#endregion apply
+
+        //#endregion ISynchronizable
+
         //#region Methods
 
-        //Binds the values of the source and target.
-        bind() {
-            var target = this.target,
-                source = this._source,
-                converter = this._converter,
-                isTwoWay = this.bindingType.equals(BindingType.TwoWay),
-                sourceRegistration: any, //TODO Uncomment: (host: IBindingProperty<TSourceValue>, args: ICollectionChangedArgs<TSourceValue>) => void,
-                targetRegistration: any; //TODO Uncomment: (host: IBindingProperty<TTargetValue>, args: ICollectionChangedArgs<TTargetValue>) => void;
+        //#region accept
 
-            Assert.isDefined(target);
-
-            target.clear();
-            target.addRange(
-                source.query()
-                .select(source =>
-                    converter.convert(source)));
-
-            sourceRegistration = (host, args) => {
-                if (isTwoWay)
-                    target.collectionChanged.unsubscribe(targetRegistration);
-                this.updateTarget(host, args);
-                if (isTwoWay)
-                    target.collectionChanged.subscribe(targetRegistration);
-            };
-
-            if (isTwoWay) {
-                targetRegistration = (host, args) => {
-                    source.collectionChanged.unsubscribe(sourceRegistration);
-                    this.updateSource(host, args);
-                    source.collectionChanged.subscribe(sourceRegistration);
-                };
-            }
-
-            source.collectionChanged.subscribe(sourceRegistration);
-            if (this.bindingType.equals(BindingType.TwoWay)) {
-                target.collectionChanged.subscribe(targetRegistration);
-            }
+        accept() {
+            this._setValue(this._newValue);
+            this.synchronizer.add(new PropertyUpdate(this._newValue));
+            this.synchronizer.sync();
         }
 
-        updateSource(host: IBindingProperty<TTargetValue>, args: ICollectionChangedArgs<TTargetValue>): void {
-            if (args.action.equals(CollectionAction.Add)) {
-                this._source.set(args.newIndex, this.converter.convertBack(args.newItem));
-            } else if (args.action.equals(CollectionAction.Remove)) {
-                this._source.removeAt(args.oldIndex);
-            } else {
-                Assert.isInvalid("The CollectionAction was not recognized.");
-            }
+        //#endregion accept
+
+        //#region reject
+
+        reject() {
+            this._newValue = this.value;
         }
 
-        updateTarget(host: IBindingProperty<TSourceValue>, args: ICollectionChangedArgs<TSourceValue>): void {
-            if (args.action.equals(CollectionAction.Add)) {
-                this.target.set(args.newIndex, this.converter.convert(args.newItem));
-            } else if (args.action.equals(CollectionAction.Remove)) {
-                this.target.removeAt(args.oldIndex);
-            } else {
-                Assert.isInvalid("The CollectionAction was not recognized.");
-            }
-        }
+        //#endregion reject
 
         //#endregion Methods
-    }
 
-    //#endregion CollectionBinder
+        //#region Utilities
 
-    //#region Functions
-
-    //#region bindProperty
-
-    export function bindProperty<TValue>(
-        source: IBindingProperty<TValue>):
-        IBinder<TValue>;
-
-    export function bindProperty<TValue>(
-        source: IBindingProperty<TValue>,
-        bindingType: BindingType):
-        IBinder<TValue>;
-
-    export function bindProperty<TSourceValue, TTargetValue>(
-        source: IBindingProperty<TSourceValue>,
-        converter: IValueConverter<TSourceValue, TTargetValue>):
-        IBinder<TTargetValue>;
-
-    export function bindProperty<TSourceValue, TTargetValue>(
-        source: IBindingProperty<TSourceValue>,
-        converter: IValueConverter<TSourceValue, TTargetValue>,
-        bindingType: BindingType):
-        IBinder<TTargetValue>;
-
-    /**
-    * For overload resolution only.
-    */
-    export function bindProperty(
-        source: any,
-        converter: any = NullValueConverter.instance<any>(),
-        bindingType: any  = BindingType.TwoWay): any {
-
-        if (converter.getType && converter.getType() === bindingTypeType) {
-            bindingType = converter;
-            converter = NullValueConverter.instance<any>();
+        private _getValue(): TValue {
+            return (<any>this)._value;
         }
 
-        return new PropertyBinder<any, any>(source, converter, bindingType);
-    }
-
-    //#endregion bindProperty
-
-    //#region bindOject
-
-    export function bindObject<TValue>(
-        source: INotifyPropertyChanged,
-        property: string):
-        IBinder<TValue>;
-
-    export function bindObject<TValue>(
-        source: INotifyPropertyChanged,
-        property: string,
-        bindingType: BindingType):
-        IBinder<TValue>;
-
-    export function bindObject<TSourceValue, TTargetValue>(
-        source: INotifyPropertyChanged,
-        property: string,
-        converter: IValueConverter<TSourceValue, TTargetValue>):
-        IBinder<TTargetValue>;
-
-    export function bindObject<TSourceValue, TTargetValue>(
-        source: INotifyPropertyChanged,
-        property: string,
-        converter: IValueConverter<TSourceValue, TTargetValue>,
-        bindingType: BindingType):
-        IBinder<TTargetValue>;
-
-    /**
-    * For overload resolution only.
-    */
-    export function bindObject(
-        source: INotifyPropertyChanged,
-        property: string,
-        converter: any = NullValueConverter.instance<any>(),
-        bindingType: any = BindingType.TwoWay): any {
-
-        if (converter.getType && converter.getType() === bindingTypeType) {
-            bindingType = converter;
-            converter = NullValueConverter.instance<any>();
+        private _setValue(value: TValue) {
+            (<any>this)._value = value;
         }
 
-        return new ObjectBinder<any, any>(source, property, converter, bindingType);
+        //#endregion Utilities
     }
 
-    //#endregion bindOject
+    //#endregion ConfirmationProperty
 
-    //#region bindCollection
+    //#region IPropertyBinder
 
-    export function bindCollection<TValue>(
-        source: IBindingCollection<TValue>):
-        ICollectionBinder<TValue>;
+    export interface IPropertyBinder<TValue> extends IObject {
+        property: Property<any>;
+        converter: IConverter<any, TValue>;
+    }
 
-    export function bindCollection<TValue>(
-        source: IBindingCollection<TValue>,
-        bindingType: BindingType):
-        ICollectionBinder<TValue>;
+    //#endregion IPropertyBinder
 
-    export function bindCollection<TSourceValue, TTargetValue>(
-        source: IBindingCollection<TSourceValue>,
-        converter: IValueConverter<TSourceValue, TTargetValue>):
-        ICollectionBinder<TTargetValue>;
+    //#region PropertyUpdate
 
-    export function bindCollection<TSourceValue, TTargetValue>(
-        source: IBindingCollection<TSourceValue>,
-        converter: IValueConverter<TSourceValue, TTargetValue>,
-        bindingType: BindingType):
-        ICollectionBinder<TTargetValue>;
-
-    /**
-    * For overload resolution only.
-    */
-    export function bindCollection(
-        source: any,
-        converter: any = NullValueConverter.instance<any>(),
-        bindingType: any = BindingType.TwoWay): any {
-
-        if (converter.getType && converter.getType() === bindingTypeType) {
-            bindingType = converter;
-            converter = NullValueConverter.instance<any>();
+    export class PropertyUpdate<TValue> extends Update {
+        value: TValue;
+        constructor(value: TValue, sources: IEnumerable<any> = []) {
+            super(sources);
+            this.value = value;
+            if (sources)
+                sources.query().forEach(source => this.addSource(source));
         }
-
-        return new CollectionBinder<any, any>(source, converter, bindingType);
     }
 
-    //#endregion bindCollection
-
-    //#region getNullConverter
-
-    export function getNullConverter<TValue>(): IValueConverter<TValue, TValue> {
-        return NullValueConverter.instance<TValue>();
-    }
-
-    //#endregion getNullConverter
-
-    //#endregion Functions
-
-    //#region Variables
-
-    var bindingTypeType = typeOf(BindingType);
-
-    //#endregion Variables
-}
+    //#endregion PropertyUpdate
+} 

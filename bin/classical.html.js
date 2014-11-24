@@ -360,12 +360,227 @@ var Classical;
     var Html = Classical.Html;
 })(Classical || (Classical = {}));
 
+var Classical;
+(function (Classical) {
+    (function (Html) {
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+    })(Classical.Html || (Classical.Html = {}));
+    var Html = Classical.Html;
+})(Classical || (Classical = {}));
 
 var Classical;
 (function (Classical) {
     (function (Html) {
         (function (Elements) {
             var events = Classical.Events;
+            var b = Classical.Binding;
+            var bc = Classical.Binding.Collections;
 
             var HtmlNode = (function () {
                 function HtmlNode(elementName, config) {
@@ -457,7 +672,7 @@ var Classical;
                                         propertyName = attributeName;
                                     _this[propertyName] = _this.element[attributeName];
                                 } else {
-                                    var children = _this.children, addedNodes = Array.prototype.slice.call(record.addedNodes), removedNodes = record.removedNodes, childNodes = _this._element.childNodes, childNode, child;
+                                    var children = new bc.Collection([_this]), addedNodes = Array.prototype.slice.call(record.addedNodes), removedNodes = record.removedNodes, childNodes = _this._element.childNodes, childNode, child;
 
                                     for (var nodeIndex = 0, numberOfNodes = removedNodes.length; nodeIndex < numberOfNodes; nodeIndex++) {
                                         child = children.query().where(function (c) {
@@ -7925,10 +8140,11 @@ var Classical;
             }
 
             function initializeProperty(element, propertyName, htmlPropertyName) {
-                var bindingProperyName = propertyName + 'Property', fieldName = '_' + bindingProperyName, htmlElement = element.element, htmlValue = htmlElement[htmlPropertyName], property = new Classical.Binding.Property(element, htmlValue);
+                var bindingProperyName = propertyName + 'Property', fieldName = '_' + bindingProperyName, htmlElement = element.element, htmlValue = htmlElement[htmlPropertyName], property = new b.Property(element);
+                property['htmlValue'] = htmlValue;
 
-                property.propertyChanged.subscribe(function (host, value) {
-                    var currentHtmlValue = htmlElement[htmlPropertyName];
+                property.observe(function (values, host) {
+                    var value = values[0], currentHtmlValue = htmlElement[htmlPropertyName];
 
                     var valueWasNotChanged = false;
                     try  {
@@ -7951,11 +8167,11 @@ var Classical;
             }
 
             function initializeChildrenProperty(element) {
-                var htmlElement = element.getElement(), htmlElementChildren = htmlElement.childNodes, htmlElementChildrenArray = Array.prototype.slice.call(htmlElementChildren), collectionProperty = new Classical.Binding.Collection(htmlElementChildrenArray.map(function (node) {
+                var htmlElement = element.getElement(), htmlElementChildren = htmlElement.childNodes, htmlElementChildrenArray = Array.prototype.slice.call(htmlElementChildren), collectionProperty = new bc.Collection(htmlElementChildrenArray.map(function (node) {
                     return HtmlNode.getHtmlNode(node);
                 }));
-                collectionProperty.collectionChanged.subscribe(function (collection, info) {
-                    if (info.action.equals(Classical.Binding.CollectionAction.Add)) {
+                collectionProperty.observe(function (collection, info) {
+                    if (info.action.equals(bc.CollectionUpdateType.Add)) {
                         var oldChild = htmlElementChildren[info.newIndex], newIndex = info.newIndex, newItem = info.newItem, newElement = newItem.element;
 
                         if (!newElement) {
@@ -7970,7 +8186,7 @@ var Classical;
                             htmlElement.appendChild(newElement);
                         else
                             htmlElement.replaceChild(newElement, oldChild);
-                    } else if (info.action.equals(Classical.Binding.CollectionAction.Remove)) {
+                    } else if (info.action.equals(bc.CollectionUpdateType.Remove)) {
                         var oldChild = htmlElementChildren[info.oldIndex];
                         Classical.Assert.isDefined(oldChild, 'The element to remove could not be found.');
 
@@ -7990,8 +8206,8 @@ var Classical;
                 if (configValue !== undefined && !configBinder && isInitializable) {
                     element[propertyName] = configValue;
                 } else if (configBinder) {
-                    configBinder.target = element[bindingPropertyName];
-                    configBinder.bind();
+                    var property = element[bindingPropertyName];
+                    property.bind(configBinder);
                 }
             }
 
@@ -8001,8 +8217,7 @@ var Classical;
                 if (children && !childrenBinder) {
                     childrenCollection.addRange(children);
                 } else if (childrenBinder) {
-                    childrenBinder.target = childrenCollection;
-                    childrenBinder.bind();
+                    childrenCollection.bind(childrenBinder);
                 }
             }
 

@@ -1,5 +1,5 @@
 
-module Classical.Binding.New.Collections.Spec {
+module Classical.Binding.Collections.Spec {
 
     //#region Imports
 

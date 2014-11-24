@@ -1,5 +1,5 @@
 ﻿
-module Classical.Binding.New.Collections {
+module Classical.Binding.Collections {
 
     //#region Imports
 
@@ -175,12 +175,12 @@ module Classical.Binding.New.Collections {
         bind(source: Collection<T>): void;
         bind(collectionBinder: ICollectionBinder<T>): void;
         bind(sources: Array<ISynchronizable<Update>>, selector: (sources: Array<any>) => any);
-        bind(binder: IBinder<CollectionUpdate<T>>): void;
+        bind(binder: b.IBinder<CollectionUpdate<T>>): void;
         bind(binder: IComplexBinder<CollectionUpdate<T>>): void;
         
         //For overload resolution only.
         bind(arg1: any, arg2?: any) {
-            var currentBinder: IBinder<CollectionUpdate<T>>;
+            var currentBinder: b.IBinder<CollectionUpdate<T>>;
 
             if (u.isArray(arg1)) /*sources*/ {
                 var complexBinder = this._createComplexBinder(arg1, arg2);
@@ -251,7 +251,7 @@ module Classical.Binding.New.Collections {
 
         //#region sourceToBinder
 
-        private _sourceToBinder(source: Collection<T>): IBinder<CollectionUpdate<T>> {
+        private _sourceToBinder(source: Collection<T>): b.IBinder<CollectionUpdate<T>> {
             return {
                 source: source,
                 init: () => {
@@ -266,7 +266,7 @@ module Classical.Binding.New.Collections {
 
         //#region collectionBinderToBinder
 
-        private _collectionBinderToBinder(collectionBinder: ICollectionBinder<T>): IBinder<CollectionUpdate<T>> {
+        private _collectionBinderToBinder(collectionBinder: ICollectionBinder<T>): b.IBinder<CollectionUpdate<T>> {
             var converter: IConverter<Update, CollectionUpdate<T>> = null,
                 valueConverter = collectionBinder.converter;
 
