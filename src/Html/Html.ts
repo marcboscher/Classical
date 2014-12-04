@@ -461,18 +461,6 @@ module Classical.Html {
 		static color = 'color';
 
 		/**
-		* Value: 'date'
-		* HTML5 A control for entering a date (year, month, and day, with no time) [MDN].
-		*/
-		static date = 'date';
-
-		/**
-		* Value: 'datetime-local'
-		* HTML5 A control for entering a date and time, with no time zone [MDN].
-		*/
-		static datetimeLocal = 'datetime-local';
-
-		/**
 		* Value: 'email'
 		* HTML5 A field for editing an e-mail address. The :valid and :invalid CSS pseudo-classes are applied as appropriate [MDN].
 		*/
@@ -489,12 +477,6 @@ module Classical.Html {
 		* A graphical submit button. You must use the src attribute to define the source of the image and the alt attribute to define alternative text. You can use the height and width attributes to define the size of the image in pixels [MDN].
 		*/
 		static image = 'image';
-
-		/**
-		* Value: 'month'
-		* HTML5 A control for entering a month and year, with no time zone [MDN].
-		*/
-		static month = 'month';
 
 		/**
 		* Value: 'number'
@@ -555,22 +537,10 @@ module Classical.Html {
 		static text = 'text';
 
 		/**
-		* Value: 'time'
-		* HTML5 A control for entering a time value with no time zone [MDN].
-		*/
-		static time = 'time';
-
-		/**
 		* Value: 'url'
 		* HTML5 A field for editing a URL. The user may enter a blank or invalid address. Line-breaks are automatically removed from the input value. You can use attributes such as pattern and maxlength to restrict values entered in the control. The :valid and :invalid CSS pseudo-classes are applied as appropriate [MDN].
 		*/
 		static url = 'url';
-
-		/**
-		* Value: 'week'
-		* HTML5 A control for entering a date consisting of a week-year number and a week number with no time zone [MDN].
-		*/
-		static week = 'week';
 
 		//#endregion Static Members
 	}
@@ -901,7 +871,7 @@ module Classical.Html {
 		/*
 		* This attribute is a space-separated list of the classes of the element. Classes allows CSS and Javascript to select and access specific elements via the class selectors or functions like the DOM method document.getElementsByClassName [MDN].
 		*/
-		classesBinder?: b.IPropertyBinder<string>;
+		classesBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		/*
 		* Html.GlobalDirection enumerates the values of this property.
@@ -913,7 +883,7 @@ module Classical.Html {
 		* Html.GlobalDirection enumerates the values of this property.
 		* This enumerated attribute indicates the directionality of the element's text. It can have the following values: ltr, rtl, auto [MDN].
 		*/
-		directionBinder?: b.IPropertyBinder<string>;
+		directionBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		/*
 		* This enumerated attribute indicates whether the element can be dragged, using the Drag and Drop API. The attribute must take a boolean value of either true or false [MDN].
@@ -923,7 +893,7 @@ module Classical.Html {
 		/*
 		* This enumerated attribute indicates whether the element can be dragged, using the Drag and Drop API. The attribute must take a boolean value of either true or false [MDN].
 		*/
-		draggableBinder?: b.IPropertyBinder<boolean>;
+		draggableBinder?: b.IBinder<b.PropertyUpdate<boolean>>;
 
 		/*
 		* This Boolean attribute indicates that the element is not yet, or is no longer, relevant. For example, it can be used to hide elements of the page that can't be used until the login process has been completed. The browser won't render such elements [MDN].
@@ -933,7 +903,7 @@ module Classical.Html {
 		/*
 		* This Boolean attribute indicates that the element is not yet, or is no longer, relevant. For example, it can be used to hide elements of the page that can't be used until the login process has been completed. The browser won't render such elements [MDN].
 		*/
-		hiddenBinder?: b.IPropertyBinder<boolean>;
+		hiddenBinder?: b.IBinder<b.PropertyUpdate<boolean>>;
 
 		/*
 		* This attribute defines a unique identifier which must be unique to the entire document. Its purpose is to identify the element when linking, scripting, or styling [MDN].
@@ -943,7 +913,7 @@ module Classical.Html {
 		/*
 		* This attribute defines a unique identifier which must be unique to the entire document. Its purpose is to identify the element when linking, scripting, or styling [MDN].
 		*/
-		idBinder?: b.IPropertyBinder<string>;
+		idBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		/*
 		* This attribute participates in defining the language of the element, the language that non-editable elements are written in or the language that editable elements should be written in. The tag contains one single entry value in the format defines in the Tags for Identifying Languages (BCP47) IETF document. If the tag content is the empty string the language is set to unknown; if the tag content is not valid, regarding to BCP47, it is set to invalid [MDN].
@@ -953,7 +923,7 @@ module Classical.Html {
 		/*
 		* This attribute participates in defining the language of the element, the language that non-editable elements are written in or the language that editable elements should be written in. The tag contains one single entry value in the format defines in the Tags for Identifying Languages (BCP47) IETF document. If the tag content is the empty string the language is set to unknown; if the tag content is not valid, regarding to BCP47, it is set to invalid [MDN].
 		*/
-		languageBinder?: b.IPropertyBinder<string>;
+		languageBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		/*
 		* This boolean attribute defines whether the element may be checked for spelling errors. It may have the following values [MDN].
@@ -963,7 +933,7 @@ module Classical.Html {
 		/*
 		* This boolean attribute defines whether the element may be checked for spelling errors. It may have the following values [MDN].
 		*/
-		spellCheckBinder?: b.IPropertyBinder<boolean>;
+		spellCheckBinder?: b.IBinder<b.PropertyUpdate<boolean>>;
 
 		/*
 		* This attribute contains a text representing advisory information related to the element it belongs too. Such information can typically, but not necessarily, be presented to the user as a tooltip [MDN].
@@ -973,7 +943,7 @@ module Classical.Html {
 		/*
 		* This attribute contains a text representing advisory information related to the element it belongs too. Such information can typically, but not necessarily, be presented to the user as a tooltip [MDN].
 		*/
-		titleBinder?: b.IPropertyBinder<string>;
+		titleBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		/**
 		* The fullScreenChangeEvent event is executed when an element was turned to fullscreen mode or back to normal mode [MDN].
@@ -1600,7 +1570,7 @@ module Classical.Html {
 		* This is the single required attribute for anchors defining a hypertext source link. It indicates the link target, either a URL or a URL fragment. A URL fragment is a name preceded by a hash mark (#), which specifies an internal target location (an ID) within the current document. URLs are not restricted to Web (HTTP)-based documents. URLs might use any protocol supported by the browser. For example, file, ftp, and mailto work in most user agents.  
 		* Note: You can use the special fragment "top" to create a link back to the top of the page; for example <a href="#top">Return to top</a>. This behavior is specified by HTML5 [MDN].
 		*/
-		hrefBinder?: b.IPropertyBinder<string>;
+		hrefBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		/*
 		* This attribute indicates the language of the linked resource. It is purely advisory. Allowed values are determined by BCP47 for HTML5 and by RFC1766 for HTML4. Use this attribute only if the href attribute is present [MDN].
@@ -1610,7 +1580,7 @@ module Classical.Html {
 		/*
 		* This attribute indicates the language of the linked resource. It is purely advisory. Allowed values are determined by BCP47 for HTML5 and by RFC1766 for HTML4. Use this attribute only if the href attribute is present [MDN].
 		*/
-		hrefLanguageBinder?: b.IPropertyBinder<string>;
+		hrefLanguageBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		/*
 		* For anchors containing the href attribute, this attribute specifies the relationship of the target object to the link object. The value is a space-separated list of relationship values. The values and their semantics will be registered by some authority that might have meaning to the document author. The default relationship, if no other is given, is void. Use this attribute only if the href attribute is present [MDN].
@@ -1620,7 +1590,7 @@ module Classical.Html {
 		/*
 		* For anchors containing the href attribute, this attribute specifies the relationship of the target object to the link object. The value is a space-separated list of relationship values. The values and their semantics will be registered by some authority that might have meaning to the document author. The default relationship, if no other is given, is void. Use this attribute only if the href attribute is present [MDN].
 		*/
-		relationshipBinder?: b.IPropertyBinder<string>;
+		relationshipBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		/*
 		* Html.AnchorTarget enumerates the values of this property.
@@ -1632,7 +1602,7 @@ module Classical.Html {
 		* Html.AnchorTarget enumerates the values of this property.
 		* This attribute specifies where to display the linked resource. In HTML4, this is the name of, or a keyword for, a frame. In HTML5, it is a name of, or keyword for, a browsing context (for example, tab, window, or inline frame). The following keywords have special meanings:  _self: Load the response into the same HTML4 frame (or HTML5 browsing context) as the current one. This value is the default if the attribute is not specified. _blank: Load the response into a new unnamed HTML4 window or HTML5 browsing context. _parent: Load the response into the HTML4 frameset parent of the current frame or HTML5 parent browsing context of the current one. If there is no parent, this option behaves the same way as _self. _top: In HTML4: Load the response into the full, original window, canceling all other frames. In HTML5: Load the response into the top-level browsing context (that is, the browsing context that is an ancestor of the current one, and has no parent). If there is no parent, this option behaves the same way as _self. Use this attribute only if the href attribute is present [MDN].
 		*/
-		targetBinder?: b.IPropertyBinder<string>;
+		targetBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		/*
 		* This attribute specifies the media type in the form of a MIME type for the link target. Generally, this is provided strictly as advisory information; however, in the future a browser might add a small icon for multimedia types. For example, a browser might add a small speaker icon when type is set to audio/wav. For a complete list of recognized MIME types, see http://www.w3.org/TR/html4/references.html#ref-MIMETYPES. Use this attribute only if the href attribute is present [MDN].
@@ -1642,7 +1612,7 @@ module Classical.Html {
 		/*
 		* This attribute specifies the media type in the form of a MIME type for the link target. Generally, this is provided strictly as advisory information; however, in the future a browser might add a small icon for multimedia types. For example, a browser might add a small speaker icon when type is set to audio/wav. For a complete list of recognized MIME types, see http://www.w3.org/TR/html4/references.html#ref-MIMETYPES. Use this attribute only if the href attribute is present [MDN].
 		*/
-		typeBinder?: b.IPropertyBinder<string>;
+		typeBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		//#endregion Properties
 	}
@@ -1663,7 +1633,7 @@ module Classical.Html {
 		/*
 		* A text string alternative to display on browsers that do not display images. The text should be phrased so that it presents the user with the same kind of choice as the image would offer when displayed without the alternative text. In HTML4, this attribute is required, but may be the empty string (""). In HTML5, this attribute is required only if the href attribute is used [MDN].
 		*/
-		alternateBinder?: b.IPropertyBinder<string>;
+		alternateBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		/*
 		* A set of values specifying the coordinates of the hot-spot region. The number and meaning of the values depend upon the value specified for the shape attribute. For a rect or rectangle shape, the coords value is two x,y pairs: left, top, right, and bottom. For a circle shape, the value is x,y,r where x,y is a pair specifying the center of the circle and r is a value for the radius. For a poly or polygon< shape, the value is a set of x,y pairs for each point in the polygon: x1,y1,x2,y2,x3,y3, and so on. In HTML4, the values are numbers of pixels or percentages, if a percent sign (%) is appended; in HTML5, the values are numbers of CSS pixels [MDN].
@@ -1673,7 +1643,7 @@ module Classical.Html {
 		/*
 		* A set of values specifying the coordinates of the hot-spot region. The number and meaning of the values depend upon the value specified for the shape attribute. For a rect or rectangle shape, the coords value is two x,y pairs: left, top, right, and bottom. For a circle shape, the value is x,y,r where x,y is a pair specifying the center of the circle and r is a value for the radius. For a poly or polygon< shape, the value is a set of x,y pairs for each point in the polygon: x1,y1,x2,y2,x3,y3, and so on. In HTML4, the values are numbers of pixels or percentages, if a percent sign (%) is appended; in HTML5, the values are numbers of CSS pixels [MDN].
 		*/
-		coordinatesBinder?: b.IPropertyBinder<string>;
+		coordinatesBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		/*
 		* The hyperlink target for the area. Its value is a valid URL. In HTML4, either this attribute or the nohref attribute must be present in the element. In HTML5, this attribute may be omitted; if so, the area element does not represent a hyperlink [MDN].
@@ -1683,7 +1653,7 @@ module Classical.Html {
 		/*
 		* The hyperlink target for the area. Its value is a valid URL. In HTML4, either this attribute or the nohref attribute must be present in the element. In HTML5, this attribute may be omitted; if so, the area element does not represent a hyperlink [MDN].
 		*/
-		hrefBinder?: b.IPropertyBinder<string>;
+		hrefBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		/*
 		* The shape of the associated hot spot. The specifications for HTML 5 and HTML 4 define the values rect, which defines a rectangular region; circle, which defines a circular region; poly, which defines a polygon; and default, which indicates the entire region beyond any defined shapes. Many browsers, notably Internet Explorer 4 and higher, support circ, polygon, and rectangle as valid values for shape; these values are [MDN].
@@ -1693,7 +1663,7 @@ module Classical.Html {
 		/*
 		* The shape of the associated hot spot. The specifications for HTML 5 and HTML 4 define the values rect, which defines a rectangular region; circle, which defines a circular region; poly, which defines a polygon; and default, which indicates the entire region beyond any defined shapes. Many browsers, notably Internet Explorer 4 and higher, support circ, polygon, and rectangle as valid values for shape; these values are [MDN].
 		*/
-		shapeBinder?: b.IPropertyBinder<string>;
+		shapeBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		/*
 		* Html.AreaTarget enumerates the values of this property.
@@ -1705,7 +1675,7 @@ module Classical.Html {
 		* Html.AreaTarget enumerates the values of this property.
 		* This attribute specifies where to display the linked resource. In HTML4, this is the name of, or a keyword for, a frame. In HTML5, it is a name of, or keyword for, a browsing context (for example, tab, window, or inline frame). The following keywords have special meanings:  _self: Load the response into the same HTML4 frame (or HTML5 browsing context) as the current one. This value is the default if the attribute is not specified. _blank: Load the response into a new unnamed HTML4 window or HTML5 browsing context. _parent: Load the response into the HMTL4 frameset parent of the current frame or HTML5 parent browsing context of the current one. If there is no parent, this option behaves the same way as _self. _top: In HTML4: Load the response into the full, original window, canceling all other frames. In HTML5: Load the response into the top-level browsing context (that is, the browsing context that is an ancestor of the current one, and has no parent). If there is no parent, this option behaves the same way as _self. Use this attribute only if the href attribute is present [MDN].
 		*/
-		targetBinder?: b.IPropertyBinder<string>;
+		targetBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		//#endregion Properties
 	}
@@ -1748,7 +1718,7 @@ module Classical.Html {
 		/*
 		* A Boolean attribute; if specified (even if the value is "false"!), the audio will automatically begin to play back as soon as it can do so without stopping to finish loading the data [MDN].
 		*/
-		autoPlayBinder?: b.IPropertyBinder<boolean>;
+		autoPlayBinder?: b.IBinder<b.PropertyUpdate<boolean>>;
 
 		/*
 		* An attribute you can read to determine which time ranges of the media have been buffered. This attribute contains a TimeRanges object [MDN].
@@ -1758,7 +1728,7 @@ module Classical.Html {
 		/*
 		* An attribute you can read to determine which time ranges of the media have been buffered. This attribute contains a TimeRanges object [MDN].
 		*/
-		bufferedBinder?: b.IPropertyBinder<TimeRanges>;
+		bufferedBinder?: b.IBinder<b.PropertyUpdate<TimeRanges>>;
 
 		/*
 		* If this attribute is present, the browser will offer controls to allow the user to control audio playback, including volume, seeking, and pause/resume playback [MDN].
@@ -1768,7 +1738,7 @@ module Classical.Html {
 		/*
 		* If this attribute is present, the browser will offer controls to allow the user to control audio playback, including volume, seeking, and pause/resume playback [MDN].
 		*/
-		controlsBinder?: b.IPropertyBinder<boolean>;
+		controlsBinder?: b.IBinder<b.PropertyUpdate<boolean>>;
 
 		/*
 		* A Boolean attribute; if specified, we will, upon reaching the end of the audio, automatically seek back to the start [MDN].
@@ -1778,7 +1748,7 @@ module Classical.Html {
 		/*
 		* A Boolean attribute; if specified, we will, upon reaching the end of the audio, automatically seek back to the start [MDN].
 		*/
-		loopBinder?: b.IPropertyBinder<boolean>;
+		loopBinder?: b.IBinder<b.PropertyUpdate<boolean>>;
 
 		/*
 		* A Boolean attribute which indicates whether the audio will be initially silenced. Its default value is false, meaning that the audio will be played [MDN].
@@ -1788,7 +1758,7 @@ module Classical.Html {
 		/*
 		* A Boolean attribute which indicates whether the audio will be initially silenced. Its default value is false, meaning that the audio will be played [MDN].
 		*/
-		mutedBinder?: b.IPropertyBinder<boolean>;
+		mutedBinder?: b.IBinder<b.PropertyUpdate<boolean>>;
 
 		/*
 		* A TimeRanges object indicating all the ranges of the audio that have been played [MDN].
@@ -1798,7 +1768,7 @@ module Classical.Html {
 		/*
 		* A TimeRanges object indicating all the ranges of the audio that have been played [MDN].
 		*/
-		playedBinder?: b.IPropertyBinder<TimeRanges>;
+		playedBinder?: b.IBinder<b.PropertyUpdate<TimeRanges>>;
 
 		/*
 		* Html.AudioPreload enumerates the values of this property.
@@ -1810,7 +1780,7 @@ module Classical.Html {
 		* Html.AudioPreload enumerates the values of this property.
 		* This enumerated attribute is intended to provide a hint to the browser about what the author thinks will lead to the best user experience. It may have one of the following values:  none: hints that either the author thinks that the user won't need to consult that audio or that the server wants to minimize its traffic; in others terms this hint indicates that the audio should not be cached; metadata: hints that though the author thinks that the user won't need to consult that audio, fetching the metadata (e.g. length) is reasonable; auto: hints that the user needs have priority; in others terms this hint indicated that, if needed, the whole audio could be downloaded, even if the user is not expected to use it; the empty string: which is a synonym of the auto value. If not set, its default value is browser-defined (i.e. each browser can choose its own default value), though the spec advises it to be set to metadata.  Usage notes:  The autoplay attribute has precedence over this one as if one wants to automatically play a audio, the browser will obviously need to download it. Setting both the autoplay and the preload attributes is allowed by the specification. The browser is not forced by the specification to follow the value of this attribute; it is a mere hint [MDN].
 		*/
-		preloadBinder?: b.IPropertyBinder<string>;
+		preloadBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		/*
 		* The URL of the audio to embed. This is subject to HTTP access controls. This is optional; you may instead use the <source> element within the audio block to specify the audio to embed [MDN].
@@ -1820,7 +1790,7 @@ module Classical.Html {
 		/*
 		* The URL of the audio to embed. This is subject to HTTP access controls. This is optional; you may instead use the <source> element within the audio block to specify the audio to embed [MDN].
 		*/
-		sourceBinder?: b.IPropertyBinder<string>;
+		sourceBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		/*
 		* The playback volume of any audio portions, in the range 0.0 (silent) to 1.0 (loudest) [MDN].
@@ -1830,7 +1800,7 @@ module Classical.Html {
 		/*
 		* The playback volume of any audio portions, in the range 0.0 (silent) to 1.0 (loudest) [MDN].
 		*/
-		volumeBinder?: b.IPropertyBinder<number>;
+		volumeBinder?: b.IBinder<b.PropertyUpdate<number>>;
 
 		/**
 		* The audioCompleteEvent event is executed when the rendering of an OfflineAudioContext is terminated [MDN].
@@ -1998,7 +1968,7 @@ module Classical.Html {
 		/*
 		* The base URL to be used throughout the document for relative URL addresses. If this attribute is specified, this element must come before any other elements with attributes whose values are URLs. Absolute and relative URIs are allowed (but see note section below) [MDN].
 		*/
-		hrefBinder?: b.IPropertyBinder<string>;
+		hrefBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		/*
 		* Html.BaseTarget enumerates the values of this property.
@@ -2010,7 +1980,7 @@ module Classical.Html {
 		* Html.BaseTarget enumerates the values of this property.
 		* A name or keyword indicating the default location to display the result when hyperlinks or forms cause navigation, for elements that do not have an explicit target reference. In HTML4, this is the name of, or a keyword for, a frame. In HTML5, it is a name of, or keyword for, a browsing context (for example, tab, window, or inline frame). The following keywords have special meanings:  _self: Load the result into the same HTML4 frame (or HTML5 browsing context) as the current one. This value is the default if the attribute is not specified. _blank: Load the result into a new unnamed HTML4 window or HTML5 browsing context. _parent: Load the result into the HTML4 frameset parent of the current frame or HTML5 parent browsing context of the current one. If there is no parent, this option behaves the same way as _self. _top: In HTML4: Load the result into the full, original window, canceling all other frames. In HTML5: Load the result into the top-level browsing context (that is, the browsing context that is an ancestor of the current one, and has no parent). If there is no parent, this option behaves the same way as _self [MDN].
 		*/
-		targetBinder?: b.IPropertyBinder<string>;
+		targetBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		//#endregion Properties
 	}
@@ -2053,7 +2023,7 @@ module Classical.Html {
 		/*
 		* A URL that designates a source document or message for the information quoted. This attribute is intended to point to information explaining the context or the reference for the quote [MDN].
 		*/
-		citationBinder?: b.IPropertyBinder<string>;
+		citationBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		//#endregion Properties
 	}
@@ -2103,7 +2073,7 @@ module Classical.Html {
 		/*
 		* This Boolean attribute lets you specify that the button should have input focus when the page loads, unless the user overrides it, for example by typing in a different control. Only one form-associated element in a document can have this attribute specified [MDN].
 		*/
-		autoFocusBinder?: b.IPropertyBinder<boolean>;
+		autoFocusBinder?: b.IBinder<b.PropertyUpdate<boolean>>;
 
 		/*
 		* This Boolean attribute indicates that the user cannot interact with the button. If this attribute is not specified, the button inherits its setting from the containing element, for example <fieldset>; if there is no containing element with the disabled attribute set, then the button is enabled [MDN].
@@ -2113,7 +2083,7 @@ module Classical.Html {
 		/*
 		* This Boolean attribute indicates that the user cannot interact with the button. If this attribute is not specified, the button inherits its setting from the containing element, for example <fieldset>; if there is no containing element with the disabled attribute set, then the button is enabled [MDN].
 		*/
-		disabledBinder?: b.IPropertyBinder<boolean>;
+		disabledBinder?: b.IBinder<b.PropertyUpdate<boolean>>;
 
 		/*
 		* The form element that the button is associated with (its form owner). The value of the attribute must be the id attribute of a <form> element in the same document. If this attribute is not specified, the <button> element must be a descendant of a form element. This attribute enables you to place <button> elements anywhere within a document, not just as descendants of their <form> elements [MDN].
@@ -2127,7 +2097,7 @@ module Classical.Html {
 		/*
 		* The name of the button, which submitted with the form data [MDN].
 		*/
-		nameBinder?: b.IPropertyBinder<string>;
+		nameBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		/*
 		* Html.ButtonType enumerates the values of this property.
@@ -2139,7 +2109,7 @@ module Classical.Html {
 		* Html.ButtonType enumerates the values of this property.
 		* The type of the button. Possible values are:  submit: The button submits the form data to the server. This is the default if the attribute is not specified, or if the attribute is dynamically changed to an empty or invalid value. reset: The button resets all the controls to their initial values. button: The button has no default behavior. It can have client-side scripts associated with the element's events, which are triggered when the events occur [MDN].
 		*/
-		typeBinder?: b.IPropertyBinder<string>;
+		typeBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		/*
 		* The initial value of the button [MDN].
@@ -2149,7 +2119,7 @@ module Classical.Html {
 		/*
 		* The initial value of the button [MDN].
 		*/
-		valueBinder?: b.IPropertyBinder<string>;
+		valueBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		//#endregion Properties
 	}
@@ -2170,7 +2140,7 @@ module Classical.Html {
 		/*
 		* The width of the coordinate space in CSS pixels. Defaults to 300 [MDN].
 		*/
-		widthBinder?: b.IPropertyBinder<number>;
+		widthBinder?: b.IBinder<b.PropertyUpdate<number>>;
 
 		/*
 		* The height of the coordinate space in CSS pixels. Defaults to 150 [MDN].
@@ -2180,7 +2150,7 @@ module Classical.Html {
 		/*
 		* The height of the coordinate space in CSS pixels. Defaults to 150 [MDN].
 		*/
-		heightBinder?: b.IPropertyBinder<number>;
+		heightBinder?: b.IBinder<b.PropertyUpdate<number>>;
 
 		//#endregion Properties
 	}
@@ -2223,7 +2193,7 @@ module Classical.Html {
 		/*
 		* This attribute specifies the machine-readable translation of the content of the element [MDN].
 		*/
-		valueBinder?: b.IPropertyBinder<string>;
+		valueBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		//#endregion Properties
 	}
@@ -2277,7 +2247,7 @@ module Classical.Html {
 		/*
 		* A URI for a resource that explains the change (for example, meeting minutes) [MDN].
 		*/
-		citationBinder?: b.IPropertyBinder<string>;
+		citationBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		//#endregion Properties
 	}
@@ -2342,7 +2312,7 @@ module Classical.Html {
 		/*
 		* The displayed height of the resource, in CSS pixels [MDN].
 		*/
-		heightBinder?: b.IPropertyBinder<string>;
+		heightBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		/*
 		* The URL of the resource being embedded [MDN].
@@ -2352,7 +2322,7 @@ module Classical.Html {
 		/*
 		* The URL of the resource being embedded [MDN].
 		*/
-		sourceBinder?: b.IPropertyBinder<string>;
+		sourceBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		/*
 		* The displayed width of the resource, in CSS pixels [MDN].
@@ -2362,7 +2332,7 @@ module Classical.Html {
 		/*
 		* The displayed width of the resource, in CSS pixels [MDN].
 		*/
-		widthBinder?: b.IPropertyBinder<string>;
+		widthBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		//#endregion Properties
 	}
@@ -2383,7 +2353,7 @@ module Classical.Html {
 		/*
 		* The address of the resource as a valid URL. At least one of data and type must be defined [MDN].
 		*/
-		dataBinder?: b.IPropertyBinder<string>;
+		dataBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		/*
 		* The form element, if any, that the object element is associated with (its form owner). The value of the attribute must be an ID of a <form> element in the same document [MDN].
@@ -2397,7 +2367,7 @@ module Classical.Html {
 		/*
 		* The height of the displayed resource, in CSS pixels [MDN].
 		*/
-		heightBinder?: b.IPropertyBinder<string>;
+		heightBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		/*
 		* The name of valid browsing context (HTML5), or the name of the control (HTML 4) [MDN].
@@ -2407,7 +2377,7 @@ module Classical.Html {
 		/*
 		* The name of valid browsing context (HTML5), or the name of the control (HTML 4) [MDN].
 		*/
-		nameBinder?: b.IPropertyBinder<string>;
+		nameBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		/*
 		* The MIME type of the resource specified by data. At least one of data and type must be defined [MDN].
@@ -2417,7 +2387,7 @@ module Classical.Html {
 		/*
 		* The MIME type of the resource specified by data. At least one of data and type must be defined [MDN].
 		*/
-		typeBinder?: b.IPropertyBinder<string>;
+		typeBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		/*
 		* The width of the display resource, in CSS pixels [MDN].
@@ -2427,7 +2397,7 @@ module Classical.Html {
 		/*
 		* The width of the display resource, in CSS pixels [MDN].
 		*/
-		widthBinder?: b.IPropertyBinder<string>;
+		widthBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		//#endregion Properties
 	}
@@ -2459,7 +2429,7 @@ module Classical.Html {
 		/*
 		* If this Boolean attribute is set, the form controls that are its descendants, except descendants of its first optional <legend> element, are disabled, i.e., not editable. They won't receive any browsing events, like mouse clicks or focus-related ones. Often browsers display such controls as gray [MDN].
 		*/
-		disabledBinder?: b.IPropertyBinder<boolean>;
+		disabledBinder?: b.IBinder<b.PropertyUpdate<boolean>>;
 
 		/*
 		* This attribute has the value of the id attribute of the <form> element its related to. Its default value is the id of the nearest <form> element it is a descendant of [MDN].
@@ -2517,7 +2487,7 @@ module Classical.Html {
 		/*
 		* A list of character encodings that the server accepts. The list can be delimited by spaces or commas. The browser uses in the order in which they are listed. The default value is the reserved string "UNKNOWN", in which case the encoding corresponds to the encoding of the document containing the form element. HTML 4: In previous versions of HTML, the different character encodings could be delimited by spaces or commas. This is no longer the case in HTML5, where only spaces are correct [MDN].
 		*/
-		acceptCharsetBinder?: b.IPropertyBinder<string>;
+		acceptCharsetBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		/*
 		* The URI of a program that processes the information submitted via the form. This value can be overridden by a formaction attribute on a <button> or <input> element [MDN].
@@ -2527,7 +2497,7 @@ module Classical.Html {
 		/*
 		* The URI of a program that processes the information submitted via the form. This value can be overridden by a formaction attribute on a <button> or <input> element [MDN].
 		*/
-		actionBinder?: b.IPropertyBinder<string>;
+		actionBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		/*
 		* Html.FormAutoComplete enumerates the values of this property.
@@ -2541,7 +2511,7 @@ module Classical.Html {
 		* Indicates whether controls in this form can by default have their values automatically completed by the browser. This setting can be overridden by an autocomplete attribute on an element belonging to the form. Possible values are:  off: The user must explicitly enter a value into each field for every use, or the document provides its own auto-completion method; the browser does not automatically complete entries. on: The browser can automatically complete values based on values that the user has entered during previous uses of the form.  
 		* Note: If you set autocomplete to off in a form because the document provides its own auto-completion, then you should also set autocomplete to off for each of the form's input elements that the document can auto-complete. For details, see Google Chrome notes [MDN].
 		*/
-		autoCompleteBinder?: b.IPropertyBinder<string>;
+		autoCompleteBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		/*
 		* Html.FormEncodingType enumerates the values of this property.
@@ -2553,7 +2523,7 @@ module Classical.Html {
 		* Html.FormEncodingType enumerates the values of this property.
 		* When the value of the method attribute is post, this attribute is the MIME type of content that is used to submit the form to the server. Possible values are:  application/x-www-form-urlencoded: The default value if the attribute is not specified. multipart/form-data: Use this value if you are using an <input> element with the type attribute set to "file". text/plain (HTML5) This value can be overridden by a formenctype attribute on a <button> or <input> element [MDN].
 		*/
-		encodingTypeBinder?: b.IPropertyBinder<string>;
+		encodingTypeBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		/*
 		* Html.FormMethod enumerates the values of this property.
@@ -2565,7 +2535,7 @@ module Classical.Html {
 		* Html.FormMethod enumerates the values of this property.
 		* The HTTP method that the browser uses to submit the form. Possible values are:  post: Corresponds to the HTTP POST method ; the data from the form is included in the body of the form and is sent to the server. get: Corresponds to the HTTP GET method; the data from the form are appended to the action attribute URI, with a '?' as a separator, and the resulting URI is sent to the server. Use this method when the form has no side-effects and contains only ASCII characters. This value can be overridden by a formmethod attribute on a <button> or <input> element [MDN].
 		*/
-		methodBinder?: b.IPropertyBinder<string>;
+		methodBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		/*
 		* The name of the form. In HTML 4 its use is deprecated (id should be used instead). It must be unique among the forms in a document and not the empty string in HTML 5 [MDN].
@@ -2575,7 +2545,7 @@ module Classical.Html {
 		/*
 		* The name of the form. In HTML 4 its use is deprecated (id should be used instead). It must be unique among the forms in a document and not the empty string in HTML 5 [MDN].
 		*/
-		nameBinder?: b.IPropertyBinder<string>;
+		nameBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		/*
 		* Html.FormTarget enumerates the values of this property.
@@ -2587,7 +2557,7 @@ module Classical.Html {
 		* Html.FormTarget enumerates the values of this property.
 		* A name or keyword indicating where to display the response that is received after submitting the form. In HTML 4, this is the name of, or a keyword for, a frame. In HTML5, it is a name of, or keyword for, a browsing context (for example, tab, window, or inline frame). The following keywords have special meanings:  _self: Load the response into the same HTML 4 frame (or HTML5 browsing context) as the current one. This value is the default if the attribute is not specified. _blank: Load the response into a new unnamed HTML 4 window or HTML5 browsing context. _parent: Load the response into the HTML 4 frameset parent of the current frame or HTML5 parent browsing context of the current one. If there is no parent, this option behaves the same way as _self. _top: HTML 4: Load the response into the full, original window, canceling all other frames. HTML5: Load the response into the top-level browsing context (that is, the browsing context that is an ancestor of the current one, and has no parent). If there is no parent, this option behaves the same way as _self. iframename: The response is displayed in a named <iframe>. HTML5: This value can be overridden by a formtarget attribute on a <button> or <input> element [MDN].
 		*/
-		targetBinder?: b.IPropertyBinder<string>;
+		targetBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		/**
 		* The resetEvent event is executed when a form is reset [MDN].
@@ -2613,16 +2583,6 @@ module Classical.Html {
 	export interface IHeadElementConfig extends IHtmlElementContainerConfig {
 
 		//#region Properties
-
-		/*
-		* The URIs of one or more metadata profiles, separated by white space [MDN].
-		*/
-		profile?: string;
-
-		/*
-		* The URIs of one or more metadata profiles, separated by white space [MDN].
-		*/
-		profileBinder?: b.IPropertyBinder<string>;
 
 		//#endregion Properties
 	}
@@ -2733,7 +2693,7 @@ module Classical.Html {
 		* This attribute defines the alternative text describing the image. Users will see this displayed if the image URL is wrong, the image is not in one of the supported formats, or until the image is downloaded.  
 		* Note: Omitting this attribute indicates that the image is a key part of the content, but no textual equivalent is available. Setting this attribute to the empty string indicates that this image is not a key part of the content; non-visual browsers may omit it from the rendering [MDN].
 		*/
-		alternateBinder?: b.IPropertyBinder<string>;
+		alternateBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		/*
 		* The height of the image in HTML5 CSS pixels, or HTML 4 in pixels or as a percentage [MDN].
@@ -2743,7 +2703,7 @@ module Classical.Html {
 		/*
 		* The height of the image in HTML5 CSS pixels, or HTML 4 in pixels or as a percentage [MDN].
 		*/
-		heightBinder?: b.IPropertyBinder<number>;
+		heightBinder?: b.IBinder<b.PropertyUpdate<number>>;
 
 		/*
 		* The URL of a description of the image to be displayed, which supplements the alt text. In HTML5, use a regular <a> element to link to the description [MDN].
@@ -2753,7 +2713,7 @@ module Classical.Html {
 		/*
 		* The URL of a description of the image to be displayed, which supplements the alt text. In HTML5, use a regular <a> element to link to the description [MDN].
 		*/
-		longDescriptionBinder?: b.IPropertyBinder<string>;
+		longDescriptionBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		/*
 		* Image URL, this attribute is obligatory for the <img> element [MDN].
@@ -2763,7 +2723,7 @@ module Classical.Html {
 		/*
 		* Image URL, this attribute is obligatory for the <img> element [MDN].
 		*/
-		sourceBinder?: b.IPropertyBinder<string>;
+		sourceBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		/*
 		* The width of the image in pixels or percent [MDN].
@@ -2773,7 +2733,7 @@ module Classical.Html {
 		/*
 		* The width of the image in pixels or percent [MDN].
 		*/
-		widthBinder?: b.IPropertyBinder<number>;
+		widthBinder?: b.IBinder<b.PropertyUpdate<number>>;
 
 		/**
 		* The abortEvent event is executed when the loading of a resource has been aborted [MDN].
@@ -2808,7 +2768,7 @@ module Classical.Html {
 		/*
 		* Indicates the height of the frame HTML5 in CSS pixels, or HTML 4.01 in pixels or as a percentage [MDN].
 		*/
-		heightBinder?: b.IPropertyBinder<string>;
+		heightBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		/*
 		* A name for the embedded browsing context (or frame). This can be used as the value of the target attribute of an <a> or <form> element, or the formtarget attribute of an <input> or <button> element [MDN].
@@ -2818,7 +2778,7 @@ module Classical.Html {
 		/*
 		* A name for the embedded browsing context (or frame). This can be used as the value of the target attribute of an <a> or <form> element, or the formtarget attribute of an <input> or <button> element [MDN].
 		*/
-		nameBinder?: b.IPropertyBinder<string>;
+		nameBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		/*
 		* Html.InlineFrameScrolling enumerates the values of this property.
@@ -2830,21 +2790,7 @@ module Classical.Html {
 		* Html.InlineFrameScrolling enumerates the values of this property.
 		* Enumerated attribute indicating when the browser should provide a scroll bar (or other scrolling device) for the frame:  auto: Only when needed. yes: Always provide a scroll bar. no: Never provide a scoll bar [MDN].
 		*/
-		scrollingBinder?: b.IPropertyBinder<string>;
-
-		/*
-		* Html.InlineFrameSandbox enumerates the values of this property.
-		* If specified as an empty string, this attribute enables extra restrictions on the content that can appear in the inline frame. The value of the attribute can either be an empty string (all the restrictions are applied), or a space-separated list of tokens that lift particular restrictions. Valid tokens are:  allow-same-origin: Allows the content to be treated as being from its normal origin. If this keyword is not used, the embedded content is treated as being from a unique origin. allow-top-navigation: Allows the embedded browsing context to navigate (load) content to the top-level browsing context. If this keyword is not used, this operation is not allowed. allow-forms: Allows the embedded browsing context to submit forms. If this keyword is not used, this operation is not allowed. allow-scripts: Allows the embedded browsing context to run scripts (but not create pop-up windows). If this keyword is not used, this operation is not allowed.  
-		* Note:  When the embedded document has the same origin as the main page, it is strongly discouraged to use both allow-scripts and allow-same-origin at the same time, as that allows the embedded document to programmatically remove the sandbox attribute. Although it is accepted, this case is no more secure than not using the sandbox attribute. Sandboxing in general is only of minimal help if the attacker can arrange for the potentially hostile content to be displayed in the user's browser outside a sandboxed iframe. It is recommended that such content should be served from a separate dedicated domain, to limit the potential damage. The sandbox attribute is not supported in Internet Explorer 9 and earlier versions, or in Opera [MDN].
-		*/
-		sandbox?: string;
-
-		/*
-		* Html.InlineFrameSandbox enumerates the values of this property.
-		* If specified as an empty string, this attribute enables extra restrictions on the content that can appear in the inline frame. The value of the attribute can either be an empty string (all the restrictions are applied), or a space-separated list of tokens that lift particular restrictions. Valid tokens are:  allow-same-origin: Allows the content to be treated as being from its normal origin. If this keyword is not used, the embedded content is treated as being from a unique origin. allow-top-navigation: Allows the embedded browsing context to navigate (load) content to the top-level browsing context. If this keyword is not used, this operation is not allowed. allow-forms: Allows the embedded browsing context to submit forms. If this keyword is not used, this operation is not allowed. allow-scripts: Allows the embedded browsing context to run scripts (but not create pop-up windows). If this keyword is not used, this operation is not allowed.  
-		* Note:  When the embedded document has the same origin as the main page, it is strongly discouraged to use both allow-scripts and allow-same-origin at the same time, as that allows the embedded document to programmatically remove the sandbox attribute. Although it is accepted, this case is no more secure than not using the sandbox attribute. Sandboxing in general is only of minimal help if the attacker can arrange for the potentially hostile content to be displayed in the user's browser outside a sandboxed iframe. It is recommended that such content should be served from a separate dedicated domain, to limit the potential damage. The sandbox attribute is not supported in Internet Explorer 9 and earlier versions, or in Opera [MDN].
-		*/
-		sandboxBinder?: b.IPropertyBinder<string>;
+		scrollingBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		/*
 		* The URL of the page to embed [MDN].
@@ -2854,7 +2800,7 @@ module Classical.Html {
 		/*
 		* The URL of the page to embed [MDN].
 		*/
-		sourceBinder?: b.IPropertyBinder<string>;
+		sourceBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		/*
 		* Indicates the width of the frame HTML5 in CSS pixels, or HTML 4.01 in pixels or as a percentage [MDN].
@@ -2864,7 +2810,7 @@ module Classical.Html {
 		/*
 		* Indicates the width of the frame HTML5 in CSS pixels, or HTML 4.01 in pixels or as a percentage [MDN].
 		*/
-		widthBinder?: b.IPropertyBinder<string>;
+		widthBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		//#endregion Properties
 	}
@@ -2887,7 +2833,7 @@ module Classical.Html {
 		* Html.InputType enumerates the values of this property.
 		* The type of control to display. The default type is text, if this attribute is not specified. Possible values are:  button: A push button with no default behavior. checkbox: A check box. You must use the value attribute to define the value submitted by this item. Use the checked attribute to indicate whether this item is selected. You can also use the indeterminate attribute to indicate that the checkbox is in an indeterminate state (on most platforms, this draws a horizontal line across the checkbox). color: HTML5 A control for specifying a color. date: HTML5 A control for entering a date (year, month, and day, with no time). datetime: HTML5 A control for entering a date and time (hour, minute, second, and fraction of a second) based on UTC time zone. datetime-local: HTML5 A control for entering a date and time, with no time zone. email: HTML5 A field for editing an e-mail address. The :valid and :invalid CSS pseudo-classes are applied as appropriate. file: A control that lets the user select a file. Use the accept attribute to define the types of files that the control can select. hidden: A control that is not displayed, but whose value is submitted to the server. image: A graphical submit button. You must use the src attribute to define the source of the image and the alt attribute to define alternative text. You can use the height and width attributes to define the size of the image in pixels. month: HTML5 A control for entering a month and year, with no time zone. number: HTML5 A control for entering a floating point number. password: A single-line text field whose value is obscured. Use the maxlength attribute to specify the maximum length of the value that can be entered. radio: A radio button. You must use the value attribute to define the value submitted by this item. Use the checked attribute to indicate whether this item is selected by default. Radio buttons that have the same value for the name attribute are in the same "radio button group"; only one radio button in a group can be selected at one time. range: HTML5 A control for entering a number whose exact value is not important. This type control uses the following default values if the corresponding attributes are not specified:  min: 0  max: 100  value: min + (max-min)/2, or min if max is less than min  step: 1  reset: A button that resets the contents of the form to default values. search: HTML5 A single-line text field for entering search strings; line-breaks are automatically removed from the input value. submit: A button that submits the form. tel: HTML5 A control for entering a telephone number; line-breaks are automatically removed from the input value, but no other syntax is enforced. You can use attributes such as pattern and maxlength to restrict values entered in the control. The :valid and :invalid CSS pseudo-classes are applied as appropriate. text: A single-line text field; line-breaks are automatically removed from the input value. time: HTML5 A control for entering a time value with no time zone. url: HTML5 A field for editing a URL. The user may enter a blank or invalid address. Line-breaks are automatically removed from the input value. You can use attributes such as pattern and maxlength to restrict values entered in the control. The :valid and :invalid CSS pseudo-classes are applied as appropriate. week: HTML5 A control for entering a date consisting of a week-year number and a week number with no time zone [MDN].
 		*/
-		typeBinder?: b.IPropertyBinder<string>;
+		typeBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		/*
 		* Html.InputAccept enumerates the values of this property.
@@ -2899,7 +2845,7 @@ module Classical.Html {
 		* Html.InputAccept enumerates the values of this property.
 		* If the value of the type attribute is file, this attribute indicates the types of files that the server accepts; otherwise it is ignored. The value must be a comma-separated list of unique content type specifiers:  A valid MIME type with no extensions audio/* representing sound files HTML5 video/* representing video files HTML5 image/* representing image files HTML5 [MDN].
 		*/
-		acceptBinder?: b.IPropertyBinder<string>;
+		acceptBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		/*
 		* Html.InputAutoComplete enumerates the values of this property.
@@ -2911,7 +2857,7 @@ module Classical.Html {
 		* Html.InputAutoComplete enumerates the values of this property.
 		* This attribute indicates whether the value of the control can be automatically completed by the browser. This attribute is ignored if the value of the type attribute is hidden, checkbox, radio, file, or a button type (button, submit, reset, image). Possible values are:  off: The user must explicitly enter a value into this field for every use, or the document provides its own auto-completion method; the browser does not automatically complete the entry. on: The browser can automatically complete the value based on values that the user has entered during previous uses. If the autocomplete attribute is not specified on an input element, then the browser uses the autocomplete attribute value of the <input> element's form owner. The form owner is either the form element that this <input> element is a descendant of or the form element whose id is specified by the form attribute of the input element. For more information, see the autocomplete attribute in <form> [MDN].
 		*/
-		autoCompleteBinder?: b.IPropertyBinder<string>;
+		autoCompleteBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		/*
 		* This Boolean attribute lets you specify that a form control should have input focus when the page loads, unless the user overrides it, for example by typing in a different control. Only one form element in a document can have the autofocus attribute, which is a Boolean. It cannot be applied if the type attribute is set to hidden (that is, you cannot automatically set focus to a hidden control) [MDN].
@@ -2921,7 +2867,7 @@ module Classical.Html {
 		/*
 		* This Boolean attribute lets you specify that a form control should have input focus when the page loads, unless the user overrides it, for example by typing in a different control. Only one form element in a document can have the autofocus attribute, which is a Boolean. It cannot be applied if the type attribute is set to hidden (that is, you cannot automatically set focus to a hidden control) [MDN].
 		*/
-		autoFocusBinder?: b.IPropertyBinder<boolean>;
+		autoFocusBinder?: b.IBinder<b.PropertyUpdate<boolean>>;
 
 		/*
 		* When the value of the type attribute is radio or checkbox, the presence of this Boolean attribute indicates that the control is selected by default; otherwise it is ignored [MDN].
@@ -2931,7 +2877,7 @@ module Classical.Html {
 		/*
 		* When the value of the type attribute is radio or checkbox, the presence of this Boolean attribute indicates that the control is selected by default; otherwise it is ignored [MDN].
 		*/
-		checkedBinder?: b.IPropertyBinder<boolean>;
+		checkedBinder?: b.IBinder<b.PropertyUpdate<boolean>>;
 
 		/*
 		* This Boolean attribute indicates that the form control is not available for interaction. In particular, the click event will not be dispatched on disabled controls. Also, a disabled control's value isn't submitted with the form. This attribute is ignored if the value of the type attribute is hidden [MDN].
@@ -2941,7 +2887,7 @@ module Classical.Html {
 		/*
 		* This Boolean attribute indicates that the form control is not available for interaction. In particular, the click event will not be dispatched on disabled controls. Also, a disabled control's value isn't submitted with the form. This attribute is ignored if the value of the type attribute is hidden [MDN].
 		*/
-		disabledBinder?: b.IPropertyBinder<boolean>;
+		disabledBinder?: b.IBinder<b.PropertyUpdate<boolean>>;
 
 		/*
 		* The form element that the input element is associated with (its form owner). The value of the attribute must be an id of a <form> element in the same document. If this attribute is not specified, this <input> element must be a descendant of a <form> element. This attribute enables you to place <input> elements anywhere within a document, not just as descendants of their form elements. An input can only be associated with one form [MDN].
@@ -2955,7 +2901,7 @@ module Classical.Html {
 		/*
 		* If the value of the type attribute is image, this attribute defines the height of the image displayed for the button [MDN].
 		*/
-		heightBinder?: b.IPropertyBinder<number>;
+		heightBinder?: b.IBinder<b.PropertyUpdate<number>>;
 
 		/*
 		* Identifies a list of pre-defined options to suggest to the user. The value must be the id of a <datalist> element in the same document. The browser displays only options that are valid values for this input element. This attribute is ignored when the type attribute's value is hidden, checkbox, radio, file, or a button type [MDN].
@@ -2969,7 +2915,7 @@ module Classical.Html {
 		/*
 		* The maximum (numeric or date-time) value for this item, which must not be less than its minimum (min attribute) value [MDN].
 		*/
-		maxBinder?: b.IPropertyBinder<string>;
+		maxBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		/*
 		* The minimum (numeric or date-time) value for this item, which must not be greater than its maximum (max attribute) value [MDN].
@@ -2979,7 +2925,7 @@ module Classical.Html {
 		/*
 		* The minimum (numeric or date-time) value for this item, which must not be greater than its maximum (max attribute) value [MDN].
 		*/
-		minBinder?: b.IPropertyBinder<string>;
+		minBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		/*
 		* This Boolean attribute indicates whether the user can enter more than one value. This attribute applies when the type attribute is set to email or file; otherwise it is ignored [MDN].
@@ -2989,7 +2935,7 @@ module Classical.Html {
 		/*
 		* This Boolean attribute indicates whether the user can enter more than one value. This attribute applies when the type attribute is set to email or file; otherwise it is ignored [MDN].
 		*/
-		multipleBinder?: b.IPropertyBinder<boolean>;
+		multipleBinder?: b.IBinder<b.PropertyUpdate<boolean>>;
 
 		/*
 		* The name of the control, which is submitted with the form data [MDN].
@@ -2999,7 +2945,7 @@ module Classical.Html {
 		/*
 		* The name of the control, which is submitted with the form data [MDN].
 		*/
-		nameBinder?: b.IPropertyBinder<string>;
+		nameBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		/*
 		* A regular expression that the control's value is checked against. The pattern must match the entire value, not just some subset. Use the title attribute to describe the pattern to help the user. This attribute applies when the value of the type attribute is text, search, tel, url or email; otherwise it is ignored. The regular expression language is the same as JavaScript's. The pattern is not surrounded by forward slashes [MDN].
@@ -3009,7 +2955,7 @@ module Classical.Html {
 		/*
 		* A regular expression that the control's value is checked against. The pattern must match the entire value, not just some subset. Use the title attribute to describe the pattern to help the user. This attribute applies when the value of the type attribute is text, search, tel, url or email; otherwise it is ignored. The regular expression language is the same as JavaScript's. The pattern is not surrounded by forward slashes [MDN].
 		*/
-		patternBinder?: b.IPropertyBinder<string>;
+		patternBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		/*
 		* A hint to the user of what can be entered in the control . The placeholder text must not contain carriage returns or line-feeds. This attribute applies when the value of the type attribute is text, search, tel, url or email; otherwise it is ignored.  
@@ -3021,7 +2967,7 @@ module Classical.Html {
 		* A hint to the user of what can be entered in the control . The placeholder text must not contain carriage returns or line-feeds. This attribute applies when the value of the type attribute is text, search, tel, url or email; otherwise it is ignored.  
 		* Note: Do not use the placeholder attribute instead of a <label> element. Their purposes are different: the <label> attribute describes the role of the form element; that is, it indicates what kind of information is expected, the placeholder attribute is a hint about the format the content should take. There are cases in which the placeholder attribute is never displayed to the user, so the form must be understandable without it [MDN].
 		*/
-		placeHolderBinder?: b.IPropertyBinder<string>;
+		placeHolderBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		/*
 		* This attribute specifies that the user must fill in a value before submitting a form. It cannot be used when the type attribute is hidden, image, or a button type (submit, reset, or button). The :optional and :required CSS pseudo-classes will be applied to the field as appropriate [MDN].
@@ -3031,7 +2977,7 @@ module Classical.Html {
 		/*
 		* This attribute specifies that the user must fill in a value before submitting a form. It cannot be used when the type attribute is hidden, image, or a button type (submit, reset, or button). The :optional and :required CSS pseudo-classes will be applied to the field as appropriate [MDN].
 		*/
-		requiredBinder?: b.IPropertyBinder<boolean>;
+		requiredBinder?: b.IBinder<b.PropertyUpdate<boolean>>;
 
 		/*
 		* The initial size of the control. This value is in pixels unless the value of the type attribute is text or password, in which case, it is an integer number of characters. Starting in HTML5, this attribute applies only when the type attribute is set to text, search, tel, url, email, or password; otherwise it is ignored. In addition, the size must be greater than zero. If you don't specify a size, a default value of 20 is used [MDN].
@@ -3041,7 +2987,7 @@ module Classical.Html {
 		/*
 		* The initial size of the control. This value is in pixels unless the value of the type attribute is text or password, in which case, it is an integer number of characters. Starting in HTML5, this attribute applies only when the type attribute is set to text, search, tel, url, email, or password; otherwise it is ignored. In addition, the size must be greater than zero. If you don't specify a size, a default value of 20 is used [MDN].
 		*/
-		sizeBinder?: b.IPropertyBinder<number>;
+		sizeBinder?: b.IBinder<b.PropertyUpdate<number>>;
 
 		/*
 		* If the value of the type attribute is image, this attribute specifies a URI for the location of an image to display on the graphical submit button; otherwise it is ignored [MDN].
@@ -3051,7 +2997,7 @@ module Classical.Html {
 		/*
 		* If the value of the type attribute is image, this attribute specifies a URI for the location of an image to display on the graphical submit button; otherwise it is ignored [MDN].
 		*/
-		sourceBinder?: b.IPropertyBinder<string>;
+		sourceBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		/*
 		* Works with the min and max attributes to limit the increments at which a numeric or date-time value can be set. It can be the string any or a positive floating point number. If this attribute is not set to any, the control accepts only values at multiples of the step value greater than the minimum [MDN].
@@ -3061,7 +3007,7 @@ module Classical.Html {
 		/*
 		* Works with the min and max attributes to limit the increments at which a numeric or date-time value can be set. It can be the string any or a positive floating point number. If this attribute is not set to any, the control accepts only values at multiples of the step value greater than the minimum [MDN].
 		*/
-		stepBinder?: b.IPropertyBinder<string>;
+		stepBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		/*
 		* The initial value of the control. This attribute is optional except when the value of the type attribute is radio or checkbox. Note that when reloading the page, Gecko and IE will ignore the value specified in the HTML source, if the value was changed before the reload [MDN].
@@ -3071,7 +3017,7 @@ module Classical.Html {
 		/*
 		* The initial value of the control. This attribute is optional except when the value of the type attribute is radio or checkbox. Note that when reloading the page, Gecko and IE will ignore the value specified in the HTML source, if the value was changed before the reload [MDN].
 		*/
-		valueBinder?: b.IPropertyBinder<string>;
+		valueBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		/*
 		* If the value of the type attribute is image, this attribute defines the width of the image displayed for the button [MDN].
@@ -3081,7 +3027,7 @@ module Classical.Html {
 		/*
 		* If the value of the type attribute is image, this attribute defines the width of the image displayed for the button [MDN].
 		*/
-		widthBinder?: b.IPropertyBinder<number>;
+		widthBinder?: b.IBinder<b.PropertyUpdate<number>>;
 
 		/**
 		* The changeEvent event is executed when an element loses focus and its value changed since gaining focus [MDN].
@@ -3116,7 +3062,7 @@ module Classical.Html {
 		/*
 		* This attribute defines the URI of a resource that explains the change, like a link to some meeting minutes or a ticket in a troubleshooting sytem [MDN].
 		*/
-		citationBinder?: b.IPropertyBinder<string>;
+		citationBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		//#endregion Properties
 	}
@@ -3198,7 +3144,7 @@ module Classical.Html {
 		* This attribute defines the character encoding of the linked resource. The value is a space- and/or comma-delimited list of character sets as defined in RFC 2045. The default value is ISO-8859-1.  
 		* Note: This attribute is obsolete in HTML5 and must not be used by authors. To achieve its effect, use the Content-Type: HTTP header on the linked resource [MDN].
 		*/
-		characterSetBinder?: b.IPropertyBinder<string>;
+		characterSetBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		/*
 		* This attribute specifies the URL of the linked resource. A URL might be absolute or relative [MDN].
@@ -3208,7 +3154,7 @@ module Classical.Html {
 		/*
 		* This attribute specifies the URL of the linked resource. A URL might be absolute or relative [MDN].
 		*/
-		hrefBinder?: b.IPropertyBinder<string>;
+		hrefBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		/*
 		* This attribute indicates the language of the linked resource. It is purely advisory. Allowed values are determined by BCP47 for HTML5 and by RFC1766 for HTML 4. Use this attribute only if the href attribute is present [MDN].
@@ -3218,7 +3164,7 @@ module Classical.Html {
 		/*
 		* This attribute indicates the language of the linked resource. It is purely advisory. Allowed values are determined by BCP47 for HTML5 and by RFC1766 for HTML 4. Use this attribute only if the href attribute is present [MDN].
 		*/
-		hrefLanguageBinder?: b.IPropertyBinder<string>;
+		hrefLanguageBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		/*
 		* This attribute specifies the media which the linked resource applies to. Its value must be a media query. This attribute is mainly useful when linking to external stylesheets by allowing the user agent to pick the best adapted one for the device it runs on.  
@@ -3230,7 +3176,7 @@ module Classical.Html {
 		* This attribute specifies the media which the linked resource applies to. Its value must be a media query. This attribute is mainly useful when linking to external stylesheets by allowing the user agent to pick the best adapted one for the device it runs on.  
 		* Note:  In HTML 4, this can only be a simple white-space-separated list of media description literals, i.e., media types and groups, where defined and allowed as values for this attribute, such as print, screen, aural, braille. HTML5 extended this to any kind of media queries, which are a superset of the allowed values of HTML 4. Browsers not supporting the CSS3 Media Queries won't necessarily recognize the adequate link; do not forget to set fallback links, the restricted set of media queries defined in HTML 4 [MDN].
 		*/
-		mediaBinder?: b.IPropertyBinder<string>;
+		mediaBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		/*
 		* This attribute names a relationship of the linked document to the current document. The attribute must be a space-separated list of the link types values. The most common use of this attribute is to specify a link to an external style sheet: the rel attribute is set to stylesheet, and the href attribute is set to the URL of an external style sheet to format the page. WebTV also supports the use of the value next for rel to preload the next page in a document series [MDN].
@@ -3240,7 +3186,7 @@ module Classical.Html {
 		/*
 		* This attribute names a relationship of the linked document to the current document. The attribute must be a space-separated list of the link types values. The most common use of this attribute is to specify a link to an external style sheet: the rel attribute is set to stylesheet, and the href attribute is set to the URL of an external style sheet to format the page. WebTV also supports the use of the value next for rel to preload the next page in a document series [MDN].
 		*/
-		relationshipBinder?: b.IPropertyBinder<string>;
+		relationshipBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		/*
 		* The value of this attribute shows the relationship of the current document to the linked document, as defined by the href attribute. The attribute thus defines the reverse relationship compared to the value of the rel attribute. Link types values for the attribute are similar to the possible values for rel.  
@@ -3252,7 +3198,7 @@ module Classical.Html {
 		* The value of this attribute shows the relationship of the current document to the linked document, as defined by the href attribute. The attribute thus defines the reverse relationship compared to the value of the rel attribute. Link types values for the attribute are similar to the possible values for rel.  
 		* Note: This attribute is obsolete in HTML5. Do not use it. To achieve its effect, use the rel attribute with the opposite link types values, e.g. made should be replaced by author. Also this attribute doesn't mean revision and must not be used with a version number, which is unfortunately the case on numerous sites [MDN].
 		*/
-		reverseRelationshipBinder?: b.IPropertyBinder<string>;
+		reverseRelationshipBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		/*
 		* This attribute is used to define the type of the content linked to. The value of the attribute should be a MIME type such as text/html, text/css, and so on. The common use of this attribute is to define the type of style sheet linked and the most common current value is text/css, which indicates a Cascading Style Sheet format [MDN].
@@ -3262,7 +3208,7 @@ module Classical.Html {
 		/*
 		* This attribute is used to define the type of the content linked to. The value of the attribute should be a MIME type such as text/html, text/css, and so on. The common use of this attribute is to define the type of style sheet linked and the most common current value is text/css, which indicates a Cascading Style Sheet format [MDN].
 		*/
-		typeBinder?: b.IPropertyBinder<string>;
+		typeBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		//#endregion Properties
 	}
@@ -3287,7 +3233,7 @@ module Classical.Html {
 		* Note: This attribute was deprecated in HTML4, but reintroduced in HTML5.  
 		* Note: Prior to Gecko 9.0, negative values were incorrectly converted to 0. Starting in Gecko 9.0 all integer values are correctly parsed [MDN].
 		*/
-		valueBinder?: b.IPropertyBinder<number>;
+		valueBinder?: b.IBinder<b.PropertyUpdate<number>>;
 
 		/*
 		* Html.ListItemType enumerates the values of this property.
@@ -3301,7 +3247,7 @@ module Classical.Html {
 		* This character attributes indicates the numbering type:  a: lowercase letters A: uppercase letters i: lowercase Roman numerals I: uppercase Roman numerals 1: numbers This type overrides the one used by its parent <ol> element, if any.  
 		* Note: This attribute has been deprecated: use the CSS list-style-type property instead [MDN].
 		*/
-		typeBinder?: b.IPropertyBinder<string>;
+		typeBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		//#endregion Properties
 	}
@@ -3333,7 +3279,7 @@ module Classical.Html {
 		/*
 		* The name attribute gives the map a name so that it can be referenced. The attribute must be present and must have a non-empty value with no space characters. The value of the name attribute must not be a compatibility-caseless match for the value of the name attribute of another map element in the same document. If the id attribute is also specified, both attributes must have the same value [MDN].
 		*/
-		nameBinder?: b.IPropertyBinder<string>;
+		nameBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		//#endregion Properties
 	}
@@ -3365,7 +3311,7 @@ module Classical.Html {
 		/*
 		* This attribute gives the value associated with the http-equiv or name attribute, depending of the context [MDN].
 		*/
-		contentBinder?: b.IPropertyBinder<string>;
+		contentBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		/*
 		* Html.MetaHttpEquiv enumerates the values of this property.
@@ -3383,7 +3329,7 @@ module Classical.Html {
 		* Note:   Do not use this pragma as it is obsolete. Use the charset attribute on the <meta> element instead. As the <meta> may not be used to change the type of a document in an XHTML document, or in an HTML5 document following the XHTML syntax, never set set MIME type to an XHTML MIME type that way. It would be incorrect. Only HTML document can use the content-type, so most of it is redundant: that's why it has been obsoleted and replaced by the charset attribute.    default-style  This pragma specifies the preferred stylesheet to be used on the page. The content attribute must contains the id of a <link> element whose href attribute links to a CSS stylesheet, or the id of a <style> element which contains a CSS stylesheet.  refresh  This pragma specifies:  the number of seconds until the page should be reloaded, if the content attribute contains only a positive integer number;  the number of seconds until the page should be redirected to another, if the content attribute contains a positive integer number followed by the string ';url=' and a valid URL.   set-cookie  This pragma defines a cookie for the page. Its content must follows the syntax defines in the IETF HTTP Cookie Specification.  
 		* Note: Do not use this pragma as it is obsolete. Use the HTTP header set-cookie instead [MDN].
 		*/
-		httpEquivBinder?: b.IPropertyBinder<string>;
+		httpEquivBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		/*
 		* Html.MetaName enumerates the values of this property.
@@ -3397,7 +3343,7 @@ module Classical.Html {
 		* This attribute defines the name of a document-level metadata. It should not be set if one of the attribute itemprop, http-equiv or charset is also set. This document-level metadata name is associated with a value, contained by the content attribute. The possible values for the name element are, with their associated value stored via the content attribute:  application-name, defining the name of the web application running in the webpage;  
 		* Note:   Browsers may use this to identify the application. It is different from the <title> element, which usually consist of the application name but may also contain specific information like the document name or a status; Simple webpages shouldn't define the application-name meta.   author, defining, in a free format, the name of the author of the document; description, containing a short and accurate summary of the content of the page. Several browsers, among them Firefox and Opera, use this meta as the default description of the page when bookmarked; generator, containing, in a free format, the identifier to the software that generated the page; keywords, containing, as strings separated by commas, relevant words associated with the content of the page. The attribute may also have a value taken from the extended list defined on WHATWG Wiki MetaExtensions page. Also none has been formally accepted yet, a few commonly used names are among the proposals:  creator, defining, in a free format, the name of the creator of the document. Note that it can be the name of the institution. If there are more than one, several <meta> element should be used; googlebot, which is a synonym of robots, but is only followed by Googlebot, the indexing crawler for Google; publisher, defining, in a free format, the name of the publisher of the document. Note that it can be the name of the institution; robots, defining the behavior that cooperative crawlers should have with the page. It is a comma-separated list of values taken in the following list:   Values for the content of <meta name="robots">   Value  Description  Used by      index  Allows the robot to index the page  All    noindex  Prevents the robot to index the page  All    follow  Allows the robot to follow the links on the page  All    nofollow  Prevents the robot to follow the links on the page  All    noodp  Prevents the usage of the Open Directory Project description, if any, as the description of the page in the search engine results page   Google, Yahoo, Bing     noarchive  Prevents the search engine to cache the content of the page  Google, Yahoo    nosnippet  Prevents the display of any description of the page in the search engine results page  Google    noimageindex  Prevents this page to appear as the referring page of an indexed image  Google    noydir  Prevents the usage of the Yahoo Directory description, if any, as the description of the page in the search engine results page  Yahoo    nocache  Synonym of noarchive  Bing    Notes:   Only cooperative robots will follow the rules defined by the robots name. Do not expect to keep e-mail harvesters at bay with this The robot still needs to access the page in order to read the meta value. If you want to keep them at bay, for example to prevent bandwidth consumption, use a robots.txt file instead (or in complement). If you want to remove the page of an index, changing the meta to noindex will work, but only when the robot visit the page again. Be sure not to prevent such visit, via the robots.txt file for example. Some search engines have developers tools allowing a quick removal of some page. Some possible values are mutually exclusive, like using index and noindex, or follow and nofollow, at the same time. In these case the behavior of the robot is undefined, and may vary from one to the other. So avoid these cases. Some search engine crawler robots, like those of Google, Yahoo Search or Bing, supports the same values on an HTTP directive, X-Robot-Tags: this allows to use these pragma on non-HTML documents, like images.   slurp, which is a synonym of robots, but is only followed by Slurp, the indexing crawler for Yahoo Search; Finally a few names are in common use, though not in progress of being standardized:  viewport, which gives hints about the size of the initial size of the viewport. This pragma is used by several mobile devices only.   Values for the content of <meta name="viewport">   Value  Possible values  Description      width  a positive integer number or the literal device-width  defines the width, in pixels, of the viewport    height  a positive integer number of the literal device-height  defines the height, in pixels, of the viewport    initial-scale  a positive number between 0.0 and 10.0  defines the ratio between the device width (device-width in portrait mode or device-height in landscape mode) and the viewport size.e    maximum-scale  a positive number between 0.0 and 10.0  defines the maximum value of the zoom; it must be greater or equal to the minimum-scale or the behavior is underterminate.    minimum-scale  a positive number between 0.0 and 10.0  defines the minimum value of the zoom; it must be smaller or equal to the maximum-scale or the behavior is undeterminate.    user-scalable  a boolean value (yes or no)  If set to no, the user is not able to zoom or in the webpage. Default value is yes.    Notes:   Though not standardized, this attribute is used by different mobile browsers like Safari Mobile, Firefox for Mobile or Opera Mobile. The default values may change from one device, and browser, to another To learn about this pragma in Firefox for Mobile, see this article [MDN].
 		*/
-		nameBinder?: b.IPropertyBinder<string>;
+		nameBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		/*
 		* This attribute defines the scheme in which the metadata is described. A scheme is a context leading to the correct interpretations of the content value, like a format.  Notes: Do not use this attribute as it is obsolete. There is no replacement for it as there was no real usage for it. Omit it altogether [MDN].
@@ -3407,7 +3353,7 @@ module Classical.Html {
 		/*
 		* This attribute defines the scheme in which the metadata is described. A scheme is a context leading to the correct interpretations of the content value, like a format.  Notes: Do not use this attribute as it is obsolete. There is no replacement for it as there was no real usage for it. Omit it altogether [MDN].
 		*/
-		schemeBinder?: b.IPropertyBinder<string>;
+		schemeBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		//#endregion Properties
 	}
@@ -3450,7 +3396,7 @@ module Classical.Html {
 		/*
 		* If this Boolean attribute is set, this option is not checkable [MDN].
 		*/
-		disabledBinder?: b.IPropertyBinder<boolean>;
+		disabledBinder?: b.IBinder<b.PropertyUpdate<boolean>>;
 
 		/*
 		* This attribute contains a text label indicating the meaning of the option. If it is not defined, the value defaults to the element's text content.  
@@ -3462,7 +3408,7 @@ module Classical.Html {
 		* This attribute contains a text label indicating the meaning of the option. If it is not defined, the value defaults to the element's text content.  
 		* Note: the label attribute is designed to contain a short label typically used in a hierarchical menu. The value attribute describes a longer label designed to be used near a radio button, for example [MDN].
 		*/
-		labelBinder?: b.IPropertyBinder<string>;
+		labelBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		/*
 		* This Boolean attribute indicates that the option is initially selected. If the <option> element is the descendant of a <select> element whose multiple attribute is not set, only one <option> in the <select> may have the selected attribute [MDN].
@@ -3472,7 +3418,7 @@ module Classical.Html {
 		/*
 		* This Boolean attribute indicates that the option is initially selected. If the <option> element is the descendant of a <select> element whose multiple attribute is not set, only one <option> in the <select> may have the selected attribute [MDN].
 		*/
-		selectedBinder?: b.IPropertyBinder<boolean>;
+		selectedBinder?: b.IBinder<b.PropertyUpdate<boolean>>;
 
 		/*
 		* This textual contains a longer text label explaining the option, much like the label attribute. The label attribute is designed to contain a short label typically used in a hierarchical menu, whereas the value attribute describes a longer label designed to be used near a radio button, for example [MDN].
@@ -3482,7 +3428,7 @@ module Classical.Html {
 		/*
 		* This textual contains a longer text label explaining the option, much like the label attribute. The label attribute is designed to contain a short label typically used in a hierarchical menu, whereas the value attribute describes a longer label designed to be used near a radio button, for example [MDN].
 		*/
-		valueBinder?: b.IPropertyBinder<string>;
+		valueBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		//#endregion Properties
 	}
@@ -3503,7 +3449,7 @@ module Classical.Html {
 		/*
 		* If this Boolean attribute is set, none of the items in this option group is selectable. Often browsers grey out such control and it won't receive any browsing events, like mouse clicks or focus-related ones [MDN].
 		*/
-		disabledBinder?: b.IPropertyBinder<boolean>;
+		disabledBinder?: b.IBinder<b.PropertyUpdate<boolean>>;
 
 		/*
 		* The name of the group of options, which the browser can use when labeling the options in the user interface. This attribute is mandatory if this element is used [MDN].
@@ -3513,7 +3459,7 @@ module Classical.Html {
 		/*
 		* The name of the group of options, which the browser can use when labeling the options in the user interface. This attribute is mandatory if this element is used [MDN].
 		*/
-		labelBinder?: b.IPropertyBinder<string>;
+		labelBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		//#endregion Properties
 	}
@@ -3534,7 +3480,7 @@ module Classical.Html {
 		/*
 		* This Boolean attribute hints that the list should be rendered in a compact style. The interpretation of this attribute depends on the user agent and it doesn't work in all browsers. Note: Do not use this attribute, as it has been deprecated: the <ol> element should be styled using CSS. To give a similar effect than the compact attribute, the CSS property line-height can be used with a value of 80% [MDN].
 		*/
-		compactBinder?: b.IPropertyBinder<boolean>;
+		compactBinder?: b.IBinder<b.PropertyUpdate<boolean>>;
 
 		/*
 		* This integer attribute specifies the start value for numbering the individual list items. Although the ordering type of list elements might be Roman numerals, such as XXXI, or letters, the value of start is always represented as a number. To start numbering elements from the letter "C", use <ol start="3">.  
@@ -3546,7 +3492,7 @@ module Classical.Html {
 		* This integer attribute specifies the start value for numbering the individual list items. Although the ordering type of list elements might be Roman numerals, such as XXXI, or letters, the value of start is always represented as a number. To start numbering elements from the letter "C", use <ol start="3">.  
 		* Note: This attribute was deprecated in HTML4, but reintroduced in HTML5 [MDN].
 		*/
-		startBinder?: b.IPropertyBinder<number>;
+		startBinder?: b.IBinder<b.PropertyUpdate<number>>;
 
 		/*
 		* Html.OrderedListType enumerates the values of this property.
@@ -3558,7 +3504,7 @@ module Classical.Html {
 		* Html.OrderedListType enumerates the values of this property.
 		* Indicates the numbering type:  'a' indicates lowercase letters, 'A' indicates uppercase letters, 'i' indicates lowercase Roman numerals, 'I' indicates uppercase Roman numerals, and '1' indicates numbers (default). The type set is used for the entire list unless a different type attribute is used within an enclosed <li> element.  Note: This attribute was deprecated in HTML4, but reintroduced in HTML5. Unless the value of the list number matters (e.g. in legal or technical documents where items are to be referenced by their number/letter), the CSS list-style-type property should be used instead [MDN].
 		*/
-		typeBinder?: b.IPropertyBinder<string>;
+		typeBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		//#endregion Properties
 	}
@@ -3590,7 +3536,7 @@ module Classical.Html {
 		/*
 		* Name of the parameter [MDN].
 		*/
-		nameBinder?: b.IPropertyBinder<string>;
+		nameBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		/*
 		* Only used if the valuetype is set to "ref". Specifies the MIME type of values found at the URI specified by value [MDN].
@@ -3600,7 +3546,7 @@ module Classical.Html {
 		/*
 		* Only used if the valuetype is set to "ref". Specifies the MIME type of values found at the URI specified by value [MDN].
 		*/
-		typeBinder?: b.IPropertyBinder<string>;
+		typeBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		/*
 		* Specifies the value of the parameter [MDN].
@@ -3610,7 +3556,7 @@ module Classical.Html {
 		/*
 		* Specifies the value of the parameter [MDN].
 		*/
-		valueBinder?: b.IPropertyBinder<string>;
+		valueBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		/*
 		* Specifies the type of the value attribute. Possible values are:  data: Default value. The value is passed to the object's implementation as a string. ref: The value is a URI to a resource where run-time values are stored. object: An ID of another <object> in the same document [MDN].
@@ -3620,7 +3566,7 @@ module Classical.Html {
 		/*
 		* Specifies the type of the value attribute. Possible values are:  data: Default value. The value is passed to the object's implementation as a string. ref: The value is a URI to a resource where run-time values are stored. object: An ID of another <object> in the same document [MDN].
 		*/
-		valueTypeBinder?: b.IPropertyBinder<string>;
+		valueTypeBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		//#endregion Properties
 	}
@@ -3652,7 +3598,7 @@ module Classical.Html {
 		/*
 		* This attribute describes how much work the task indicated by the progress element requires. The max attribute, if present, must have a value greater than zero and be a valid floating point number [MDN].
 		*/
-		maxBinder?: b.IPropertyBinder<number>;
+		maxBinder?: b.IBinder<b.PropertyUpdate<number>>;
 
 		/*
 		* This attribute specifies how much of the task that has been completed. It must be a valid floating point number between 0 and max, or between 0 and 1 if max is omitted. If there is no value attribute, the progress bar is indeterminate; this indicates that an activity is ongoing with no indication of how long it is expected to take [MDN].
@@ -3662,7 +3608,7 @@ module Classical.Html {
 		/*
 		* This attribute specifies how much of the task that has been completed. It must be a valid floating point number between 0 and max, or between 0 and 1 if max is omitted. If there is no value attribute, the progress bar is indeterminate; this indicates that an activity is ongoing with no indication of how long it is expected to take [MDN].
 		*/
-		valueBinder?: b.IPropertyBinder<number>;
+		valueBinder?: b.IBinder<b.PropertyUpdate<number>>;
 
 		/**
 		* The progressErrorEvent event is executed when progression has failed [MDN].
@@ -3704,7 +3650,7 @@ module Classical.Html {
 		/*
 		* The value of this attribute is a URL that designates a source document or message for the information quoted. This attribute is intended to point to information explaining the context or the reference for the quote [MDN].
 		*/
-		citationBinder?: b.IPropertyBinder<string>;
+		citationBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		//#endregion Properties
 	}
@@ -3780,7 +3726,7 @@ module Classical.Html {
 		/*
 		* Set this Boolean attribute to indicate that the browser should, if possible, execute the script asynchronously. It has no effect on inline scripts (i.e., scripts that don't have the src attribute) [MDN].
 		*/
-		asyncBinder?: b.IPropertyBinder<boolean>;
+		asyncBinder?: b.IBinder<b.PropertyUpdate<boolean>>;
 
 		/*
 		* This attribute specifies the URI of an external script; this can be used as an alternative to embedding a script directly within a document. script elements with an src attribute specified should not have a script embedded within its tags [MDN].
@@ -3790,7 +3736,7 @@ module Classical.Html {
 		/*
 		* This attribute specifies the URI of an external script; this can be used as an alternative to embedding a script directly within a document. script elements with an src attribute specified should not have a script embedded within its tags [MDN].
 		*/
-		sourceBinder?: b.IPropertyBinder<string>;
+		sourceBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		/*
 		* This attribute identifies the scripting language of code embedded within a script element or referenced via the elementâ€™s src attribute. This is specified as a MIME type; examples of supported MIME types include text/javascript, text/ecmascript, application/javascript, and application/ecmascript. If this attribute is absent, the script is treated as JavaScript [MDN].
@@ -3800,7 +3746,7 @@ module Classical.Html {
 		/*
 		* This attribute identifies the scripting language of code embedded within a script element or referenced via the elementâ€™s src attribute. This is specified as a MIME type; examples of supported MIME types include text/javascript, text/ecmascript, application/javascript, and application/ecmascript. If this attribute is absent, the script is treated as JavaScript [MDN].
 		*/
-		typeBinder?: b.IPropertyBinder<string>;
+		typeBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		/*
 		* This Boolean attribute is set to indicate to a browser that the script is meant to be executed after the document has been parsed. Since this feature hasn't yet been implemented by all other major browsers, authors should not assume that the scriptâ€™s execution will actually be deferred. Never call document.write() from a defer script (since Gecko 1.9.2, this will blow away the document). The defer attribute shouldn't be used on scripts that don't have the src attribute. Since Gecko 1.9.2, the defer attribute is ignored on scripts that don't have the src attribute. However, in Gecko 1.9.1 even inline scripts are deferred if the defer attribute is set [MDN].
@@ -3810,7 +3756,7 @@ module Classical.Html {
 		/*
 		* This Boolean attribute is set to indicate to a browser that the script is meant to be executed after the document has been parsed. Since this feature hasn't yet been implemented by all other major browsers, authors should not assume that the scriptâ€™s execution will actually be deferred. Never call document.write() from a defer script (since Gecko 1.9.2, this will blow away the document). The defer attribute shouldn't be used on scripts that don't have the src attribute. Since Gecko 1.9.2, the defer attribute is ignored on scripts that don't have the src attribute. However, in Gecko 1.9.1 even inline scripts are deferred if the defer attribute is set [MDN].
 		*/
-		deferBinder?: b.IPropertyBinder<boolean>;
+		deferBinder?: b.IBinder<b.PropertyUpdate<boolean>>;
 
 		/**
 		* The errorEvent event is executed when a resource failed to load [MDN].
@@ -3849,7 +3795,7 @@ module Classical.Html {
 		/*
 		* This attribute lets you specify that a form control should have input focus when the page loads, unless the user overrides it, for example by typing in a different control. Only one form element in a document can have the autofocus attribute, which is a Boolean [MDN].
 		*/
-		autoFocusBinder?: b.IPropertyBinder<boolean>;
+		autoFocusBinder?: b.IBinder<b.PropertyUpdate<boolean>>;
 
 		/*
 		* This Boolean attribute indicates that the user cannot interact with the control. If this attribute is not specified, the control inherits its setting from the containing element, for example fieldset; if there is no containing element with the disabled attribute set, then the control is enabled [MDN].
@@ -3859,7 +3805,7 @@ module Classical.Html {
 		/*
 		* This Boolean attribute indicates that the user cannot interact with the control. If this attribute is not specified, the control inherits its setting from the containing element, for example fieldset; if there is no containing element with the disabled attribute set, then the control is enabled [MDN].
 		*/
-		disabledBinder?: b.IPropertyBinder<boolean>;
+		disabledBinder?: b.IBinder<b.PropertyUpdate<boolean>>;
 
 		/*
 		* The form element that the select element is associated with (its "form owner"). If this attribute is specified, its value must be the ID of a form element in the same document. This enables you to place select elements anywhere within a document, not just as descendants of their form elements [MDN].
@@ -3873,7 +3819,7 @@ module Classical.Html {
 		/*
 		* This Boolean attribute indicates that multiple options can be selected in the list. If it is not specified, then only one option can be selected at a time [MDN].
 		*/
-		multipleOptionsBinder?: b.IPropertyBinder<boolean>;
+		multipleOptionsBinder?: b.IBinder<b.PropertyUpdate<boolean>>;
 
 		/*
 		* The name of the control [MDN].
@@ -3883,7 +3829,7 @@ module Classical.Html {
 		/*
 		* The name of the control [MDN].
 		*/
-		nameBinder?: b.IPropertyBinder<string>;
+		nameBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		/*
 		* A Boolean attribute indicating that an option with a non-empty string value must be selected [MDN].
@@ -3893,7 +3839,7 @@ module Classical.Html {
 		/*
 		* A Boolean attribute indicating that an option with a non-empty string value must be selected [MDN].
 		*/
-		requiredBinder?: b.IPropertyBinder<boolean>;
+		requiredBinder?: b.IBinder<b.PropertyUpdate<boolean>>;
 
 		/*
 		* If the control is presented as a scrolled list box, this attribute represents the number of rows in the list that should be visible at one time. Browsers are not required to present a select elements as a scrolled list box. The default value is 0 [MDN].
@@ -3903,7 +3849,7 @@ module Classical.Html {
 		/*
 		* If the control is presented as a scrolled list box, this attribute represents the number of rows in the list that should be visible at one time. Browsers are not required to present a select elements as a scrolled list box. The default value is 0 [MDN].
 		*/
-		sizeBinder?: b.IPropertyBinder<number>;
+		sizeBinder?: b.IBinder<b.PropertyUpdate<number>>;
 
 		/**
 		* The changeEvent event is executed when an element loses focus and its value changed since gaining focus [MDN].
@@ -3942,7 +3888,7 @@ module Classical.Html {
 		/*
 		* Required, address of the media resource [MDN].
 		*/
-		sourceBinder?: b.IPropertyBinder<string>;
+		sourceBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		/*
 		* The MIME-type of the resource, optionally with a codecs parameter. See RFC 4281 for information about how to specify codecs [MDN].
@@ -3952,7 +3898,7 @@ module Classical.Html {
 		/*
 		* The MIME-type of the resource, optionally with a codecs parameter. See RFC 4281 for information about how to specify codecs [MDN].
 		*/
-		typeBinder?: b.IPropertyBinder<string>;
+		typeBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		//#endregion Properties
 	}
@@ -4006,7 +3952,7 @@ module Classical.Html {
 		/*
 		* This attribute defines the styling language as a MIME type (charset should not be specified). 'text/css' is assumed if this attribute is absent [MDN].
 		*/
-		typeBinder?: b.IPropertyBinder<string>;
+		typeBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		/*
 		* Which media should this style apply to. Should be a media query, see http://dev.w3.org/csswg/css3-mediaqueries [MDN].
@@ -4016,13 +3962,13 @@ module Classical.Html {
 		/*
 		* Which media should this style apply to. Should be a media query, see http://dev.w3.org/csswg/css3-mediaqueries [MDN].
 		*/
-		mediaBinder?: b.IPropertyBinder<string>;
+		mediaBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 
 		/*
 		* If set, the style rules declared in this element are disabled in the declaring document [MDN].
 		*/
-		disabledBinder?: b.IPropertyBinder<boolean>;
+		disabledBinder?: b.IBinder<b.PropertyUpdate<boolean>>;
 
 		/**
 		* The errorEvent event is executed when a resource failed to load [MDN].
@@ -4105,7 +4051,7 @@ module Classical.Html {
 		/*
 		* This attribute contains a positive integer indicating the number of consecutive columns the <col> element spans. If not present, its default value is 1 [MDN].
 		*/
-		spanBinder?: b.IPropertyBinder<number>;
+		spanBinder?: b.IBinder<b.PropertyUpdate<number>>;
 
 		//#endregion Properties
 	}
@@ -4128,7 +4074,7 @@ module Classical.Html {
 		* This attribute contains a positive integer indicating the number of consecutive columns the <colgroup> element spans. If not present, its default value is 1.  
 		* Note: This attribute apply on the attributes of the column group, it has no effect on the CSS styling rules associated to it or, even more, to the cells of the columns members of the group.  The span attribute may not be present if there are one or more <col> elements within the <colgroup> [MDN].
 		*/
-		spanBinder?: b.IPropertyBinder<number>;
+		spanBinder?: b.IBinder<b.PropertyUpdate<number>>;
 
 		/*
 		* This attribute specifies a default width for each column in the current column group. In addition to the standard pixel and percentage values, this attribute might take the special form 0*, which means that the width of each column in the group should be the minimum width necessary to hold the column's contents. Relative widths such as 0.5* also can be used [MDN].
@@ -4138,7 +4084,7 @@ module Classical.Html {
 		/*
 		* This attribute specifies a default width for each column in the current column group. In addition to the standard pixel and percentage values, this attribute might take the special form 0*, which means that the width of each column in the group should be the minimum width necessary to hold the column's contents. Relative widths such as 0.5* also can be used [MDN].
 		*/
-		widthBinder?: b.IPropertyBinder<string>;
+		widthBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		//#endregion Properties
 	}
@@ -4161,7 +4107,7 @@ module Classical.Html {
 		* This attribute contains a non-negative integer value that indicates for how many columns the cell extends. Its default value is 1; if its value is set to 0, it extends until the end of the <colgroup>, even if implicitly defined, that the cell belongs to. Values higher than 1000 will be considered as incorrect and will be set to the default value (1).  
 		* Note: In HTML5 this attribute only accepts values greater than zero since it must not be used to overlap cells. Besides, Firefox is the only browser to support the 0 value as defined in the HTML 4.01 specification [MDN].
 		*/
-		columnSpanBinder?: b.IPropertyBinder<number>;
+		columnSpanBinder?: b.IBinder<b.PropertyUpdate<number>>;
 
 		/*
 		* This attribute contains a list of space-separated strings, each corresponding to the id attribute of the <th> elements that apply to this element [MDN].
@@ -4171,7 +4117,7 @@ module Classical.Html {
 		/*
 		* This attribute contains a list of space-separated strings, each corresponding to the id attribute of the <th> elements that apply to this element [MDN].
 		*/
-		headersBinder?: b.IPropertyBinder<string>;
+		headersBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		/*
 		* This attribute contains a non-negative integer value that indicates for how many rows the cell extends. Its default value is 1; if its value is set to 0, it extends until the end of the table section (<thead>, <tbody>, <tfoot>, even if implicitly defined, that the cell belongs to. Values higher than 65534 are clipped down to 65534 [MDN].
@@ -4181,7 +4127,7 @@ module Classical.Html {
 		/*
 		* This attribute contains a non-negative integer value that indicates for how many rows the cell extends. Its default value is 1; if its value is set to 0, it extends until the end of the table section (<thead>, <tbody>, <tfoot>, even if implicitly defined, that the cell belongs to. Values higher than 65534 are clipped down to 65534 [MDN].
 		*/
-		rowSpanBinder?: b.IPropertyBinder<number>;
+		rowSpanBinder?: b.IBinder<b.PropertyUpdate<number>>;
 
 		/*
 		*  [MDN].
@@ -4191,7 +4137,7 @@ module Classical.Html {
 		/*
 		*  [MDN].
 		*/
-		scopeBinder?: b.IPropertyBinder<string>;
+		scopeBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		//#endregion Properties
 	}
@@ -4212,7 +4158,7 @@ module Classical.Html {
 		/*
 		* This attribute contains a non-negative integer value that indicates on how many columns does the cell extend. Its default value is 1; if its value is set to 0, it does extend until the end of the <colgroup>, eventually implicitly defined, the cell belongs to. Values higher than 1000 are clipped down to 1000 [MDN].
 		*/
-		columnSpanBinder?: b.IPropertyBinder<number>;
+		columnSpanBinder?: b.IBinder<b.PropertyUpdate<number>>;
 
 		/*
 		* This attributes a list of space-separated strings, each corresponding to the id attribute of the <th> elements that applies to this element [MDN].
@@ -4222,7 +4168,7 @@ module Classical.Html {
 		/*
 		* This attributes a list of space-separated strings, each corresponding to the id attribute of the <th> elements that applies to this element [MDN].
 		*/
-		headersBinder?: b.IPropertyBinder<string>;
+		headersBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		/*
 		* This attribute contains a non-negative integer value that indicates on how many rows does the cell extend. Its default value is 1; if its value is set to 0, it does extend until the end of the table section (<thead>, <tbody>, <tfoot>, eventually implicitly defined) the cell belongs to. Values higher than 65534 are clipped down to 65534 [MDN].
@@ -4232,7 +4178,7 @@ module Classical.Html {
 		/*
 		* This attribute contains a non-negative integer value that indicates on how many rows does the cell extend. Its default value is 1; if its value is set to 0, it does extend until the end of the table section (<thead>, <tbody>, <tfoot>, eventually implicitly defined) the cell belongs to. Values higher than 65534 are clipped down to 65534 [MDN].
 		*/
-		rowSpanBinder?: b.IPropertyBinder<number>;
+		rowSpanBinder?: b.IBinder<b.PropertyUpdate<number>>;
 
 		//#endregion Properties
 	}
@@ -4264,7 +4210,7 @@ module Classical.Html {
 		/*
 		* This Boolean attribute lets you specify that a form control should have input focus when the page loads, unless the user overrides it, for example by typing in a different control. Only one form-associated element in a document can have this attribute specified [MDN].
 		*/
-		autoFocusBinder?: b.IPropertyBinder<boolean>;
+		autoFocusBinder?: b.IBinder<b.PropertyUpdate<boolean>>;
 
 		/*
 		* The visible width of the text control, in average character widths. If it is specified, it must be a positive integer. If it is not specified, the default value is 20 (HTML5) [MDN].
@@ -4274,7 +4220,7 @@ module Classical.Html {
 		/*
 		* The visible width of the text control, in average character widths. If it is specified, it must be a positive integer. If it is not specified, the default value is 20 (HTML5) [MDN].
 		*/
-		columnsBinder?: b.IPropertyBinder<number>;
+		columnsBinder?: b.IBinder<b.PropertyUpdate<number>>;
 
 		/*
 		* This Boolean attribute indicates that the user cannot interact with the control. (If this attribute is not specified, the control inherits its setting from the containing element, for example <fieldset>; if there is no containing element with the disabled attribute set, then the control is enabled.) [MDN].
@@ -4284,7 +4230,7 @@ module Classical.Html {
 		/*
 		* This Boolean attribute indicates that the user cannot interact with the control. (If this attribute is not specified, the control inherits its setting from the containing element, for example <fieldset>; if there is no containing element with the disabled attribute set, then the control is enabled.) [MDN].
 		*/
-		disabledBinder?: b.IPropertyBinder<boolean>;
+		disabledBinder?: b.IBinder<b.PropertyUpdate<boolean>>;
 
 		/*
 		* The form element that the textarea element is associated with (its "form owner"). The value of the attribute must be an ID of a form element in the same document. If this attribute is not specified, the textarea element must be a descendant of a form element. This attribute enables you to place textarea elements anywhere within a document, not just as descendants of their form elements [MDN].
@@ -4298,7 +4244,7 @@ module Classical.Html {
 		/*
 		* The maximum number of characters (Unicode code points) that the user can enter. If it is not specified, the user can enter an unlimited number of characters [MDN].
 		*/
-		maxLengthBinder?: b.IPropertyBinder<number>;
+		maxLengthBinder?: b.IBinder<b.PropertyUpdate<number>>;
 
 		/*
 		* The name of the control [MDN].
@@ -4308,7 +4254,7 @@ module Classical.Html {
 		/*
 		* The name of the control [MDN].
 		*/
-		nameBinder?: b.IPropertyBinder<string>;
+		nameBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		/*
 		* A hint to the user of what can be entered in the control. The placeholder text must not contain carriage returns or line-feeds [MDN].
@@ -4318,7 +4264,7 @@ module Classical.Html {
 		/*
 		* A hint to the user of what can be entered in the control. The placeholder text must not contain carriage returns or line-feeds [MDN].
 		*/
-		placeHolderBinder?: b.IPropertyBinder<string>;
+		placeHolderBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		/*
 		* This Boolean attribute indicates that the user cannot modify the value of the control. Unlike the disabled attribute, the readonly attribute does not prevent the user from clicking or selecting in the control. The value of a read-only control is still submitted with the form [MDN].
@@ -4328,7 +4274,7 @@ module Classical.Html {
 		/*
 		* This Boolean attribute indicates that the user cannot modify the value of the control. Unlike the disabled attribute, the readonly attribute does not prevent the user from clicking or selecting in the control. The value of a read-only control is still submitted with the form [MDN].
 		*/
-		readOnlyBinder?: b.IPropertyBinder<boolean>;
+		readOnlyBinder?: b.IBinder<b.PropertyUpdate<boolean>>;
 
 		/*
 		* This attribute specifies that the user must fill in a value before submitting a form [MDN].
@@ -4338,7 +4284,7 @@ module Classical.Html {
 		/*
 		* This attribute specifies that the user must fill in a value before submitting a form [MDN].
 		*/
-		requiredBinder?: b.IPropertyBinder<boolean>;
+		requiredBinder?: b.IBinder<b.PropertyUpdate<boolean>>;
 
 		/*
 		* The number of visible text lines for the control [MDN].
@@ -4348,19 +4294,19 @@ module Classical.Html {
 		/*
 		* The number of visible text lines for the control [MDN].
 		*/
-		rowsBinder?: b.IPropertyBinder<number>;
+		rowsBinder?: b.IBinder<b.PropertyUpdate<number>>;
 
 
 		/*
 		* The index to the last character in the current selection [MDN].
 		*/
-		selectionEndBinder?: b.IPropertyBinder<number>;
+		selectionEndBinder?: b.IBinder<b.PropertyUpdate<number>>;
 
 
 		/*
 		* The index to the first character in the current selection [MDN].
 		*/
-		selectionStartBinder?: b.IPropertyBinder<number>;
+		selectionStartBinder?: b.IBinder<b.PropertyUpdate<number>>;
 
 		/*
 		* Html.TextAreaWrap enumerates the values of this property.
@@ -4372,7 +4318,7 @@ module Classical.Html {
 		* Html.TextAreaWrap enumerates the values of this property.
 		* Indicates how the control wraps text. Possible values are:  hard: The browser automatically inserts line breaks (CR+LF) so that each line has no more than the width of the control; the cols attribute must be specified. soft: The browser ensures that all line breaks in the value consist of a CR+LF pair, but does not insert any additional line breaks. If this attribute is not specified, soft is its default value [MDN].
 		*/
-		wrapBinder?: b.IPropertyBinder<string>;
+		wrapBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		/**
 		* The changeEvent event is executed when an element loses focus and its value changed since gaining focus [MDN].
@@ -4418,7 +4364,7 @@ module Classical.Html {
 		/*
 		* This attribute indicates that the track should be enabled unless the user's preferences indicate that another track is more appropriate. This may only be used on one track element per media element [MDN].
 		*/
-		defaultBinder?: b.IPropertyBinder<boolean>;
+		defaultBinder?: b.IBinder<b.PropertyUpdate<boolean>>;
 
 		/*
 		* Html.TrackKind enumerates the values of this property.
@@ -4430,7 +4376,7 @@ module Classical.Html {
 		* Html.TrackKind enumerates the values of this property.
 		* The following keywords are allowed:  subtitles, captions, descriptions, chapters, metadata. If omitted the default kind is subtitles [MDN].
 		*/
-		kindBinder?: b.IPropertyBinder<string>;
+		kindBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		/*
 		* A user-readable title of the text track which is used by the browser when listing available text tracks [MDN].
@@ -4440,7 +4386,7 @@ module Classical.Html {
 		/*
 		* A user-readable title of the text track which is used by the browser when listing available text tracks [MDN].
 		*/
-		labelBinder?: b.IPropertyBinder<string>;
+		labelBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		/*
 		* Address of the track. Must be a valid URL. This attribute must be defined [MDN].
@@ -4450,7 +4396,7 @@ module Classical.Html {
 		/*
 		* Address of the track. Must be a valid URL. This attribute must be defined [MDN].
 		*/
-		sourceBinder?: b.IPropertyBinder<string>;
+		sourceBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		/*
 		* Language of the track text data. It must be a valid BCP 47 language tag. If the kind attribute is set to subtitles, then srclang must be defined [MDN].
@@ -4460,7 +4406,7 @@ module Classical.Html {
 		/*
 		* Language of the track text data. It must be a valid BCP 47 language tag. If the kind attribute is set to subtitles, then srclang must be defined [MDN].
 		*/
-		sourceLanguageBinder?: b.IPropertyBinder<string>;
+		sourceLanguageBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		//#endregion Properties
 	}
@@ -4492,7 +4438,7 @@ module Classical.Html {
 		/*
 		* This Boolean attribute hints that the list should be rendered in a compact style. The interpretation of this attribute depends on the user agent and it doesn't work in all browsers.  Usage note: Do not use this attribute, as it has been deprecated: the <ul> element should be styled using CSS. To give a similar effect as the compact attribute, the CSS property line-height can be used with a value of 80% [MDN].
 		*/
-		compactBinder?: b.IPropertyBinder<boolean>;
+		compactBinder?: b.IBinder<b.PropertyUpdate<boolean>>;
 
 		/*
 		* Html.UnorderedListType enumerates the values of this property.
@@ -4506,7 +4452,7 @@ module Classical.Html {
 		* Used to set the bullet style for the list. The values defined under HTML3.2 and the transitional version of HTML 4.0/4.01 are:  circle, disc, and square. A fourth bullet type has been defined in the WebTV interface, but not all browsers support it: triangle. If not present and if no CSS list-style-type property does apply to the element, the user agent decide to use a kind of bullets depending on the nesting level of the list.  
 		* Note: Do not use this attribute, as it has been deprecated; use the CSS list-style-type property instead [MDN].
 		*/
-		typeBinder?: b.IPropertyBinder<string>;
+		typeBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		//#endregion Properties
 	}
@@ -4538,7 +4484,7 @@ module Classical.Html {
 		/*
 		* A Boolean attribute; if specified, the video will automatically begin to play back as soon as it can do so without stopping to finish loading the data [MDN].
 		*/
-		autoPlayBinder?: b.IPropertyBinder<boolean>;
+		autoPlayBinder?: b.IBinder<b.PropertyUpdate<boolean>>;
 
 		/*
 		* An attribute you can read to determine which time ranges of the media have been buffered. This attribute contains a TimeRanges object [MDN].
@@ -4548,7 +4494,7 @@ module Classical.Html {
 		/*
 		* An attribute you can read to determine which time ranges of the media have been buffered. This attribute contains a TimeRanges object [MDN].
 		*/
-		bufferedBinder?: b.IPropertyBinder<TimeRanges>;
+		bufferedBinder?: b.IBinder<b.PropertyUpdate<TimeRanges>>;
 
 		/*
 		* If this attribute is present, controls are included in the video for adjusting volume, seeking, pausing and resuming playback [MDN].
@@ -4558,7 +4504,7 @@ module Classical.Html {
 		/*
 		* If this attribute is present, controls are included in the video for adjusting volume, seeking, pausing and resuming playback [MDN].
 		*/
-		controlsBinder?: b.IPropertyBinder<boolean>;
+		controlsBinder?: b.IBinder<b.PropertyUpdate<boolean>>;
 
 		/*
 		* The height of the video's display area, in CSS pixels [MDN].
@@ -4568,7 +4514,7 @@ module Classical.Html {
 		/*
 		* The height of the video's display area, in CSS pixels [MDN].
 		*/
-		heightBinder?: b.IPropertyBinder<number>;
+		heightBinder?: b.IBinder<b.PropertyUpdate<number>>;
 
 		/*
 		* Specifies that the video should repeat upon reaching the end [MDN].
@@ -4578,7 +4524,7 @@ module Classical.Html {
 		/*
 		* Specifies that the video should repeat upon reaching the end [MDN].
 		*/
-		loopBinder?: b.IPropertyBinder<boolean>;
+		loopBinder?: b.IBinder<b.PropertyUpdate<boolean>>;
 
 		/*
 		* A Boolean attribute which indicates the default setting of the audio contained in the video. If set, the audio will be initially silenced. Its default value is false, meaning that the audio will be played when the video is played [MDN].
@@ -4588,7 +4534,7 @@ module Classical.Html {
 		/*
 		* A Boolean attribute which indicates the default setting of the audio contained in the video. If set, the audio will be initially silenced. Its default value is false, meaning that the audio will be played when the video is played [MDN].
 		*/
-		mutedBinder?: b.IPropertyBinder<boolean>;
+		mutedBinder?: b.IBinder<b.PropertyUpdate<boolean>>;
 
 		/*
 		* Specifies the ranges of the video that have been played [MDN].
@@ -4598,7 +4544,7 @@ module Classical.Html {
 		/*
 		* Specifies the ranges of the video that have been played [MDN].
 		*/
-		playedBinder?: b.IPropertyBinder<TimeRanges>;
+		playedBinder?: b.IBinder<b.PropertyUpdate<TimeRanges>>;
 
 		/*
 		* Html.VideoPreload enumerates the values of this property.
@@ -4610,7 +4556,7 @@ module Classical.Html {
 		* Html.VideoPreload enumerates the values of this property.
 		* This enumerated attribute is intended to provide a hint to the browser about what the author thinks will lead to the best user experience. It may have one of the following values:  none: hints that either the author thinks that the user won't need to consult that video or that the server wants to minimize its traffic; in others terms this hint indicates that the video should not be cached. metadata: hints that though the author thinks that the user won't need to consult that video, fetching the metadata (e.g. length) is reasonable. auto: hints that the user needs have priority; in others terms this hint indicated that, if needed, the whole video could be downloaded, even if the user is not expected to use it. the empty string: which is a synonym of the auto value. If not set, its default value is browser-defined (i.e. each browser can choose its own default value), though the spec advises it to be set to metadata.  Usage notes:  The autoplay attribute has precedence over this one as if one wants to automatically play a video, the browser will obviously need to download it. Setting both the autoplay and the preload attributes is allowed by the specification. The browser is not forced by the specification to follow the value of this attribute; it is a mere hint [MDN].
 		*/
-		preloadBinder?: b.IPropertyBinder<string>;
+		preloadBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		/*
 		* A URL indicating a poster frame to show until the user plays or seeks. If this attribute isn't specified, nothing is displayed until the first frame is available; then the first frame is displayed as the poster frame [MDN].
@@ -4620,7 +4566,7 @@ module Classical.Html {
 		/*
 		* A URL indicating a poster frame to show until the user plays or seeks. If this attribute isn't specified, nothing is displayed until the first frame is available; then the first frame is displayed as the poster frame [MDN].
 		*/
-		posterBinder?: b.IPropertyBinder<string>;
+		posterBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		/*
 		* The URL of the video to embed. This is optional; you may instead use the <source> element within the video block to specify the video to embed [MDN].
@@ -4630,7 +4576,7 @@ module Classical.Html {
 		/*
 		* The URL of the video to embed. This is optional; you may instead use the <source> element within the video block to specify the video to embed [MDN].
 		*/
-		sourceBinder?: b.IPropertyBinder<string>;
+		sourceBinder?: b.IBinder<b.PropertyUpdate<string>>;
 
 		/*
 		* The width of the video's display area, in CSS pixels [MDN].
@@ -4640,7 +4586,7 @@ module Classical.Html {
 		/*
 		* The width of the video's display area, in CSS pixels [MDN].
 		*/
-		widthBinder?: b.IPropertyBinder<number>;
+		widthBinder?: b.IBinder<b.PropertyUpdate<number>>;
 
 		/**
 		* The mediaCanPlayEvent event is executed when the user agent can play the media, but estimates that not enough data has been loaded to play the media up to its end without having to stop for further buffering of content [MDN].
@@ -10750,39 +10696,10 @@ module Classical.Html.Elements {
 
 		//#region Fields
 
-		private _profileProperty: b.PropertyUpdate<string>;
 
 		//#endregion Fields
 
 		//#region Properties
-
-		//#region profileProperty
-
-		/**
-		* The URIs of one or more metadata profiles, separated by white space [MDN].
-		*/
-		get profileProperty(): b.PropertyUpdate<string> {
-			if(!this._profileProperty)
-				initializeProperty(this, 'profile', 'profile');
-			return this._profileProperty;
-		}
-
-		//#endregion profileProperty
-
-		//#region profile
-
-		/**
-		* The URIs of one or more metadata profiles, separated by white space [MDN].
-		*/
-		get profile(): string {
-			return this.profileProperty.value;
-		}
-
-		set profile(value: string) {
-			this.profileProperty.value = value;
-		}
-
-		//#endregion profile
 
 		//#endregion Properties
         
@@ -10808,7 +10725,6 @@ module Classical.Html.Elements {
         configure(element: Node, document: Document): void {
             super.configure(element, document);
             var config = this.getConfig<IHeadElementConfig>();
-            setPropertyFromConfig(this, config, 'profile', true);
 
         }
 
@@ -11435,7 +11351,6 @@ module Classical.Html.Elements {
 		private _heightProperty: b.PropertyUpdate<string>;
 		private _nameProperty: b.PropertyUpdate<string>;
 		private _scrollingProperty: b.PropertyUpdate<string>;
-		private _sandboxProperty: b.PropertyUpdate<string>;
 		private _sourceProperty: b.PropertyUpdate<string>;
 		private _widthProperty: b.PropertyUpdate<string>;
 
@@ -11529,38 +11444,6 @@ module Classical.Html.Elements {
 
 		//#endregion scrolling
 
-		//#region sandboxProperty
-
-		/**
-		* Html.InlineFrameSandbox enumerates the values of this property.
-		* If specified as an empty string, this attribute enables extra restrictions on the content that can appear in the inline frame. The value of the attribute can either be an empty string (all the restrictions are applied), or a space-separated list of tokens that lift particular restrictions. Valid tokens are:  allow-same-origin: Allows the content to be treated as being from its normal origin. If this keyword is not used, the embedded content is treated as being from a unique origin. allow-top-navigation: Allows the embedded browsing context to navigate (load) content to the top-level browsing context. If this keyword is not used, this operation is not allowed. allow-forms: Allows the embedded browsing context to submit forms. If this keyword is not used, this operation is not allowed. allow-scripts: Allows the embedded browsing context to run scripts (but not create pop-up windows). If this keyword is not used, this operation is not allowed.  
-		* Note:  When the embedded document has the same origin as the main page, it is strongly discouraged to use both allow-scripts and allow-same-origin at the same time, as that allows the embedded document to programmatically remove the sandbox attribute. Although it is accepted, this case is no more secure than not using the sandbox attribute. Sandboxing in general is only of minimal help if the attacker can arrange for the potentially hostile content to be displayed in the user's browser outside a sandboxed iframe. It is recommended that such content should be served from a separate dedicated domain, to limit the potential damage. The sandbox attribute is not supported in Internet Explorer 9 and earlier versions, or in Opera [MDN].
-		*/
-		get sandboxProperty(): b.PropertyUpdate<string> {
-			if(!this._sandboxProperty)
-				initializeProperty(this, 'sandbox', 'sandbox');
-			return this._sandboxProperty;
-		}
-
-		//#endregion sandboxProperty
-
-		//#region sandbox
-
-		/**
-		* Html.InlineFrameSandbox enumerates the values of this property.
-		* If specified as an empty string, this attribute enables extra restrictions on the content that can appear in the inline frame. The value of the attribute can either be an empty string (all the restrictions are applied), or a space-separated list of tokens that lift particular restrictions. Valid tokens are:  allow-same-origin: Allows the content to be treated as being from its normal origin. If this keyword is not used, the embedded content is treated as being from a unique origin. allow-top-navigation: Allows the embedded browsing context to navigate (load) content to the top-level browsing context. If this keyword is not used, this operation is not allowed. allow-forms: Allows the embedded browsing context to submit forms. If this keyword is not used, this operation is not allowed. allow-scripts: Allows the embedded browsing context to run scripts (but not create pop-up windows). If this keyword is not used, this operation is not allowed.  
-		* Note:  When the embedded document has the same origin as the main page, it is strongly discouraged to use both allow-scripts and allow-same-origin at the same time, as that allows the embedded document to programmatically remove the sandbox attribute. Although it is accepted, this case is no more secure than not using the sandbox attribute. Sandboxing in general is only of minimal help if the attacker can arrange for the potentially hostile content to be displayed in the user's browser outside a sandboxed iframe. It is recommended that such content should be served from a separate dedicated domain, to limit the potential damage. The sandbox attribute is not supported in Internet Explorer 9 and earlier versions, or in Opera [MDN].
-		*/
-		get sandbox(): string {
-			return this.sandboxProperty.value;
-		}
-
-		set sandbox(value: string) {
-			this.sandboxProperty.value = value;
-		}
-
-		//#endregion sandbox
-
 		//#region sourceProperty
 
 		/**
@@ -11644,7 +11527,6 @@ module Classical.Html.Elements {
             setPropertyFromConfig(this, config, 'height', true);
             setPropertyFromConfig(this, config, 'name', true);
             setPropertyFromConfig(this, config, 'scrolling', true);
-            setPropertyFromConfig(this, config, 'sandbox', true);
             setPropertyFromConfig(this, config, 'source', true);
             setPropertyFromConfig(this, config, 'width', true);
 

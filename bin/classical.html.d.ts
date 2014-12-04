@@ -1,4 +1,4 @@
-﻿//#region Enums
+//#region Enums
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -7,6 +7,7 @@ var __extends = this.__extends || function (d, b) {
 };
 var Classical;
 (function (Classical) {
+    var Html;
     (function (Html) {
         /**
         * Property values for a.target
@@ -14,416 +15,713 @@ var Classical;
         var AnchorTarget = (function () {
             function AnchorTarget() {
             }
+            //#region Static Members
+            /**
+            * Value: '_self'
+            * Load the response into the same HTML4 frame (or HTML5 browsing context) as the current one. This value is the default if the attribute is not specified [MDN].
+            */
             AnchorTarget.self = '_self';
-
+            /**
+            * Value: '_blank'
+            * Load the response into a new unnamed HTML4 window or HTML5 browsing context [MDN].
+            */
             AnchorTarget.blank = '_blank';
-
+            /**
+            * Value: '_parent'
+            * _parent: Load the response into the HTML4 frameset parent of the current frame or HTML5 parent browsing context of the current one. If there is no parent, this option behaves the same way as _self [MDN].
+            */
             AnchorTarget.parent = '_parent';
-
+            /**
+            * Value: '_top'
+            * In HTML4: Load the response into the full, original window, canceling all other frames. In HTML5: Load the response into the top-level browsing context (that is, the browsing context that is an ancestor of the current one, and has no parent). If there is no parent, this option behaves the same way as _self [MDN].
+            */
             AnchorTarget.top = '_top';
             return AnchorTarget;
         })();
         Html.AnchorTarget = AnchorTarget;
-
         /**
         * Property values for area.target
         */
         var AreaTarget = (function () {
             function AreaTarget() {
             }
+            //#region Static Members
+            /**
+            * Value: '_self'
+            * Load the response into the same HTML4 frame (or HTML5 browsing context) as the current one. This value is the default if the attribute is not specified [MDN].
+            */
             AreaTarget.self = '_self';
-
+            /**
+            * Value: '_blank'
+            * Load the response into a new unnamed HTML4 window or HTML5 browsing context [MDN].
+            */
             AreaTarget.blank = '_blank';
-
+            /**
+            * Value: '_parent'
+            * Load the response into the HMTL4 frameset parent of the current frame or HTML5 parent browsing context of the current one. If there is no parent, this option behaves the same way as _self [MDN].
+            */
             AreaTarget.parent = '_parent';
-
+            /**
+            * Value: '_top'
+            * In HTML4: Load the response into the full, original window, canceling all other frames. In HTML5: Load the response into the top-level browsing context (that is, the browsing context that is an ancestor of the current one, and has no parent). If there is no parent, this option behaves the same way as _self [MDN].
+            */
             AreaTarget.top = '_top';
             return AreaTarget;
         })();
         Html.AreaTarget = AreaTarget;
-
         /**
         * Property values for audio.preload
         */
         var AudioPreload = (function () {
             function AudioPreload() {
             }
+            //#region Static Members
+            /**
+            * Value: 'none'
+            * Hints that either the author thinks that the user won't need to consult that audio or that the server wants to minimize its traffic; in others terms this hint indicates that the audio should not be cached; [MDN].
+            */
             AudioPreload.none = 'none';
-
+            /**
+            * Value: 'metadata'
+            * Hints that though the author thinks that the user won't need to consult that audio, fetching the metadata (e.g. length) is reasonable; [MDN].
+            */
             AudioPreload.metadata = 'metadata';
-
+            /**
+            * Value: 'auto'
+            * Hints that the user needs have priority; in others terms this hint indicated that, if needed, the whole audio could be downloaded, even if the user is not expected to use it; [MDN].
+            */
             AudioPreload.auto = 'auto';
             return AudioPreload;
         })();
         Html.AudioPreload = AudioPreload;
-
         /**
         * Property values for base.target
         */
         var BaseTarget = (function () {
             function BaseTarget() {
             }
+            //#region Static Members
+            /**
+            * Value: '_self'
+            * Load the result into the same HTML4 frame (or HTML5 browsing context) as the current one. This value is the default if the attribute is not specified [MDN].
+            */
             BaseTarget.self = '_self';
-
+            /**
+            * Value: '_blank'
+            * Load the result into a new unnamed HTML4 window or HTML5 browsing context [MDN].
+            */
             BaseTarget.blank = '_blank';
-
+            /**
+            * Value: '_parent'
+            * Load the result into the HTML4 frameset parent of the current frame or HTML5 parent browsing context of the current one. If there is no parent, this option behaves the same way as _self [MDN].
+            */
             BaseTarget.parent = '_parent';
-
+            /**
+            * Value: '_top'
+            * In HTML4: Load the result into the full, original window, canceling all other frames. In HTML5: Load the result into the top-level browsing context (that is, the browsing context that is an ancestor of the current one, and has no parent). If there is no parent, this option behaves the same way as _self [MDN].
+            */
             BaseTarget.top = '_top';
             return BaseTarget;
         })();
         Html.BaseTarget = BaseTarget;
-
         /**
         * Property values for button.type
         */
         var ButtonType = (function () {
             function ButtonType() {
             }
+            //#region Static Members
+            /**
+            * Value: 'submit'
+            * The button submits the form data to the server. This is the default if the attribute is not specified, or if the attribute is dynamically changed to an empty or invalid value [MDN].
+            */
             ButtonType.submit = 'submit';
-
+            /**
+            * Value: 'reset'
+            * The button resets all the controls to their initial values [MDN].
+            */
             ButtonType.reset = 'reset';
-
+            /**
+            * Value: 'button'
+            * The button has no default behavior. It can have client-side scripts associated with the element's events, which are triggered when the events occur [MDN].
+            */
             ButtonType.button = 'button';
             return ButtonType;
         })();
         Html.ButtonType = ButtonType;
-
         /**
         * Property values for form.autocomplete
         */
         var FormAutoComplete = (function () {
             function FormAutoComplete() {
             }
+            //#region Static Members
+            /**
+            * Value: 'off'
+            * The user must explicitly enter a value into each field for every use, or the document provides its own auto-completion method; the browser does not automatically complete entries [MDN].
+            */
             FormAutoComplete.off = 'off';
-
+            /**
+            * Value: 'on'
+            * The browser can automatically complete values based on values that the user has entered during previous uses of the form [MDN].
+            */
             FormAutoComplete.on = 'on';
             return FormAutoComplete;
         })();
         Html.FormAutoComplete = FormAutoComplete;
-
         /**
         * Property values for form.enctype
         */
         var FormEncodingType = (function () {
             function FormEncodingType() {
             }
+            //#region Static Members
+            /**
+            * Value: 'application/x-www-form-urlencoded'
+            * The default value if the attribute is not specified [MDN].
+            */
             FormEncodingType.applicationFormUrlEncoded = 'application/x-www-form-urlencoded';
-
+            /**
+            * Value: 'multipart/form-data'
+            * Use this value if you are using an <input> element with the type attribute set to "file" [MDN].
+            */
             FormEncodingType.multipartFormData = 'multipart/form-data';
-
+            /**
+            * Value: 'text/plain'
+            * Use this value for plain text [MDN].
+            */
             FormEncodingType.plainText = 'text/plain';
             return FormEncodingType;
         })();
         Html.FormEncodingType = FormEncodingType;
-
         /**
         * Property values for form.method
         */
         var FormMethod = (function () {
             function FormMethod() {
             }
+            //#region Static Members
+            /**
+            * Value: 'post'
+            * Corresponds to the HTTP POST method ; the data from the form is included in the body of the form and is sent to the server [MDN].
+            */
             FormMethod.post = 'post';
-
+            /**
+            * Value: 'get'
+            * Corresponds to the HTTP GET method; the data from the form are appended to the action attribute URI, with a '?' as a separator, and the resulting URI is sent to the server. Use this method when the form has no side-effects and contains only ASCII characters [MDN].
+            */
             FormMethod.get = 'get';
             return FormMethod;
         })();
         Html.FormMethod = FormMethod;
-
         /**
         * Property values for form.target
         */
         var FormTarget = (function () {
             function FormTarget() {
             }
+            //#region Static Members
+            /**
+            * Value: '_self'
+            * Load the response into the same HTML 4 frame (or HTML5 browsing context) as the current one. This value is the default if the attribute is not specified [MDN].
+            */
             FormTarget.self = '_self';
-
+            /**
+            * Value: '_blank'
+            * Load the response into a new unnamed HTML 4 window or HTML5 browsing context [MDN].
+            */
             FormTarget.blank = '_blank';
-
+            /**
+            * Value: '_parent'
+            * Load the response into the HTML 4 frameset parent of the current frame or HTML5 parent browsing context of the current one. If there is no parent, this option behaves the same way as _self [MDN].
+            */
             FormTarget.parent = '_parent';
-
+            /**
+            * Value: '_top'
+            * HTML 4: Load the response into the full, original window, canceling all other frames. HTML5: Load the response into the top-level browsing context (that is, the browsing context that is an ancestor of the current one, and has no parent). If there is no parent, this option behaves the same way as _self [MDN].
+            */
             FormTarget.top = '_top';
             return FormTarget;
         })();
         Html.FormTarget = FormTarget;
-
         /**
         * Property values for HtmlElement.direction.
         */
         var GlobalDirection = (function () {
             function GlobalDirection() {
             }
+            //#region Static Members
+            /**
+            * Value: 'ltr'.
+            * Means left to right and is to be used for languages that are written from the left to the right (like English) [MDN].
+            */
             GlobalDirection.leftToRight = 'ltr';
-
+            /**
+            * Value: 'rtl'.
+            * Means right to left and is to be used for languages that are written from the right to the left (like Arabic) [MDN].
+            */
             GlobalDirection.rightToLeft = 'rtl';
-
+            /**
+            * Value: 'auto'.
+            * Lets the user agent decides. It uses a basic algorithm as it parses the characters inside the element until it finds a character with a strong directionality, then apply that directionality to the whole element [MDN].
+            */
             GlobalDirection.auto = 'auto';
             return GlobalDirection;
         })();
         Html.GlobalDirection = GlobalDirection;
-
         /**
         * Property values for HtmlElement.dropZone.
         */
         var GlobalDropZone = (function () {
             function GlobalDropZone() {
             }
+            //#region Static Members
+            /**
+            * Value: 'copy'.
+            * Indicates that dropping will create a copy of the element that was dragged [MDN].
+            */
             GlobalDropZone.copy = 'copy';
-
+            /**
+            * Value: 'move'.
+            * Indicates that the element that was dragged will be moved to this new location [MDN].
+            */
             GlobalDropZone.move = 'move';
-
+            /**
+            * Value: 'link'.
+            * Creates a link to the dragged data. [MDN].
+            */
             GlobalDropZone.link = 'link';
             return GlobalDropZone;
         })();
         Html.GlobalDropZone = GlobalDropZone;
-
         /**
         * Property values for iframe.sandbox
         */
         var InlineFrameSandbox = (function () {
             function InlineFrameSandbox() {
             }
+            //#region Static Members
+            /**
+            * Value: 'allow-same-origin'
+            * Allows the content to be treated as being from its normal origin. If this keyword is not used, the embedded content is treated as being from a unique origin [MDN].
+            */
             InlineFrameSandbox.allowSameOrigin = 'allow-same-origin';
-
+            /**
+            * Value: 'allow-top-navigation'
+            * Allows the embedded browsing context to navigate (load) content to the top-level browsing context. If this keyword is not used, this operation is not allowed [MDN].
+            */
             InlineFrameSandbox.allowTopNavigation = 'allow-top-navigation';
-
+            /**
+            * Value: 'allow-forms'
+            * Allows the embedded browsing context to submit forms. If this keyword is not used, this operation is not allowed [MDN].
+            */
             InlineFrameSandbox.allowForms = 'allow-forms';
-
+            /**
+            * Value: 'allow-scripts'
+            * Allows the embedded browsing context to run scripts (but not create pop-up windows). If this keyword is not used, this operation is not allowed [MDN].
+            */
             InlineFrameSandbox.allowScripts = 'allow-scripts';
             return InlineFrameSandbox;
         })();
         Html.InlineFrameSandbox = InlineFrameSandbox;
-
         /**
         * Property values for iframe.scrolling
         */
         var InlineFrameScrolling = (function () {
             function InlineFrameScrolling() {
             }
+            //#region Static Members
+            /**
+            * Value: 'auto'
+            * Only when needed [MDN].
+            */
             InlineFrameScrolling.auto = 'auto';
-
+            /**
+            * Value: 'yes'
+            * Always provide a scroll bar [MDN].
+            */
             InlineFrameScrolling.yes = 'yes';
-
+            /**
+            * Value: 'no'
+            * Never provide a scoll bar [MDN].
+            */
             InlineFrameScrolling.no = 'no';
             return InlineFrameScrolling;
         })();
         Html.InlineFrameScrolling = InlineFrameScrolling;
-
         /**
         * Property values for input.accept
         */
         var InputAccept = (function () {
             function InputAccept() {
             }
+            //#region Static Members
+            /**
+            * Value: 'audio/*'
+            * audio/* representing sound files HTML5 [MDN].
+            */
             InputAccept.audio = 'audio/*';
-
+            /**
+            * Value: 'video/*'
+            * video/* representing video files HTML5 [MDN].
+            */
             InputAccept.video = 'video/*';
-
+            /**
+            * Value: 'image/*'
+            * image/* representing image files HTML5 [MDN].
+            */
             InputAccept.image = 'image/*';
             return InputAccept;
         })();
         Html.InputAccept = InputAccept;
-
         /**
         * Property values for input.autocomplete
         */
         var InputAutoComplete = (function () {
             function InputAutoComplete() {
             }
+            //#region Static Members
+            /**
+            * Value: 'off'
+            * The user must explicitly enter a value into this field for every use, or the document provides its own auto-completion method; the browser does not automatically complete the entry [MDN].
+            */
             InputAutoComplete.off = 'off';
-
+            /**
+            * Value: 'on'
+            * The browser can automatically complete the value based on values that the user has entered during previous uses [MDN].
+            */
             InputAutoComplete.on = 'on';
             return InputAutoComplete;
         })();
         Html.InputAutoComplete = InputAutoComplete;
-
         /**
         * Property values for input.type
         */
         var InputType = (function () {
             function InputType() {
             }
+            //#region Static Members
+            /**
+            * Value: 'button'
+            * A push button with no default behavior [MDN].
+            */
             InputType.button = 'button';
-
+            /**
+            * Value: 'checkbox'
+            * A check box. You must use the value attribute to define the value submitted by this item. Use the checked attribute to indicate whether this item is selected. You can also use the indeterminate attribute to indicate that the checkbox is in an indeterminate state (on most platforms, this draws a horizontal line across the checkbox) [MDN].
+            */
             InputType.checkbox = 'checkbox';
-
+            /**
+            * Value: 'color'
+            * HTML5 A control for specifying a color [MDN].
+            */
             InputType.color = 'color';
-
-            InputType.date = 'date';
-
-            InputType.datetimeLocal = 'datetime-local';
-
+            /**
+            * Value: 'email'
+            * HTML5 A field for editing an e-mail address. The :valid and :invalid CSS pseudo-classes are applied as appropriate [MDN].
+            */
             InputType.email = 'email';
-
+            /**
+            * Value: 'hidden'
+            * A control that is not displayed, but whose value is submitted to the server [MDN].
+            */
             InputType.hidden = 'hidden';
-
+            /**
+            * Value: 'image'
+            * A graphical submit button. You must use the src attribute to define the source of the image and the alt attribute to define alternative text. You can use the height and width attributes to define the size of the image in pixels [MDN].
+            */
             InputType.image = 'image';
-
-            InputType.month = 'month';
-
+            /**
+            * Value: 'number'
+            * HTML5 A control for entering a floating point number [MDN].
+            */
             InputType.number = 'number';
-
+            /**
+            * Value: 'password'
+            * A single-line text field whose value is obscured. Use the maxlength attribute to specify the maximum length of the value that can be entered [MDN].
+            */
             InputType.password = 'password';
-
+            /**
+            * Value: 'radio'
+            * A radio button. You must use the value attribute to define the value submitted by this item. Use the checked attribute to indicate whether this item is selected by default. Radio buttons that have the same value for the name attribute are in the same "radio button group"; only one radio button in a group can be selected at one time [MDN].
+            */
             InputType.radio = 'radio';
-
+            /**
+            * Value: 'range'
+            * HTML5 A control for entering a number whose exact value is not important. This type control uses the following default values if the corresponding attributes are not specified:
+            * min: 0
+            * max: 100
+            * value: min + (max-min)/2, or min if max is less than min
+            * step: 1 [MDN].
+            */
             InputType.range = 'range';
-
+            /**
+            * Value: 'reset'
+            * A button that resets the contents of the form to default values [MDN].
+            */
             InputType.reset = 'reset';
-
+            /**
+            * Value: 'search'
+            * HTML5 A single-line text field for entering search strings; line-breaks are automatically removed from the input value [MDN].
+            */
             InputType.search = 'search';
-
+            /**
+            * Value: 'submit'
+            * A button that submits the form [MDN].
+            */
             InputType.submit = 'submit';
-
+            /**
+            * Value: 'tel'
+            * HTML5 A control for entering a telephone number; line-breaks are automatically removed from the input value, but no other syntax is enforced. You can use attributes such as pattern and maxlength to restrict values entered in the control. The :valid and :invalid CSS pseudo-classes are applied as appropriate [MDN].
+            */
             InputType.tel = 'tel';
-
+            /**
+            * Value: 'text'
+            * A single-line text field; line-breaks are automatically removed from the input value [MDN].
+            */
             InputType.text = 'text';
-
-            InputType.time = 'time';
-
+            /**
+            * Value: 'url'
+            * HTML5 A field for editing a URL. The user may enter a blank or invalid address. Line-breaks are automatically removed from the input value. You can use attributes such as pattern and maxlength to restrict values entered in the control. The :valid and :invalid CSS pseudo-classes are applied as appropriate [MDN].
+            */
             InputType.url = 'url';
-
-            InputType.week = 'week';
             return InputType;
         })();
         Html.InputType = InputType;
-
         /**
         * Property values for li.type
         */
         var ListItemType = (function () {
             function ListItemType() {
             }
+            //#region Static Members
+            /**
+            * Value: 'a'
+            * Lowercase letters [MDN].
+            */
             ListItemType.lowercase = 'a';
-
+            /**
+            * Value: 'A'
+            * Uppercase letters [MDN].
+            */
             ListItemType.uppercase = 'A';
-
+            /**
+            * Value: 'i'
+            * Lowercase Roman numerals [MDN].
+            */
             ListItemType.lowercaseRomanNumerals = 'i';
-
+            /**
+            * Value: 'I'
+            * Uppercase Roman numerals [MDN].
+            */
             ListItemType.uppercaseRomanNumerals = 'I';
-
+            /**
+            * Value: '1'
+            * Numbers [MDN].
+            */
             ListItemType.numbers = '1';
             return ListItemType;
         })();
         Html.ListItemType = ListItemType;
-
         /**
         * Used to indicate the kind of menu being declared [MDN].
         */
         var MenuType = (function () {
             function MenuType() {
             }
+            //#region Static Members
+            /**
+            * Value: 'context'
+            * the commands of a context menu; the user can only interact with the commands if that context menu is activated [MDN].
+            */
             MenuType.context = 'context';
-
+            /**
+            * Value: 'toolbar'
+            * a list of active commands that the user can immediately interact with [MDN].
+            */
             MenuType.toolbar = 'toolbar';
-
+            /**
+            * Value: 'list'
+            * an unordered list of items (each represented by an <li> element), each of which represents a command that the user can perform or activate, or, if the element has no li element children, flow content describing available commands [MDN].
+            */
             MenuType.list = 'list';
             return MenuType;
         })();
         Html.MenuType = MenuType;
-
         /**
         *
         */
         var MetaHttpEquiv = (function () {
             function MetaHttpEquiv() {
             }
+            //#region Static Members
+            /**
+            * Value: 'command'
+            * This pragma specifies the preferred stylesheet to be used on the page.
+            * The content attribute must contains the id of a <link> element whose href attribute links to a CSS stylesheet, or the id of a <style> element which contains a CSS stylesheet [MDN].
+            */
             MetaHttpEquiv.defaultStyle = 'default-style';
-
+            /**
+            * Value: 'refresh'
+            * This pragma specifies:
+            * the number of seconds until the page should be reloaded, if the content attribute contains only a positive integer number;
+            * the number of seconds until the page should be redirected to another, if the content attribute contains a positive integer number followed by the string ';url=' and a valid URL [MDN].
+            */
             MetaHttpEquiv.refresh = 'refresh';
             return MetaHttpEquiv;
         })();
         Html.MetaHttpEquiv = MetaHttpEquiv;
-
         /**
         * Property values for meta.name
         */
         var MetaName = (function () {
             function MetaName() {
             }
+            //#region Static Members
+            /**
+            * Value: 'application-name'
+            * application-name, defining the name of the web application running in the webpage;
+            *
+            * Note:
+            * Browsers may use this to identify the application. It is different from the <title> element, which usually consist of the application name but may also contain specific information like the document name or a status;
+            * Simple webpages shouldn't define the application-name meta [MDN].
+            */
             MetaName.applicationName = 'application-name';
-
+            /**
+            * Value: 'author'
+            * author, defining, in a free format, the name of the author of the document; [MDN].
+            */
             MetaName.author = 'author';
-
+            /**
+            * Value: 'description'
+            * description, containing a short and accurate summary of the content of the page. Several browsers, among them Firefox and Opera, use this meta as the default description of the page when bookmarked; [MDN].
+            */
             MetaName.description = 'description';
-
+            /**
+            * Value: 'generator'
+            * generator, containing, in a free format, the identifier to the software that generated the page; [MDN].
+            */
             MetaName.generator = 'generator';
-
+            /**
+            * Value: 'keywords'
+            * keywords, containing, as strings separated by commas, relevant words associated with the content of the page [MDN].
+            */
             MetaName.keywords = 'keywords';
             return MetaName;
         })();
         Html.MetaName = MetaName;
-
         /**
         * Property values for textarea.wrap
         */
         var TextAreaWrap = (function () {
             function TextAreaWrap() {
             }
+            //#region Static Members
+            /**
+            * Value: 'cols'
+            * hard: The browser automatically inserts line breaks (CR+LF) so that each line has no more than the width of the control; the cols attribute must be specified [MDN].
+            */
             TextAreaWrap.cols = 'cols';
             return TextAreaWrap;
         })();
         Html.TextAreaWrap = TextAreaWrap;
-
         /**
         * Property values for track.kind
         */
         var TrackKind = (function () {
             function TrackKind() {
             }
+            //#region Static Members
+            /**
+            * Value: 'subtitles'
+            * Subtitles provide translation of content that cannot be understood by the viewer. For example dialogue or text that is not English in an English language film.
+            * Subtitles may contain additional content, usually extra background information. For example the text at the beginning of the Star Wars films, or the date, time, and location of a scene [MDN].
+            */
             TrackKind.subtitles = 'subtitles';
-
+            /**
+            * Value: 'captions'
+            * Closed captions provide a transcription and possibly a translation of audio.
+            * It may include important non-verbal information such as music cues or sound effects. It may indicate the cue's source (e.g. music, text, character).
+            * Suitable for users who are deaf or when the sound is muted [MDN].
+            */
             TrackKind.captions = 'captions';
-
+            /**
+            * Value: 'descriptions'
+            * Textual description of the video content.
+            * Suitable for users who are blind or where the video cannot be seen [MDN].
+            */
             TrackKind.descriptions = 'descriptions';
-
+            /**
+            * Value: 'chapters'
+            * Chapter titles are intended to be used when the user is navigating the media resource [MDN].
+            */
             TrackKind.chapters = 'chapters';
-
+            /**
+            * Value: 'metadata'
+            * Tracks used by scripts. Not visible to the user [MDN].
+            */
             TrackKind.metadata = 'metadata';
             return TrackKind;
         })();
         Html.TrackKind = TrackKind;
-
         /**
         * Property values for ul.type
         */
         var UnorderedListType = (function () {
             function UnorderedListType() {
             }
+            //#region Static Members
+            /**
+            * Value: 'circle'
+            * circle, [MDN].
+            */
             UnorderedListType.circle = 'circle';
-
+            /**
+            * Value: 'disc'
+            * disc, [MDN].
+            */
             UnorderedListType.disc = 'disc';
-
+            /**
+            * Value: 'square'
+            * and square [MDN].
+            */
             UnorderedListType.square = 'square';
             return UnorderedListType;
         })();
         Html.UnorderedListType = UnorderedListType;
-
         /**
         * Property values for ul.type
         */
         var VideoPreload = (function () {
             function VideoPreload() {
             }
+            //#region Static Members
+            /**
+            * Value: 'none'
+            * none, [MDN].
+            */
             VideoPreload.none = 'none';
-
+            /**
+            * Value: 'metadata'
+            * metadata, [MDN].
+            */
             VideoPreload.metadata = 'metadata';
-
+            /**
+            * Value: 'auto'
+            * auto [MDN].
+            */
             VideoPreload.auto = 'auto';
             return VideoPreload;
         })();
         Html.VideoPreload = VideoPreload;
-    })(Classical.Html || (Classical.Html = {}));
-    var Html = Classical.Html;
+    })(Html = Classical.Html || (Classical.Html = {}));
 })(Classical || (Classical = {}));
-
+//#endregion Enums
+//#region Interfaces
 var Classical;
 (function (Classical) {
-    //#endregion Enums
-    //#region Interfaces
+    var Html;
     (function (Html) {
-        
-
         var Css = (function () {
             function Css(config) {
                 this._config = config;
@@ -431,237 +729,20 @@ var Classical;
             return Css;
         })();
         Html.Css = Css;
-    })(Classical.Html || (Classical.Html = {}));
-    var Html = Classical.Html;
+    })(Html = Classical.Html || (Classical.Html = {}));
 })(Classical || (Classical = {}));
-
+//#endregion Configs
+//#region Elements
 var Classical;
 (function (Classical) {
-    //#endregion Interfaces
-    //#region Configs
+    var Html;
     (function (Html) {
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-    })(Classical.Html || (Classical.Html = {}));
-    var Html = Classical.Html;
-})(Classical || (Classical = {}));
-
-var Classical;
-(function (Classical) {
-    (function (Html) {
-        //#endregion Configs
-        //#region Elements
+        var Elements;
         (function (Elements) {
             //#region Imports
             var events = Classical.Events;
             var b = Classical.Binding;
             var bc = Classical.Binding.Collections;
-
             //#endregion Imports
             //#region HtmlNode
             var HtmlNode = (function () {
@@ -690,13 +771,11 @@ var Classical;
                     get: function () {
                         if (!this.element)
                             return null;
-
                         return HtmlNode.getHtmlNode(this.element.parentNode);
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlNode.prototype, "element", {
                     /**
                     * Returns the DOM node wrapped by the HtmlNode.
@@ -708,7 +787,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlNode.prototype, "elementName", {
                     /**
                     * Returns the name of the underlying DOM element.
@@ -721,7 +799,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlNode.prototype, "text", {
                     /**
                     * Returns the textContent of the element.
@@ -744,8 +821,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 //#endregion Constructor
                 //#region Methods
                 //#region getConfig
@@ -757,7 +832,6 @@ var Classical;
                 HtmlNode.prototype.getConfig = function () {
                     return this._config;
                 };
-
                 //#endregion getConfig
                 //#region getElement
                 /**
@@ -768,7 +842,6 @@ var Classical;
                 HtmlNode.prototype.getElement = function () {
                     return this.element;
                 };
-
                 //#endregion getElement
                 //#region createElement
                 /**
@@ -779,7 +852,6 @@ var Classical;
                 HtmlNode.prototype.createElement = function (document) {
                     return document.createElement(this._elementName);
                 };
-
                 //#endregion createElement
                 //#region initialize
                 /**
@@ -789,14 +861,12 @@ var Classical;
                 */
                 HtmlNode.prototype.initialize = function (document) {
                     var _this = this;
-                    if (typeof document === "undefined") { document = window.document; }
+                    if (document === void 0) { document = window.document; }
                     if (this.isInitialized())
                         return this;
-
                     var element = this.createElement(document);
                     this._element = element;
                     elementMap.add(element, this);
-
                     this.configure(element, document);
                     if (!isTextNode(element)) {
                         this._observer = new MutationObserver(function (records) {
@@ -804,15 +874,12 @@ var Classical;
                                 _this._updating = false;
                                 return;
                             }
-
                             var record, propertyName, elementName, attributeName;
-
                             for (var recordIndex = 0, numberOfRecords = records.length; recordIndex < numberOfRecords; recordIndex++) {
                                 record = records[recordIndex];
                                 if (record.type == 'attributes') {
                                     attributeName = record.attributeName;
                                     elementName = contentMap.getValue(attributeName);
-
                                     //TODO:  Merge propertyMap and contentMap
                                     if (elementName)
                                         attributeName = elementName;
@@ -820,13 +887,11 @@ var Classical;
                                     if (!propertyName)
                                         propertyName = attributeName;
                                     _this[propertyName] = _this.element[attributeName];
-                                } else {
+                                }
+                                else {
                                     var children = new bc.Collection([_this]), addedNodes = Array.prototype.slice.call(record.addedNodes), removedNodes = record.removedNodes, childNodes = _this._element.childNodes, childNode, child;
-
                                     for (var nodeIndex = 0, numberOfNodes = removedNodes.length; nodeIndex < numberOfNodes; nodeIndex++) {
-                                        child = children.query().where(function (c) {
-                                            return c.element == removedNodes[nodeIndex];
-                                        }).singleOrDefault();
+                                        child = children.query().where(function (c) { return c.element == removedNodes[nodeIndex]; }).singleOrDefault();
                                         if (child)
                                             children.remove(child);
                                     }
@@ -834,7 +899,6 @@ var Classical;
                                         childNode = childNodes.item(nodeIndex);
                                         child = HtmlNode.getHtmlNode(childNode);
                                         children.set(nodeIndex, child);
-
                                         addedNodes.remove(childNode);
                                         if (addedNodes.length == 0)
                                             break;
@@ -847,11 +911,11 @@ var Classical;
                             childList: true,
                             subtree: false
                         });
-                    } else {
+                    }
+                    else {
                         this._observer = new MutationObserver(function (records) {
                             if (records.length === 0)
                                 return;
-
                             var textNode = _this;
                             textNode.text = _this._element.textContent;
                         });
@@ -859,11 +923,9 @@ var Classical;
                             characterData: true
                         });
                     }
-
                     this._noteInitialization();
                     return this;
                 };
-
                 /**
                 * Subscribes the handler to the initialization event.
                 * The initialized event fires when an element and all of its children have been initialized.
@@ -872,10 +934,8 @@ var Classical;
                 HtmlNode.prototype.initialization = function (handler) {
                     if (!this._initialization)
                         this._initialization = new events.Event(this);
-
                     this._initialization.subscribe(handler);
                 };
-
                 //#endregion initialization
                 //#region isInitialized
                 /**
@@ -886,7 +946,6 @@ var Classical;
                 HtmlNode.prototype.isInitialized = function () {
                     return Classical.Utilities.isTruthy(this._isInitialized);
                 };
-
                 //#endregion isInitialized
                 //#region configure
                 /**
@@ -897,18 +956,15 @@ var Classical;
                 */
                 HtmlNode.prototype.configure = function (element, document) {
                 };
-
                 //#endregion configure
                 //#endregion Methods
                 //#region Utilities
                 HtmlNode.prototype._noteInitialization = function () {
                     this._isInitialized = true;
-
                     var initialization = this._initialization;
                     if (initialization)
                         initialization.execute(null);
                 };
-
                 //#endregion Utilities
                 //#region Static Members
                 /**
@@ -919,20 +975,14 @@ var Classical;
                 HtmlNode.getHtmlNode = function (node) {
                     if (!node)
                         return null;
-
                     var htmlNode = elementMap.getValue(node);
                     if (htmlNode)
                         return htmlNode;
-
                     var type = node.nodeName;
                     var ctor = constructorMap.getValue(type);
                     Classical.Assert.isDefined(ctor, Classical.Utilities.format('The constructor for the HtmlNode decorating {0} could not be found.', type));
-
                     var htmlNode = (new ctor({}));
-                    htmlNode.createElement = function () {
-                        return node;
-                    };
-
+                    htmlNode.createElement = function () { return node; };
                     var childNodes = node.childNodes;
                     if (childNodes.length > 0) {
                         var childHtmlNodes = [];
@@ -941,18 +991,15 @@ var Classical;
                             if (child)
                                 childHtmlNodes.add(child);
                         }
-
                         var parentHtmlNode = htmlNode;
                         parentHtmlNode.children.addRange(childHtmlNodes);
                     }
-
                     htmlNode.initialize();
                     return htmlNode;
                 };
                 return HtmlNode;
             })();
             Elements.HtmlNode = HtmlNode;
-
             //#endregion HtmlNode
             //#region TextNode
             var TextNode = (function (_super) {
@@ -973,7 +1020,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(TextNode.prototype, "text", {
                     get: function () {
                         return this.textProperty.value;
@@ -984,8 +1030,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 //#endregion Constructor
                 //#region Base Class Overrides
                 //#region createElement
@@ -997,7 +1041,6 @@ var Classical;
                 TextNode.prototype.createElement = function () {
                     return document.createTextNode('');
                 };
-
                 //#endregion createElement
                 //#region configure
                 /**
@@ -1014,7 +1057,6 @@ var Classical;
                 return TextNode;
             })(HtmlNode);
             Elements.TextNode = TextNode;
-
             //#endregion TextNode
             //#region HtmlElement
             var HtmlElement = (function (_super) {
@@ -1040,7 +1082,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlElement.prototype, "classes", {
                     //#endregion classesProperty
                     //#region classes
@@ -1056,8 +1097,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(HtmlElement.prototype, "directionProperty", {
                     //#endregion classes
                     //#region directionProperty
@@ -1073,7 +1112,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlElement.prototype, "direction", {
                     //#endregion directionProperty
                     //#region direction
@@ -1090,8 +1128,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(HtmlElement.prototype, "draggableProperty", {
                     //#endregion direction
                     //#region draggableProperty
@@ -1106,7 +1142,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlElement.prototype, "draggable", {
                     //#endregion draggableProperty
                     //#region draggable
@@ -1122,8 +1157,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(HtmlElement.prototype, "hiddenProperty", {
                     //#endregion draggable
                     //#region hiddenProperty
@@ -1138,7 +1171,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlElement.prototype, "hidden", {
                     //#endregion hiddenProperty
                     //#region hidden
@@ -1154,8 +1186,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(HtmlElement.prototype, "idProperty", {
                     //#endregion hidden
                     //#region idProperty
@@ -1170,7 +1200,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlElement.prototype, "id", {
                     //#endregion idProperty
                     //#region id
@@ -1186,8 +1215,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(HtmlElement.prototype, "languageProperty", {
                     //#endregion id
                     //#region languageProperty
@@ -1202,7 +1229,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlElement.prototype, "language", {
                     //#endregion languageProperty
                     //#region language
@@ -1218,8 +1244,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(HtmlElement.prototype, "spellCheckProperty", {
                     //#endregion language
                     //#region spellCheckProperty
@@ -1234,7 +1258,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlElement.prototype, "spellCheck", {
                     //#endregion spellCheckProperty
                     //#region spellCheck
@@ -1250,8 +1273,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(HtmlElement.prototype, "titleProperty", {
                     //#endregion spellCheck
                     //#region titleProperty
@@ -1266,7 +1287,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlElement.prototype, "title", {
                     //#endregion titleProperty
                     //#region title
@@ -1282,8 +1302,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(HtmlElement.prototype, "fullScreenChangeEvent", {
                     //#endregion title
                     //#region fullScreenChangeEvent
@@ -1295,13 +1313,11 @@ var Classical;
                     get: function () {
                         if (!this._fullScreenChangeEvent)
                             this._fullScreenChangeEvent = new Html.HtmlElementEvent('fullscreenchange', 'Event', this);
-
                         return this._fullScreenChangeEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlElement.prototype, "fullScreenErrorEvent", {
                     //#endregion fullScreenChangeEvent
                     //#region fullScreenErrorEvent
@@ -1313,13 +1329,11 @@ var Classical;
                     get: function () {
                         if (!this._fullScreenErrorEvent)
                             this._fullScreenErrorEvent = new Html.HtmlElementEvent('fullscreenerror', 'Event', this);
-
                         return this._fullScreenErrorEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlElement.prototype, "animationEndEvent", {
                     //#endregion fullScreenErrorEvent
                     //#region animationEndEvent
@@ -1331,13 +1345,11 @@ var Classical;
                     get: function () {
                         if (!this._animationEndEvent)
                             this._animationEndEvent = new Html.HtmlElementEvent('animationend', 'AnimationEvent', this);
-
                         return this._animationEndEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlElement.prototype, "animationIterationEvent", {
                     //#endregion animationEndEvent
                     //#region animationIterationEvent
@@ -1349,13 +1361,11 @@ var Classical;
                     get: function () {
                         if (!this._animationIterationEvent)
                             this._animationIterationEvent = new Html.HtmlElementEvent('animationiteration', 'AnimationEvent', this);
-
                         return this._animationIterationEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlElement.prototype, "animationStartEvent", {
                     //#endregion animationIterationEvent
                     //#region animationStartEvent
@@ -1367,13 +1377,11 @@ var Classical;
                     get: function () {
                         if (!this._animationStartEvent)
                             this._animationStartEvent = new Html.HtmlElementEvent('animationstart', 'AnimationEvent', this);
-
                         return this._animationStartEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlElement.prototype, "transitionEndEvent", {
                     //#endregion animationStartEvent
                     //#region transitionEndEvent
@@ -1385,13 +1393,11 @@ var Classical;
                     get: function () {
                         if (!this._transitionEndEvent)
                             this._transitionEndEvent = new Html.HtmlElementEvent('transitionend', 'TransitionEvent', this);
-
                         return this._transitionEndEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlElement.prototype, "gamepadConnectedEvent", {
                     //#endregion transitionEndEvent
                     //#region gamepadConnectedEvent
@@ -1403,13 +1409,11 @@ var Classical;
                     get: function () {
                         if (!this._gamepadConnectedEvent)
                             this._gamepadConnectedEvent = new Html.HtmlElementEvent('gamepadconnected', 'Event', this);
-
                         return this._gamepadConnectedEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlElement.prototype, "gamepadDisconnectedEvent", {
                     //#endregion gamepadConnectedEvent
                     //#region gamepadDisconnectedEvent
@@ -1421,13 +1425,11 @@ var Classical;
                     get: function () {
                         if (!this._gamepadDisconnectedEvent)
                             this._gamepadDisconnectedEvent = new Html.HtmlElementEvent('gamepaddisconnected', 'Event', this);
-
                         return this._gamepadDisconnectedEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlElement.prototype, "compositionEndEvent", {
                     //#endregion gamepadDisconnectedEvent
                     //#region compositionEndEvent
@@ -1439,13 +1441,11 @@ var Classical;
                     get: function () {
                         if (!this._compositionEndEvent)
                             this._compositionEndEvent = new Html.HtmlElementEvent('compositionend', 'CompositionEvent', this);
-
                         return this._compositionEndEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlElement.prototype, "compositionStartEvent", {
                     //#endregion compositionEndEvent
                     //#region compositionStartEvent
@@ -1457,13 +1457,11 @@ var Classical;
                     get: function () {
                         if (!this._compositionStartEvent)
                             this._compositionStartEvent = new Html.HtmlElementEvent('compositionstart', 'CompositionEvent', this);
-
                         return this._compositionStartEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlElement.prototype, "compositionUpdateEvent", {
                     //#endregion compositionStartEvent
                     //#region compositionUpdateEvent
@@ -1475,13 +1473,11 @@ var Classical;
                     get: function () {
                         if (!this._compositionUpdateEvent)
                             this._compositionUpdateEvent = new Html.HtmlElementEvent('compositionupdate', 'CompositionEvent', this);
-
                         return this._compositionUpdateEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlElement.prototype, "keyDownEvent", {
                     //#endregion compositionUpdateEvent
                     //#region keyDownEvent
@@ -1493,13 +1489,11 @@ var Classical;
                     get: function () {
                         if (!this._keyDownEvent)
                             this._keyDownEvent = new Html.HtmlElementEvent('keydown', 'KeyboardEvent', this);
-
                         return this._keyDownEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlElement.prototype, "keyPressEvent", {
                     //#endregion keyDownEvent
                     //#region keyPressEvent
@@ -1511,13 +1505,11 @@ var Classical;
                     get: function () {
                         if (!this._keyPressEvent)
                             this._keyPressEvent = new Html.HtmlElementEvent('keypress', 'KeyboardEvent', this);
-
                         return this._keyPressEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlElement.prototype, "keyUpEvent", {
                     //#endregion keyPressEvent
                     //#region keyUpEvent
@@ -1529,13 +1521,11 @@ var Classical;
                     get: function () {
                         if (!this._keyUpEvent)
                             this._keyUpEvent = new Html.HtmlElementEvent('keyup', 'KeyboardEvent', this);
-
                         return this._keyUpEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlElement.prototype, "clickEvent", {
                     //#endregion keyUpEvent
                     //#region clickEvent
@@ -1547,13 +1537,11 @@ var Classical;
                     get: function () {
                         if (!this._clickEvent)
                             this._clickEvent = new Html.HtmlElementEvent('click', 'MouseEvent', this);
-
                         return this._clickEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlElement.prototype, "doubleClickEvent", {
                     //#endregion clickEvent
                     //#region doubleClickEvent
@@ -1565,13 +1553,11 @@ var Classical;
                     get: function () {
                         if (!this._doubleClickEvent)
                             this._doubleClickEvent = new Html.HtmlElementEvent('dblclick', 'MouseEvent', this);
-
                         return this._doubleClickEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlElement.prototype, "mouseDownEvent", {
                     //#endregion doubleClickEvent
                     //#region mouseDownEvent
@@ -1583,13 +1569,11 @@ var Classical;
                     get: function () {
                         if (!this._mouseDownEvent)
                             this._mouseDownEvent = new Html.HtmlElementEvent('mousedown', 'MouseEvent', this);
-
                         return this._mouseDownEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlElement.prototype, "mouseEnterEvent", {
                     //#endregion mouseDownEvent
                     //#region mouseEnterEvent
@@ -1601,13 +1585,11 @@ var Classical;
                     get: function () {
                         if (!this._mouseEnterEvent)
                             this._mouseEnterEvent = new Html.HtmlElementEvent('mouseenter', 'MouseEvent', this);
-
                         return this._mouseEnterEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlElement.prototype, "mouseLeaveEvent", {
                     //#endregion mouseEnterEvent
                     //#region mouseLeaveEvent
@@ -1619,13 +1601,11 @@ var Classical;
                     get: function () {
                         if (!this._mouseLeaveEvent)
                             this._mouseLeaveEvent = new Html.HtmlElementEvent('mouseleave', 'MouseEvent', this);
-
                         return this._mouseLeaveEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlElement.prototype, "mouseMoveEvent", {
                     //#endregion mouseLeaveEvent
                     //#region mouseMoveEvent
@@ -1637,13 +1617,11 @@ var Classical;
                     get: function () {
                         if (!this._mouseMoveEvent)
                             this._mouseMoveEvent = new Html.HtmlElementEvent('mousemove', 'MouseEvent', this);
-
                         return this._mouseMoveEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlElement.prototype, "mouseOutEvent", {
                     //#endregion mouseMoveEvent
                     //#region mouseOutEvent
@@ -1655,13 +1633,11 @@ var Classical;
                     get: function () {
                         if (!this._mouseOutEvent)
                             this._mouseOutEvent = new Html.HtmlElementEvent('mouseout', 'MouseEvent', this);
-
                         return this._mouseOutEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlElement.prototype, "mouseOverEvent", {
                     //#endregion mouseOutEvent
                     //#region mouseOverEvent
@@ -1673,13 +1649,11 @@ var Classical;
                     get: function () {
                         if (!this._mouseOverEvent)
                             this._mouseOverEvent = new Html.HtmlElementEvent('mouseover', 'MouseEvent', this);
-
                         return this._mouseOverEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlElement.prototype, "mouseUpEvent", {
                     //#endregion mouseOverEvent
                     //#region mouseUpEvent
@@ -1691,13 +1665,11 @@ var Classical;
                     get: function () {
                         if (!this._mouseUpEvent)
                             this._mouseUpEvent = new Html.HtmlElementEvent('mouseup', 'MouseEvent', this);
-
                         return this._mouseUpEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlElement.prototype, "wheelEvent", {
                     //#endregion mouseUpEvent
                     //#region wheelEvent
@@ -1709,13 +1681,11 @@ var Classical;
                     get: function () {
                         if (!this._wheelEvent)
                             this._wheelEvent = new Html.HtmlElementEvent('wheel', 'WheelEvent', this);
-
                         return this._wheelEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlElement.prototype, "contextMenuEvent", {
                     //#endregion wheelEvent
                     //#region contextMenuEvent
@@ -1727,13 +1697,11 @@ var Classical;
                     get: function () {
                         if (!this._contextMenuEvent)
                             this._contextMenuEvent = new Html.HtmlElementEvent('contextmenu', 'MouseEvent', this);
-
                         return this._contextMenuEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlElement.prototype, "pointerLockChangeEvent", {
                     //#endregion contextMenuEvent
                     //#region pointerLockChangeEvent
@@ -1745,13 +1713,11 @@ var Classical;
                     get: function () {
                         if (!this._pointerLockChangeEvent)
                             this._pointerLockChangeEvent = new Html.HtmlElementEvent('pointerlockchange', 'Event', this);
-
                         return this._pointerLockChangeEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlElement.prototype, "pointerLockErrorEvent", {
                     //#endregion pointerLockChangeEvent
                     //#region pointerLockErrorEvent
@@ -1763,13 +1729,11 @@ var Classical;
                     get: function () {
                         if (!this._pointerLockErrorEvent)
                             this._pointerLockErrorEvent = new Html.HtmlElementEvent('pointerlockerror', 'Event', this);
-
                         return this._pointerLockErrorEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlElement.prototype, "blurEvent", {
                     //#endregion pointerLockErrorEvent
                     //#region blurEvent
@@ -1781,13 +1745,11 @@ var Classical;
                     get: function () {
                         if (!this._blurEvent)
                             this._blurEvent = new Html.HtmlElementEvent('blur', 'FocusEvent', this);
-
                         return this._blurEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlElement.prototype, "focusEvent", {
                     //#endregion blurEvent
                     //#region focusEvent
@@ -1799,13 +1761,11 @@ var Classical;
                     get: function () {
                         if (!this._focusEvent)
                             this._focusEvent = new Html.HtmlElementEvent('focus', 'FocusEvent', this);
-
                         return this._focusEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlElement.prototype, "afterPrintEvent", {
                     //#endregion focusEvent
                     //#region afterPrintEvent
@@ -1817,13 +1777,11 @@ var Classical;
                     get: function () {
                         if (!this._afterPrintEvent)
                             this._afterPrintEvent = new Html.HtmlElementEvent('afterprint', 'Event', this);
-
                         return this._afterPrintEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlElement.prototype, "beforePrintEvent", {
                     //#endregion afterPrintEvent
                     //#region beforePrintEvent
@@ -1835,13 +1793,11 @@ var Classical;
                     get: function () {
                         if (!this._beforePrintEvent)
                             this._beforePrintEvent = new Html.HtmlElementEvent('beforeprint', 'Event', this);
-
                         return this._beforePrintEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlElement.prototype, "dragEndEvent", {
                     //#endregion beforePrintEvent
                     //#region dragEndEvent
@@ -1853,13 +1809,11 @@ var Classical;
                     get: function () {
                         if (!this._dragEndEvent)
                             this._dragEndEvent = new Html.HtmlElementEvent('dragend', 'DragEvent', this);
-
                         return this._dragEndEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlElement.prototype, "dragEnterEvent", {
                     //#endregion dragEndEvent
                     //#region dragEnterEvent
@@ -1871,13 +1825,11 @@ var Classical;
                     get: function () {
                         if (!this._dragEnterEvent)
                             this._dragEnterEvent = new Html.HtmlElementEvent('dragenter', 'DragEvent', this);
-
                         return this._dragEnterEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlElement.prototype, "dragEvent", {
                     //#endregion dragEnterEvent
                     //#region dragEvent
@@ -1889,13 +1841,11 @@ var Classical;
                     get: function () {
                         if (!this._dragEvent)
                             this._dragEvent = new Html.HtmlElementEvent('drag', 'DragEvent', this);
-
                         return this._dragEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlElement.prototype, "dragLeaveEvent", {
                     //#endregion dragEvent
                     //#region dragLeaveEvent
@@ -1907,13 +1857,11 @@ var Classical;
                     get: function () {
                         if (!this._dragLeaveEvent)
                             this._dragLeaveEvent = new Html.HtmlElementEvent('dragleave', 'DragEvent', this);
-
                         return this._dragLeaveEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlElement.prototype, "dragOverEvent", {
                     //#endregion dragLeaveEvent
                     //#region dragOverEvent
@@ -1925,13 +1873,11 @@ var Classical;
                     get: function () {
                         if (!this._dragOverEvent)
                             this._dragOverEvent = new Html.HtmlElementEvent('dragover', 'DragEvent', this);
-
                         return this._dragOverEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlElement.prototype, "dragStartEvent", {
                     //#endregion dragOverEvent
                     //#region dragStartEvent
@@ -1943,13 +1889,11 @@ var Classical;
                     get: function () {
                         if (!this._dragStartEvent)
                             this._dragStartEvent = new Html.HtmlElementEvent('dragstart', 'DragEvent', this);
-
                         return this._dragStartEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlElement.prototype, "dropEvent", {
                     //#endregion dragStartEvent
                     //#region dropEvent
@@ -1961,13 +1905,11 @@ var Classical;
                     get: function () {
                         if (!this._dropEvent)
                             this._dropEvent = new Html.HtmlElementEvent('drop', 'DragEvent', this);
-
                         return this._dropEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlElement.prototype, "loadEvent", {
                     //#endregion dropEvent
                     //#region loadEvent
@@ -1979,13 +1921,11 @@ var Classical;
                     get: function () {
                         if (!this._loadEvent)
                             this._loadEvent = new Html.HtmlElementEvent('load', 'UIEvent', this);
-
                         return this._loadEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlElement.prototype, "resizeEvent", {
                     //#endregion loadEvent
                     //#region resizeEvent
@@ -1997,13 +1937,11 @@ var Classical;
                     get: function () {
                         if (!this._resizeEvent)
                             this._resizeEvent = new Html.HtmlElementEvent('resize', 'UIEvent', this);
-
                         return this._resizeEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlElement.prototype, "scrollEvent", {
                     //#endregion resizeEvent
                     //#region scrollEvent
@@ -2015,13 +1953,11 @@ var Classical;
                     get: function () {
                         if (!this._scrollEvent)
                             this._scrollEvent = new Html.HtmlElementEvent('scroll', 'UIEvent', this);
-
                         return this._scrollEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlElement.prototype, "selectEvent", {
                     //#endregion scrollEvent
                     //#region selectEvent
@@ -2033,13 +1969,11 @@ var Classical;
                     get: function () {
                         if (!this._selectEvent)
                             this._selectEvent = new Html.HtmlElementEvent('select', 'UIEvent', this);
-
                         return this._selectEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlElement.prototype, "offlineBackOnlineEvent", {
                     //#endregion selectEvent
                     //#region offlineBackOnlineEvent
@@ -2051,13 +1985,11 @@ var Classical;
                     get: function () {
                         if (!this._offlineBackOnlineEvent)
                             this._offlineBackOnlineEvent = new Html.HtmlElementEvent('online', 'Event', this);
-
                         return this._offlineBackOnlineEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlElement.prototype, "offlineEvent", {
                     //#endregion offlineBackOnlineEvent
                     //#region offlineEvent
@@ -2069,13 +2001,11 @@ var Classical;
                     get: function () {
                         if (!this._offlineEvent)
                             this._offlineEvent = new Html.HtmlElementEvent('offline', 'Event', this);
-
                         return this._offlineEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlElement.prototype, "connectionCheckingEvent", {
                     //#endregion offlineEvent
                     //#region connectionCheckingEvent
@@ -2087,13 +2017,11 @@ var Classical;
                     get: function () {
                         if (!this._connectionCheckingEvent)
                             this._connectionCheckingEvent = new Html.HtmlElementEvent('checking', 'Event', this);
-
                         return this._connectionCheckingEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlElement.prototype, "connectionDownloadingEvent", {
                     //#endregion connectionCheckingEvent
                     //#region connectionDownloadingEvent
@@ -2105,13 +2033,11 @@ var Classical;
                     get: function () {
                         if (!this._connectionDownloadingEvent)
                             this._connectionDownloadingEvent = new Html.HtmlElementEvent('downloading', 'Event', this);
-
                         return this._connectionDownloadingEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlElement.prototype, "connectionErrorEvent", {
                     //#endregion connectionDownloadingEvent
                     //#region connectionErrorEvent
@@ -2123,13 +2049,11 @@ var Classical;
                     get: function () {
                         if (!this._connectionErrorEvent)
                             this._connectionErrorEvent = new Html.HtmlElementEvent('error', 'Event', this);
-
                         return this._connectionErrorEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlElement.prototype, "connectionNoUpdateEvent", {
                     //#endregion connectionErrorEvent
                     //#region connectionNoUpdateEvent
@@ -2141,13 +2065,11 @@ var Classical;
                     get: function () {
                         if (!this._connectionNoUpdateEvent)
                             this._connectionNoUpdateEvent = new Html.HtmlElementEvent('noupdate', 'Event', this);
-
                         return this._connectionNoUpdateEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlElement.prototype, "connectionObsoleteEvent", {
                     //#endregion connectionNoUpdateEvent
                     //#region connectionObsoleteEvent
@@ -2159,13 +2081,11 @@ var Classical;
                     get: function () {
                         if (!this._connectionObsoleteEvent)
                             this._connectionObsoleteEvent = new Html.HtmlElementEvent('obsolete', 'Event', this);
-
                         return this._connectionObsoleteEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlElement.prototype, "connectionUpdateReadyEvent", {
                     //#endregion connectionObsoleteEvent
                     //#region connectionUpdateReadyEvent
@@ -2177,13 +2097,11 @@ var Classical;
                     get: function () {
                         if (!this._connectionUpdateReadyEvent)
                             this._connectionUpdateReadyEvent = new Html.HtmlElementEvent('updateready', 'Event', this);
-
                         return this._connectionUpdateReadyEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlElement.prototype, "connectionCachedEvent", {
                     //#endregion connectionUpdateReadyEvent
                     //#region connectionCachedEvent
@@ -2195,13 +2113,11 @@ var Classical;
                     get: function () {
                         if (!this._connectionCachedEvent)
                             this._connectionCachedEvent = new Html.HtmlElementEvent('cached', 'Event', this);
-
                         return this._connectionCachedEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlElement.prototype, "svgAbortEvent", {
                     //#endregion connectionCachedEvent
                     //#region svgAbortEvent
@@ -2213,13 +2129,11 @@ var Classical;
                     get: function () {
                         if (!this._svgAbortEvent)
                             this._svgAbortEvent = new Html.HtmlElementEvent('SVGAbort', 'Event', this);
-
                         return this._svgAbortEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlElement.prototype, "svgBeginEvent", {
                     //#endregion svgAbortEvent
                     //#region svgBeginEvent
@@ -2231,13 +2145,11 @@ var Classical;
                     get: function () {
                         if (!this._svgBeginEvent)
                             this._svgBeginEvent = new Html.HtmlElementEvent('beginEvent', 'Event', this);
-
                         return this._svgBeginEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlElement.prototype, "svgEndEvent", {
                     //#endregion svgBeginEvent
                     //#region svgEndEvent
@@ -2249,13 +2161,11 @@ var Classical;
                     get: function () {
                         if (!this._svgEndEvent)
                             this._svgEndEvent = new Html.HtmlElementEvent('endEvent', 'Event', this);
-
                         return this._svgEndEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlElement.prototype, "svgErrorEvent", {
                     //#endregion svgEndEvent
                     //#region svgErrorEvent
@@ -2267,13 +2177,11 @@ var Classical;
                     get: function () {
                         if (!this._svgErrorEvent)
                             this._svgErrorEvent = new Html.HtmlElementEvent('SVGError', 'Event', this);
-
                         return this._svgErrorEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlElement.prototype, "svgLoadEvent", {
                     //#endregion svgErrorEvent
                     //#region svgLoadEvent
@@ -2285,13 +2193,11 @@ var Classical;
                     get: function () {
                         if (!this._svgLoadEvent)
                             this._svgLoadEvent = new Html.HtmlElementEvent('SVGLoad', 'Event', this);
-
                         return this._svgLoadEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlElement.prototype, "svgRepeatEvent", {
                     //#endregion svgLoadEvent
                     //#region svgRepeatEvent
@@ -2303,13 +2209,11 @@ var Classical;
                     get: function () {
                         if (!this._svgRepeatEvent)
                             this._svgRepeatEvent = new Html.HtmlElementEvent('repeatEvent', 'Event', this);
-
                         return this._svgRepeatEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlElement.prototype, "svgResizeEvent", {
                     //#endregion svgRepeatEvent
                     //#region svgResizeEvent
@@ -2321,13 +2225,11 @@ var Classical;
                     get: function () {
                         if (!this._svgResizeEvent)
                             this._svgResizeEvent = new Html.HtmlElementEvent('SVGResize', 'Event', this);
-
                         return this._svgResizeEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlElement.prototype, "svgScrollEvent", {
                     //#endregion svgResizeEvent
                     //#region svgScrollEvent
@@ -2339,13 +2241,11 @@ var Classical;
                     get: function () {
                         if (!this._svgScrollEvent)
                             this._svgScrollEvent = new Html.HtmlElementEvent('SVGScroll', 'Event', this);
-
                         return this._svgScrollEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlElement.prototype, "svgUnloadEvent", {
                     //#endregion svgScrollEvent
                     //#region svgUnloadEvent
@@ -2357,13 +2257,11 @@ var Classical;
                     get: function () {
                         if (!this._svgUnloadEvent)
                             this._svgUnloadEvent = new Html.HtmlElementEvent('SVGUnload', 'Event', this);
-
                         return this._svgUnloadEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlElement.prototype, "svgZoomEvent", {
                     //#endregion svgUnloadEvent
                     //#region svgZoomEvent
@@ -2375,13 +2273,11 @@ var Classical;
                     get: function () {
                         if (!this._svgZoomEvent)
                             this._svgZoomEvent = new Html.HtmlElementEvent('SVGZoom', 'SVGZoomEvent', this);
-
                         return this._svgZoomEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlElement.prototype, "webSocketErrorEvent", {
                     //#endregion svgZoomEvent
                     //#region webSocketErrorEvent
@@ -2393,13 +2289,11 @@ var Classical;
                     get: function () {
                         if (!this._webSocketErrorEvent)
                             this._webSocketErrorEvent = new Html.HtmlElementEvent('error', 'Event', this);
-
                         return this._webSocketErrorEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlElement.prototype, "pageHideEvent", {
                     //#endregion webSocketErrorEvent
                     //#region pageHideEvent
@@ -2411,13 +2305,11 @@ var Classical;
                     get: function () {
                         if (!this._pageHideEvent)
                             this._pageHideEvent = new Html.HtmlElementEvent('pagehide', 'PageTransitionEvent', this);
-
                         return this._pageHideEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlElement.prototype, "pageShowEvent", {
                     //#endregion pageHideEvent
                     //#region pageShowEvent
@@ -2429,13 +2321,11 @@ var Classical;
                     get: function () {
                         if (!this._pageShowEvent)
                             this._pageShowEvent = new Html.HtmlElementEvent('pageshow', 'PageTransitionEvent', this);
-
                         return this._pageShowEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlElement.prototype, "showEvent", {
                     //#endregion pageShowEvent
                     //#region showEvent
@@ -2447,13 +2337,11 @@ var Classical;
                     get: function () {
                         if (!this._showEvent)
                             this._showEvent = new Html.HtmlElementEvent('show', 'MouseEvent', this);
-
                         return this._showEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlElement.prototype, "contentLoadedEvent", {
                     //#endregion showEvent
                     //#region contentLoadedEvent
@@ -2465,13 +2353,11 @@ var Classical;
                     get: function () {
                         if (!this._contentLoadedEvent)
                             this._contentLoadedEvent = new Html.HtmlElementEvent('DOMContentLoaded', 'Event', this);
-
                         return this._contentLoadedEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlElement.prototype, "hashChangeEvent", {
                     //#endregion contentLoadedEvent
                     //#region hashChangeEvent
@@ -2483,13 +2369,11 @@ var Classical;
                     get: function () {
                         if (!this._hashChangeEvent)
                             this._hashChangeEvent = new Html.HtmlElementEvent('hashchange', 'Event', this);
-
                         return this._hashChangeEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlElement.prototype, "popStateEvent", {
                     //#endregion hashChangeEvent
                     //#region popStateEvent
@@ -2501,13 +2385,11 @@ var Classical;
                     get: function () {
                         if (!this._popStateEvent)
                             this._popStateEvent = new Html.HtmlElementEvent('popstate', 'PopStateEvent', this);
-
                         return this._popStateEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlElement.prototype, "invalidEvent", {
                     //#endregion popStateEvent
                     //#region invalidEvent
@@ -2519,13 +2401,11 @@ var Classical;
                     get: function () {
                         if (!this._invalidEvent)
                             this._invalidEvent = new Html.HtmlElementEvent('invalid', 'Event', this);
-
                         return this._invalidEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlElement.prototype, "beforeUnloadEvent", {
                     //#endregion invalidEvent
                     //#region beforeUnloadEvent
@@ -2537,13 +2417,11 @@ var Classical;
                     get: function () {
                         if (!this._beforeUnloadEvent)
                             this._beforeUnloadEvent = new Html.HtmlElementEvent('beforeunload', 'BeforeUnloadEvent', this);
-
                         return this._beforeUnloadEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlElement.prototype, "indexedDatabaseErrorEvent", {
                     //#endregion beforeUnloadEvent
                     //#region indexedDatabaseErrorEvent
@@ -2555,13 +2433,11 @@ var Classical;
                     get: function () {
                         if (!this._indexedDatabaseErrorEvent)
                             this._indexedDatabaseErrorEvent = new Html.HtmlElementEvent('error', 'Event', this);
-
                         return this._indexedDatabaseErrorEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlElement.prototype, "visibilityChangeEvent", {
                     //#endregion indexedDatabaseErrorEvent
                     //#region visibilityChangeEvent
@@ -2573,13 +2449,11 @@ var Classical;
                     get: function () {
                         if (!this._visibilityChangeEvent)
                             this._visibilityChangeEvent = new Html.HtmlElementEvent('visibilitychange', 'Event', this);
-
                         return this._visibilityChangeEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlElement.prototype, "requestLoadStartEvent", {
                     //#endregion visibilityChangeEvent
                     //#region requestLoadStartEvent
@@ -2591,13 +2465,11 @@ var Classical;
                     get: function () {
                         if (!this._requestLoadStartEvent)
                             this._requestLoadStartEvent = new Html.HtmlElementEvent('loadstart', 'ProgressEvent', this);
-
                         return this._requestLoadStartEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlElement.prototype, "serverErrorEvent", {
                     //#endregion requestLoadStartEvent
                     //#region serverErrorEvent
@@ -2609,13 +2481,11 @@ var Classical;
                     get: function () {
                         if (!this._serverErrorEvent)
                             this._serverErrorEvent = new Html.HtmlElementEvent('error', 'Event', this);
-
                         return this._serverErrorEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlElement.prototype, "webStorageEvent", {
                     //#endregion serverErrorEvent
                     //#region webStorageEvent
@@ -2627,13 +2497,11 @@ var Classical;
                     get: function () {
                         if (!this._webStorageEvent)
                             this._webStorageEvent = new Html.HtmlElementEvent('storage', 'StorageEvent', this);
-
                         return this._webStorageEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlElement.prototype, "requestReadyStateChangeEvent", {
                     //#endregion webStorageEvent
                     //#region requestReadyStateChangeEvent
@@ -2645,13 +2513,11 @@ var Classical;
                     get: function () {
                         if (!this._requestReadyStateChangeEvent)
                             this._requestReadyStateChangeEvent = new Html.HtmlElementEvent('readystatechange', 'Event', this);
-
                         return this._requestReadyStateChangeEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlElement.prototype, "requestTimeoutEvent", {
                     //#endregion requestReadyStateChangeEvent
                     //#region requestTimeoutEvent
@@ -2663,13 +2529,11 @@ var Classical;
                     get: function () {
                         if (!this._requestTimeoutEvent)
                             this._requestTimeoutEvent = new Html.HtmlElementEvent('timeout', 'ProgressEvent', this);
-
                         return this._requestTimeoutEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 //#endregion Constructor
                 //#region Base Class Overrides
                 /**
@@ -2681,7 +2545,6 @@ var Classical;
                 HtmlElement.prototype.configure = function (element, document) {
                     _super.prototype.configure.call(this, element, document);
                     var config = this.getConfig();
-
                     setPropertyFromConfig(this, config, 'classes', true);
                     setPropertyFromConfig(this, config, 'direction', true);
                     setPropertyFromConfig(this, config, 'draggable', true);
@@ -2690,245 +2553,166 @@ var Classical;
                     setPropertyFromConfig(this, config, 'language', true);
                     setPropertyFromConfig(this, config, 'spellCheck', true);
                     setPropertyFromConfig(this, config, 'title', true);
-
                     if (config.fullScreenChangeHandler)
                         this.fullScreenChangeEvent.subscribe(config.fullScreenChangeHandler);
-
                     if (config.fullScreenErrorHandler)
                         this.fullScreenErrorEvent.subscribe(config.fullScreenErrorHandler);
-
                     if (config.animationEndHandler)
                         this.animationEndEvent.subscribe(config.animationEndHandler);
-
                     if (config.animationIterationHandler)
                         this.animationIterationEvent.subscribe(config.animationIterationHandler);
-
                     if (config.animationStartHandler)
                         this.animationStartEvent.subscribe(config.animationStartHandler);
-
                     if (config.transitionEndHandler)
                         this.transitionEndEvent.subscribe(config.transitionEndHandler);
-
                     if (config.gamepadConnectedHandler)
                         this.gamepadConnectedEvent.subscribe(config.gamepadConnectedHandler);
-
                     if (config.gamepadDisconnectedHandler)
                         this.gamepadDisconnectedEvent.subscribe(config.gamepadDisconnectedHandler);
-
                     if (config.compositionEndHandler)
                         this.compositionEndEvent.subscribe(config.compositionEndHandler);
-
                     if (config.compositionStartHandler)
                         this.compositionStartEvent.subscribe(config.compositionStartHandler);
-
                     if (config.compositionUpdateHandler)
                         this.compositionUpdateEvent.subscribe(config.compositionUpdateHandler);
-
                     if (config.keyDownHandler)
                         this.keyDownEvent.subscribe(config.keyDownHandler);
-
                     if (config.keyPressHandler)
                         this.keyPressEvent.subscribe(config.keyPressHandler);
-
                     if (config.keyUpHandler)
                         this.keyUpEvent.subscribe(config.keyUpHandler);
-
                     if (config.clickHandler)
                         this.clickEvent.subscribe(config.clickHandler);
-
                     if (config.doubleClickHandler)
                         this.doubleClickEvent.subscribe(config.doubleClickHandler);
-
                     if (config.mouseDownHandler)
                         this.mouseDownEvent.subscribe(config.mouseDownHandler);
-
                     if (config.mouseEnterHandler)
                         this.mouseEnterEvent.subscribe(config.mouseEnterHandler);
-
                     if (config.mouseLeaveHandler)
                         this.mouseLeaveEvent.subscribe(config.mouseLeaveHandler);
-
                     if (config.mouseMoveHandler)
                         this.mouseMoveEvent.subscribe(config.mouseMoveHandler);
-
                     if (config.mouseOutHandler)
                         this.mouseOutEvent.subscribe(config.mouseOutHandler);
-
                     if (config.mouseOverHandler)
                         this.mouseOverEvent.subscribe(config.mouseOverHandler);
-
                     if (config.mouseUpHandler)
                         this.mouseUpEvent.subscribe(config.mouseUpHandler);
-
                     if (config.wheelHandler)
                         this.wheelEvent.subscribe(config.wheelHandler);
-
                     if (config.contextMenuHandler)
                         this.contextMenuEvent.subscribe(config.contextMenuHandler);
-
                     if (config.pointerLockChangeHandler)
                         this.pointerLockChangeEvent.subscribe(config.pointerLockChangeHandler);
-
                     if (config.pointerLockErrorHandler)
                         this.pointerLockErrorEvent.subscribe(config.pointerLockErrorHandler);
-
                     if (config.blurHandler)
                         this.blurEvent.subscribe(config.blurHandler);
-
                     if (config.focusHandler)
                         this.focusEvent.subscribe(config.focusHandler);
-
                     if (config.afterPrintHandler)
                         this.afterPrintEvent.subscribe(config.afterPrintHandler);
-
                     if (config.beforePrintHandler)
                         this.beforePrintEvent.subscribe(config.beforePrintHandler);
-
                     if (config.dragEndHandler)
                         this.dragEndEvent.subscribe(config.dragEndHandler);
-
                     if (config.dragEnterHandler)
                         this.dragEnterEvent.subscribe(config.dragEnterHandler);
-
                     if (config.dragHandler)
                         this.dragEvent.subscribe(config.dragHandler);
-
                     if (config.dragLeaveHandler)
                         this.dragLeaveEvent.subscribe(config.dragLeaveHandler);
-
                     if (config.dragOverHandler)
                         this.dragOverEvent.subscribe(config.dragOverHandler);
-
                     if (config.dragStartHandler)
                         this.dragStartEvent.subscribe(config.dragStartHandler);
-
                     if (config.dropHandler)
                         this.dropEvent.subscribe(config.dropHandler);
-
                     if (config.loadHandler)
                         this.loadEvent.subscribe(config.loadHandler);
-
                     if (config.resizeHandler)
                         this.resizeEvent.subscribe(config.resizeHandler);
-
                     if (config.scrollHandler)
                         this.scrollEvent.subscribe(config.scrollHandler);
-
                     if (config.selectHandler)
                         this.selectEvent.subscribe(config.selectHandler);
-
                     if (config.offlineBackOnlineHandler)
                         this.offlineBackOnlineEvent.subscribe(config.offlineBackOnlineHandler);
-
                     if (config.offlineHandler)
                         this.offlineEvent.subscribe(config.offlineHandler);
-
                     if (config.connectionCheckingHandler)
                         this.connectionCheckingEvent.subscribe(config.connectionCheckingHandler);
-
                     if (config.connectionDownloadingHandler)
                         this.connectionDownloadingEvent.subscribe(config.connectionDownloadingHandler);
-
                     if (config.connectionErrorHandler)
                         this.connectionErrorEvent.subscribe(config.connectionErrorHandler);
-
                     if (config.connectionNoUpdateHandler)
                         this.connectionNoUpdateEvent.subscribe(config.connectionNoUpdateHandler);
-
                     if (config.connectionObsoleteHandler)
                         this.connectionObsoleteEvent.subscribe(config.connectionObsoleteHandler);
-
                     if (config.connectionUpdateReadyHandler)
                         this.connectionUpdateReadyEvent.subscribe(config.connectionUpdateReadyHandler);
-
                     if (config.connectionCachedHandler)
                         this.connectionCachedEvent.subscribe(config.connectionCachedHandler);
-
                     if (config.svgAbortHandler)
                         this.svgAbortEvent.subscribe(config.svgAbortHandler);
-
                     if (config.svgBeginHandler)
                         this.svgBeginEvent.subscribe(config.svgBeginHandler);
-
                     if (config.svgEndHandler)
                         this.svgEndEvent.subscribe(config.svgEndHandler);
-
                     if (config.svgErrorHandler)
                         this.svgErrorEvent.subscribe(config.svgErrorHandler);
-
                     if (config.svgLoadHandler)
                         this.svgLoadEvent.subscribe(config.svgLoadHandler);
-
                     if (config.svgRepeatHandler)
                         this.svgRepeatEvent.subscribe(config.svgRepeatHandler);
-
                     if (config.svgResizeHandler)
                         this.svgResizeEvent.subscribe(config.svgResizeHandler);
-
                     if (config.svgScrollHandler)
                         this.svgScrollEvent.subscribe(config.svgScrollHandler);
-
                     if (config.svgUnloadHandler)
                         this.svgUnloadEvent.subscribe(config.svgUnloadHandler);
-
                     if (config.svgZoomHandler)
                         this.svgZoomEvent.subscribe(config.svgZoomHandler);
-
                     if (config.webSocketErrorHandler)
                         this.webSocketErrorEvent.subscribe(config.webSocketErrorHandler);
-
                     if (config.pageHideHandler)
                         this.pageHideEvent.subscribe(config.pageHideHandler);
-
                     if (config.pageShowHandler)
                         this.pageShowEvent.subscribe(config.pageShowHandler);
-
                     if (config.showHandler)
                         this.showEvent.subscribe(config.showHandler);
-
                     if (config.contentLoadedHandler)
                         this.contentLoadedEvent.subscribe(config.contentLoadedHandler);
-
                     if (config.hashChangeHandler)
                         this.hashChangeEvent.subscribe(config.hashChangeHandler);
-
                     if (config.popStateHandler)
                         this.popStateEvent.subscribe(config.popStateHandler);
-
                     if (config.invalidHandler)
                         this.invalidEvent.subscribe(config.invalidHandler);
-
                     if (config.beforeUnloadHandler)
                         this.beforeUnloadEvent.subscribe(config.beforeUnloadHandler);
-
                     if (config.indexedDatabaseErrorHandler)
                         this.indexedDatabaseErrorEvent.subscribe(config.indexedDatabaseErrorHandler);
-
                     if (config.visibilityChangeHandler)
                         this.visibilityChangeEvent.subscribe(config.visibilityChangeHandler);
-
                     if (config.requestLoadStartHandler)
                         this.requestLoadStartEvent.subscribe(config.requestLoadStartHandler);
-
                     if (config.serverErrorHandler)
                         this.serverErrorEvent.subscribe(config.serverErrorHandler);
-
                     if (config.webStorageHandler)
                         this.webStorageEvent.subscribe(config.webStorageHandler);
-
                     if (config.requestReadyStateChangeHandler)
                         this.requestReadyStateChangeEvent.subscribe(config.requestReadyStateChangeHandler);
-
                     if (config.requestTimeoutHandler)
                         this.requestTimeoutEvent.subscribe(config.requestTimeoutHandler);
-
                     if (config.initializationHandler)
                         this.initialization(config.initializationHandler);
                 };
                 return HtmlElement;
             })(HtmlNode);
             Elements.HtmlElement = HtmlElement;
-
             //#endregion HtmlElement
             //#region HtmlElementContainer
             var HtmlElementContainer = (function (_super) {
@@ -2950,7 +2734,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlElementContainer.prototype, "copyEvent", {
                     //#region copyEvent
                     /**
@@ -2961,13 +2744,11 @@ var Classical;
                     get: function () {
                         if (!this._copyEvent)
                             this._copyEvent = new Html.HtmlElementEvent('copy', 'Event', this);
-
                         return this._copyEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlElementContainer.prototype, "cutEvent", {
                     //#endregion copyEvent
                     //#region cutEvent
@@ -2979,13 +2760,11 @@ var Classical;
                     get: function () {
                         if (!this._cutEvent)
                             this._cutEvent = new Html.HtmlElementEvent('cut', 'Event', this);
-
                         return this._cutEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(HtmlElementContainer.prototype, "pasteEvent", {
                     //#endregion cutEvent
                     //#region pasteEvent
@@ -2997,13 +2776,11 @@ var Classical;
                     get: function () {
                         if (!this._pasteEvent)
                             this._pasteEvent = new Html.HtmlElementEvent('paste', 'Event', this);
-
                         return this._pasteEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 //#endregion Constructor
                 //#region Base Class Overrides
                 //#region configure
@@ -3016,10 +2793,8 @@ var Classical;
                 HtmlElementContainer.prototype.configure = function (element, document) {
                     _super.prototype.configure.call(this, element, document);
                     var config = this.getConfig(), text = config.text, textBinder = config.textBinder, child = config.child, isTextDefined = Classical.Utilities.isDefined(text), isTextBinderDefined = Classical.Utilities.isDefined(textBinder), isChildDefined = Classical.Utilities.isDefined(child), isChildrenBinderDefined = Classical.Utilities.isDefined(config.childrenBinder);
-
                     Classical.Assert.isFalse((isTextDefined || isTextBinderDefined) && isChildrenBinderDefined, 'The text and textBinder properties cannot be specifed in conjuction with the childrenBinder. Add a text node as the first element of the source collection instead.');
                     Classical.Assert.isFalse(isChildDefined && isChildrenBinderDefined, 'The child property cannot be specifed in conjuction with the childrenBinder. Add the child node as the first element of the source collection instead.');
-
                     if (isTextDefined || isTextBinderDefined || isChildDefined) {
                         config.children = config.children || [];
                         var children = config.children;
@@ -3030,19 +2805,14 @@ var Classical;
                         if (isTextBinderDefined)
                             children.unshift(Html.text(textBinder));
                     }
-
                     setChildrenPropertyFromConfig(this, config);
-
                     if (config.copyHandler)
                         this.copyEvent.subscribe(config.copyHandler);
-
                     if (config.cutHandler)
                         this.cutEvent.subscribe(config.cutHandler);
-
                     if (config.pasteHandler)
                         this.pasteEvent.subscribe(config.pasteHandler);
                 };
-
                 //#endregion configure
                 //#region initialize
                 /**
@@ -3051,15 +2821,13 @@ var Classical;
                 * @returns the decorated DOM node, with data and bindings set.
                 */
                 HtmlElementContainer.prototype.initialize = function (document) {
-                    if (typeof document === "undefined") { document = window.document; }
+                    if (document === void 0) { document = window.document; }
                     if (this.isInitialized())
                         return this;
-
                     _super.prototype.initialize.call(this);
                     this.children.query().forEach(function (node) {
                         node.initialize();
                     });
-
                     var self = this;
                     this._childrenAreInitialized = true;
                     self._noteInitialization(true);
@@ -3068,21 +2836,16 @@ var Classical;
                 return HtmlElementContainer;
             })(HtmlElement);
             Elements.HtmlElementContainer = HtmlElementContainer;
-
             //#region Configuration
             var HtmlElementContainerPrototype = HtmlElementContainer.prototype;
-
             HtmlElementContainerPrototype._noteInitialization = function () {
                 if (!this._childrenAreInitialized)
                     return;
-
                 this._isInitialized = true;
-
                 var initialization = this._initialization;
                 if (initialization)
                     initialization.execute(null);
             };
-
             //#endregion Configuration
             //#endregion HtmlElementContainer
             //#region AbbreviationElement
@@ -3117,7 +2880,6 @@ var Classical;
                 return AbbreviationElement;
             })(HtmlElementContainer);
             Elements.AbbreviationElement = AbbreviationElement;
-
             //#endregion AbbreviationElement
             //#region AddressElement
             /**
@@ -3151,7 +2913,6 @@ var Classical;
                 return AddressElement;
             })(HtmlElementContainer);
             Elements.AddressElement = AddressElement;
-
             //#endregion AddressElement
             //#region AnchorElement
             /**
@@ -3184,7 +2945,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(AnchorElement.prototype, "href", {
                     //#endregion hrefProperty
                     //#region href
@@ -3201,8 +2961,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(AnchorElement.prototype, "hrefLanguageProperty", {
                     //#endregion href
                     //#region hrefLanguageProperty
@@ -3217,7 +2975,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(AnchorElement.prototype, "hrefLanguage", {
                     //#endregion hrefLanguageProperty
                     //#region hrefLanguage
@@ -3233,8 +2990,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(AnchorElement.prototype, "relationshipProperty", {
                     //#endregion hrefLanguage
                     //#region relationshipProperty
@@ -3249,7 +3004,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(AnchorElement.prototype, "relationship", {
                     //#endregion relationshipProperty
                     //#region relationship
@@ -3265,8 +3019,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(AnchorElement.prototype, "targetProperty", {
                     //#endregion relationship
                     //#region targetProperty
@@ -3282,7 +3034,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(AnchorElement.prototype, "target", {
                     //#endregion targetProperty
                     //#region target
@@ -3299,8 +3050,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(AnchorElement.prototype, "typeProperty", {
                     //#endregion target
                     //#region typeProperty
@@ -3315,7 +3064,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(AnchorElement.prototype, "type", {
                     //#endregion typeProperty
                     //#region type
@@ -3331,8 +3079,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 //#endregion Constructor
                 //#region Base Class Overrides
                 /**
@@ -3353,7 +3099,6 @@ var Classical;
                 return AnchorElement;
             })(HtmlElementContainer);
             Elements.AnchorElement = AnchorElement;
-
             //#endregion AnchorElement
             //#region AreaElement
             /**
@@ -3385,7 +3130,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(AreaElement.prototype, "alternate", {
                     //#endregion alternateProperty
                     //#region alternate
@@ -3401,8 +3145,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(AreaElement.prototype, "coordinatesProperty", {
                     //#endregion alternate
                     //#region coordinatesProperty
@@ -3417,7 +3159,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(AreaElement.prototype, "coordinates", {
                     //#endregion coordinatesProperty
                     //#region coordinates
@@ -3433,8 +3174,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(AreaElement.prototype, "hrefProperty", {
                     //#endregion coordinates
                     //#region hrefProperty
@@ -3449,7 +3188,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(AreaElement.prototype, "href", {
                     //#endregion hrefProperty
                     //#region href
@@ -3465,8 +3203,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(AreaElement.prototype, "shapeProperty", {
                     //#endregion href
                     //#region shapeProperty
@@ -3481,7 +3217,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(AreaElement.prototype, "shape", {
                     //#endregion shapeProperty
                     //#region shape
@@ -3497,8 +3232,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(AreaElement.prototype, "targetProperty", {
                     //#endregion shape
                     //#region targetProperty
@@ -3514,7 +3247,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(AreaElement.prototype, "target", {
                     //#endregion targetProperty
                     //#region target
@@ -3531,8 +3263,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 //#endregion Constructor
                 //#region Base Class Overrides
                 /**
@@ -3553,7 +3283,6 @@ var Classical;
                 return AreaElement;
             })(HtmlElement);
             Elements.AreaElement = AreaElement;
-
             //#endregion AreaElement
             //#region ArticleElement
             /**
@@ -3587,7 +3316,6 @@ var Classical;
                 return ArticleElement;
             })(HtmlElementContainer);
             Elements.ArticleElement = ArticleElement;
-
             //#endregion ArticleElement
             //#region AsideElement
             /**
@@ -3621,7 +3349,6 @@ var Classical;
                 return AsideElement;
             })(HtmlElementContainer);
             Elements.AsideElement = AsideElement;
-
             //#endregion AsideElement
             //#region AudioElement
             /**
@@ -3653,7 +3380,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(AudioElement.prototype, "autoPlay", {
                     //#endregion autoPlayProperty
                     //#region autoPlay
@@ -3669,8 +3395,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(AudioElement.prototype, "bufferedProperty", {
                     //#endregion autoPlay
                     //#region bufferedProperty
@@ -3685,7 +3409,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(AudioElement.prototype, "buffered", {
                     //#endregion bufferedProperty
                     //#region buffered
@@ -3701,8 +3424,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(AudioElement.prototype, "controlsProperty", {
                     //#endregion buffered
                     //#region controlsProperty
@@ -3717,7 +3438,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(AudioElement.prototype, "controls", {
                     //#endregion controlsProperty
                     //#region controls
@@ -3733,8 +3453,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(AudioElement.prototype, "loopProperty", {
                     //#endregion controls
                     //#region loopProperty
@@ -3749,7 +3467,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(AudioElement.prototype, "loop", {
                     //#endregion loopProperty
                     //#region loop
@@ -3765,8 +3482,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(AudioElement.prototype, "mutedProperty", {
                     //#endregion loop
                     //#region mutedProperty
@@ -3781,7 +3496,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(AudioElement.prototype, "muted", {
                     //#endregion mutedProperty
                     //#region muted
@@ -3797,8 +3511,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(AudioElement.prototype, "playedProperty", {
                     //#endregion muted
                     //#region playedProperty
@@ -3813,7 +3525,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(AudioElement.prototype, "played", {
                     //#endregion playedProperty
                     //#region played
@@ -3829,8 +3540,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(AudioElement.prototype, "preloadProperty", {
                     //#endregion played
                     //#region preloadProperty
@@ -3846,7 +3555,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(AudioElement.prototype, "preload", {
                     //#endregion preloadProperty
                     //#region preload
@@ -3863,8 +3571,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(AudioElement.prototype, "sourceProperty", {
                     //#endregion preload
                     //#region sourceProperty
@@ -3879,7 +3585,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(AudioElement.prototype, "source", {
                     //#endregion sourceProperty
                     //#region source
@@ -3895,8 +3600,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(AudioElement.prototype, "volumeProperty", {
                     //#endregion source
                     //#region volumeProperty
@@ -3911,7 +3614,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(AudioElement.prototype, "volume", {
                     //#endregion volumeProperty
                     //#region volume
@@ -3927,8 +3629,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(AudioElement.prototype, "audioCompleteEvent", {
                     //#endregion volume
                     //#region audioCompleteEvent
@@ -3940,13 +3640,11 @@ var Classical;
                     get: function () {
                         if (!this._audioCompleteEvent)
                             this._audioCompleteEvent = new Html.HtmlElementEvent('complete', 'Event', this);
-
                         return this._audioCompleteEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(AudioElement.prototype, "audioEndedEvent", {
                     //#endregion audioCompleteEvent
                     //#region audioEndedEvent
@@ -3958,13 +3656,11 @@ var Classical;
                     get: function () {
                         if (!this._audioEndedEvent)
                             this._audioEndedEvent = new Html.HtmlElementEvent('ended', 'Event', this);
-
                         return this._audioEndedEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(AudioElement.prototype, "audioProcessEvent", {
                     //#endregion audioEndedEvent
                     //#region audioProcessEvent
@@ -3976,13 +3672,11 @@ var Classical;
                     get: function () {
                         if (!this._audioProcessEvent)
                             this._audioProcessEvent = new Html.HtmlElementEvent('audioprocess', 'Event', this);
-
                         return this._audioProcessEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(AudioElement.prototype, "mediaCanPlayEvent", {
                     //#endregion audioProcessEvent
                     //#region mediaCanPlayEvent
@@ -3994,13 +3688,11 @@ var Classical;
                     get: function () {
                         if (!this._mediaCanPlayEvent)
                             this._mediaCanPlayEvent = new Html.HtmlElementEvent('canplay', 'Event', this);
-
                         return this._mediaCanPlayEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(AudioElement.prototype, "mediaCanPlayThroughEvent", {
                     //#endregion mediaCanPlayEvent
                     //#region mediaCanPlayThroughEvent
@@ -4012,13 +3704,11 @@ var Classical;
                     get: function () {
                         if (!this._mediaCanPlayThroughEvent)
                             this._mediaCanPlayThroughEvent = new Html.HtmlElementEvent('canplaythrough', 'Event', this);
-
                         return this._mediaCanPlayThroughEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(AudioElement.prototype, "mediaDurationChangeEvent", {
                     //#endregion mediaCanPlayThroughEvent
                     //#region mediaDurationChangeEvent
@@ -4030,13 +3720,11 @@ var Classical;
                     get: function () {
                         if (!this._mediaDurationChangeEvent)
                             this._mediaDurationChangeEvent = new Html.HtmlElementEvent('durationchange', 'Event', this);
-
                         return this._mediaDurationChangeEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(AudioElement.prototype, "mediaEmptiedEvent", {
                     //#endregion mediaDurationChangeEvent
                     //#region mediaEmptiedEvent
@@ -4048,13 +3736,11 @@ var Classical;
                     get: function () {
                         if (!this._mediaEmptiedEvent)
                             this._mediaEmptiedEvent = new Html.HtmlElementEvent('emptied', 'Event', this);
-
                         return this._mediaEmptiedEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(AudioElement.prototype, "mediaEndedEvent", {
                     //#endregion mediaEmptiedEvent
                     //#region mediaEndedEvent
@@ -4066,13 +3752,11 @@ var Classical;
                     get: function () {
                         if (!this._mediaEndedEvent)
                             this._mediaEndedEvent = new Html.HtmlElementEvent('ended', 'Event', this);
-
                         return this._mediaEndedEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(AudioElement.prototype, "mediaLoadedDataEvent", {
                     //#endregion mediaEndedEvent
                     //#region mediaLoadedDataEvent
@@ -4084,13 +3768,11 @@ var Classical;
                     get: function () {
                         if (!this._mediaLoadedDataEvent)
                             this._mediaLoadedDataEvent = new Html.HtmlElementEvent('loadeddata', 'Event', this);
-
                         return this._mediaLoadedDataEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(AudioElement.prototype, "mediaLoadedMetadataEvent", {
                     //#endregion mediaLoadedDataEvent
                     //#region mediaLoadedMetadataEvent
@@ -4102,13 +3784,11 @@ var Classical;
                     get: function () {
                         if (!this._mediaLoadedMetadataEvent)
                             this._mediaLoadedMetadataEvent = new Html.HtmlElementEvent('loadedmetadata', 'Event', this);
-
                         return this._mediaLoadedMetadataEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(AudioElement.prototype, "mediaPauseEvent", {
                     //#endregion mediaLoadedMetadataEvent
                     //#region mediaPauseEvent
@@ -4120,13 +3800,11 @@ var Classical;
                     get: function () {
                         if (!this._mediaPauseEvent)
                             this._mediaPauseEvent = new Html.HtmlElementEvent('pause', 'Event', this);
-
                         return this._mediaPauseEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(AudioElement.prototype, "mediaPlayEvent", {
                     //#endregion mediaPauseEvent
                     //#region mediaPlayEvent
@@ -4138,13 +3816,11 @@ var Classical;
                     get: function () {
                         if (!this._mediaPlayEvent)
                             this._mediaPlayEvent = new Html.HtmlElementEvent('play', 'Event', this);
-
                         return this._mediaPlayEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(AudioElement.prototype, "mediaPlayingEvent", {
                     //#endregion mediaPlayEvent
                     //#region mediaPlayingEvent
@@ -4156,13 +3832,11 @@ var Classical;
                     get: function () {
                         if (!this._mediaPlayingEvent)
                             this._mediaPlayingEvent = new Html.HtmlElementEvent('playing', 'Event', this);
-
                         return this._mediaPlayingEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(AudioElement.prototype, "mediaRateChangeEvent", {
                     //#endregion mediaPlayingEvent
                     //#region mediaRateChangeEvent
@@ -4174,13 +3848,11 @@ var Classical;
                     get: function () {
                         if (!this._mediaRateChangeEvent)
                             this._mediaRateChangeEvent = new Html.HtmlElementEvent('ratechange', 'Event', this);
-
                         return this._mediaRateChangeEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(AudioElement.prototype, "mediaSeekedEvent", {
                     //#endregion mediaRateChangeEvent
                     //#region mediaSeekedEvent
@@ -4192,13 +3864,11 @@ var Classical;
                     get: function () {
                         if (!this._mediaSeekedEvent)
                             this._mediaSeekedEvent = new Html.HtmlElementEvent('seeked', 'Event', this);
-
                         return this._mediaSeekedEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(AudioElement.prototype, "mediaSeekingEvent", {
                     //#endregion mediaSeekedEvent
                     //#region mediaSeekingEvent
@@ -4210,13 +3880,11 @@ var Classical;
                     get: function () {
                         if (!this._mediaSeekingEvent)
                             this._mediaSeekingEvent = new Html.HtmlElementEvent('seeking', 'Event', this);
-
                         return this._mediaSeekingEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(AudioElement.prototype, "mediaStalledEvent", {
                     //#endregion mediaSeekingEvent
                     //#region mediaStalledEvent
@@ -4228,13 +3896,11 @@ var Classical;
                     get: function () {
                         if (!this._mediaStalledEvent)
                             this._mediaStalledEvent = new Html.HtmlElementEvent('stalled', 'Event', this);
-
                         return this._mediaStalledEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(AudioElement.prototype, "mediaSuspendEvent", {
                     //#endregion mediaStalledEvent
                     //#region mediaSuspendEvent
@@ -4246,13 +3912,11 @@ var Classical;
                     get: function () {
                         if (!this._mediaSuspendEvent)
                             this._mediaSuspendEvent = new Html.HtmlElementEvent('suspend', 'Event', this);
-
                         return this._mediaSuspendEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(AudioElement.prototype, "mediaTimeUpdateEvent", {
                     //#endregion mediaSuspendEvent
                     //#region mediaTimeUpdateEvent
@@ -4264,13 +3928,11 @@ var Classical;
                     get: function () {
                         if (!this._mediaTimeUpdateEvent)
                             this._mediaTimeUpdateEvent = new Html.HtmlElementEvent('timeupdate', 'Event', this);
-
                         return this._mediaTimeUpdateEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(AudioElement.prototype, "mediaVolumeChangeEvent", {
                     //#endregion mediaTimeUpdateEvent
                     //#region mediaVolumeChangeEvent
@@ -4282,13 +3944,11 @@ var Classical;
                     get: function () {
                         if (!this._mediaVolumeChangeEvent)
                             this._mediaVolumeChangeEvent = new Html.HtmlElementEvent('volumechange', 'Event', this);
-
                         return this._mediaVolumeChangeEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(AudioElement.prototype, "mediaWaitingEvent", {
                     //#endregion mediaVolumeChangeEvent
                     //#region mediaWaitingEvent
@@ -4300,13 +3960,11 @@ var Classical;
                     get: function () {
                         if (!this._mediaWaitingEvent)
                             this._mediaWaitingEvent = new Html.HtmlElementEvent('waiting', 'Event', this);
-
                         return this._mediaWaitingEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 //#endregion Constructor
                 //#region Base Class Overrides
                 /**
@@ -4327,74 +3985,52 @@ var Classical;
                     setPropertyFromConfig(this, config, 'preload', true);
                     setPropertyFromConfig(this, config, 'source', true);
                     setPropertyFromConfig(this, config, 'volume', true);
-
                     if (config.audioCompleteHandler)
                         this.audioCompleteEvent.subscribe(config.audioCompleteHandler);
-
                     if (config.audioEndedHandler)
                         this.audioEndedEvent.subscribe(config.audioEndedHandler);
-
                     if (config.audioProcessHandler)
                         this.audioProcessEvent.subscribe(config.audioProcessHandler);
-
                     if (config.mediaCanPlayHandler)
                         this.mediaCanPlayEvent.subscribe(config.mediaCanPlayHandler);
-
                     if (config.mediaCanPlayThroughHandler)
                         this.mediaCanPlayThroughEvent.subscribe(config.mediaCanPlayThroughHandler);
-
                     if (config.mediaDurationChangeHandler)
                         this.mediaDurationChangeEvent.subscribe(config.mediaDurationChangeHandler);
-
                     if (config.mediaEmptiedHandler)
                         this.mediaEmptiedEvent.subscribe(config.mediaEmptiedHandler);
-
                     if (config.mediaEndedHandler)
                         this.mediaEndedEvent.subscribe(config.mediaEndedHandler);
-
                     if (config.mediaLoadedDataHandler)
                         this.mediaLoadedDataEvent.subscribe(config.mediaLoadedDataHandler);
-
                     if (config.mediaLoadedMetadataHandler)
                         this.mediaLoadedMetadataEvent.subscribe(config.mediaLoadedMetadataHandler);
-
                     if (config.mediaPauseHandler)
                         this.mediaPauseEvent.subscribe(config.mediaPauseHandler);
-
                     if (config.mediaPlayHandler)
                         this.mediaPlayEvent.subscribe(config.mediaPlayHandler);
-
                     if (config.mediaPlayingHandler)
                         this.mediaPlayingEvent.subscribe(config.mediaPlayingHandler);
-
                     if (config.mediaRateChangeHandler)
                         this.mediaRateChangeEvent.subscribe(config.mediaRateChangeHandler);
-
                     if (config.mediaSeekedHandler)
                         this.mediaSeekedEvent.subscribe(config.mediaSeekedHandler);
-
                     if (config.mediaSeekingHandler)
                         this.mediaSeekingEvent.subscribe(config.mediaSeekingHandler);
-
                     if (config.mediaStalledHandler)
                         this.mediaStalledEvent.subscribe(config.mediaStalledHandler);
-
                     if (config.mediaSuspendHandler)
                         this.mediaSuspendEvent.subscribe(config.mediaSuspendHandler);
-
                     if (config.mediaTimeUpdateHandler)
                         this.mediaTimeUpdateEvent.subscribe(config.mediaTimeUpdateHandler);
-
                     if (config.mediaVolumeChangeHandler)
                         this.mediaVolumeChangeEvent.subscribe(config.mediaVolumeChangeHandler);
-
                     if (config.mediaWaitingHandler)
                         this.mediaWaitingEvent.subscribe(config.mediaWaitingHandler);
                 };
                 return AudioElement;
             })(HtmlElementContainer);
             Elements.AudioElement = AudioElement;
-
             //#endregion AudioElement
             //#region BaseElement
             /**
@@ -4426,7 +4062,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(BaseElement.prototype, "href", {
                     //#endregion hrefProperty
                     //#region href
@@ -4442,8 +4077,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(BaseElement.prototype, "targetProperty", {
                     //#endregion href
                     //#region targetProperty
@@ -4459,7 +4092,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(BaseElement.prototype, "target", {
                     //#endregion targetProperty
                     //#region target
@@ -4476,8 +4108,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 //#endregion Constructor
                 //#region Base Class Overrides
                 /**
@@ -4495,7 +4125,6 @@ var Classical;
                 return BaseElement;
             })(HtmlElement);
             Elements.BaseElement = BaseElement;
-
             //#endregion BaseElement
             //#region BidirectionalIsolationElement
             /**
@@ -4529,7 +4158,6 @@ var Classical;
                 return BidirectionalIsolationElement;
             })(HtmlElementContainer);
             Elements.BidirectionalIsolationElement = BidirectionalIsolationElement;
-
             //#endregion BidirectionalIsolationElement
             //#region BidirectionalOverrideElement
             /**
@@ -4563,7 +4191,6 @@ var Classical;
                 return BidirectionalOverrideElement;
             })(HtmlElementContainer);
             Elements.BidirectionalOverrideElement = BidirectionalOverrideElement;
-
             //#endregion BidirectionalOverrideElement
             //#region BlockQuotationElement
             /**
@@ -4595,7 +4222,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(BlockQuotationElement.prototype, "citation", {
                     //#endregion citationProperty
                     //#region citation
@@ -4611,8 +4237,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 //#endregion Constructor
                 //#region Base Class Overrides
                 /**
@@ -4629,7 +4253,6 @@ var Classical;
                 return BlockQuotationElement;
             })(HtmlElementContainer);
             Elements.BlockQuotationElement = BlockQuotationElement;
-
             //#endregion BlockQuotationElement
             //#region BodyElement
             /**
@@ -4658,13 +4281,11 @@ var Classical;
                     get: function () {
                         if (!this._unloadEvent)
                             this._unloadEvent = new Html.HtmlElementEvent('unload', 'UIEvent', this);
-
                         return this._unloadEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 //#endregion Constructor
                 //#region Base Class Overrides
                 /**
@@ -4676,14 +4297,12 @@ var Classical;
                 BodyElement.prototype.configure = function (element, document) {
                     _super.prototype.configure.call(this, element, document);
                     var config = this.getConfig();
-
                     if (config.unloadHandler)
                         this.unloadEvent.subscribe(config.unloadHandler);
                 };
                 return BodyElement;
             })(HtmlElementContainer);
             Elements.BodyElement = BodyElement;
-
             //#endregion BodyElement
             //#region BoldElement
             /**
@@ -4717,7 +4336,6 @@ var Classical;
                 return BoldElement;
             })(HtmlElementContainer);
             Elements.BoldElement = BoldElement;
-
             //#endregion BoldElement
             //#region ButtonElement
             /**
@@ -4749,7 +4367,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(ButtonElement.prototype, "autoFocus", {
                     //#endregion autoFocusProperty
                     //#region autoFocus
@@ -4765,8 +4382,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(ButtonElement.prototype, "disabledProperty", {
                     //#endregion autoFocus
                     //#region disabledProperty
@@ -4781,7 +4396,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(ButtonElement.prototype, "disabled", {
                     //#endregion disabledProperty
                     //#region disabled
@@ -4797,8 +4411,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(ButtonElement.prototype, "form", {
                     //#endregion disabled
                     //#region form
@@ -4814,8 +4426,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(ButtonElement.prototype, "nameProperty", {
                     //#endregion form
                     //#region nameProperty
@@ -4830,7 +4440,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(ButtonElement.prototype, "name", {
                     //#endregion nameProperty
                     //#region name
@@ -4846,8 +4455,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(ButtonElement.prototype, "typeProperty", {
                     //#endregion name
                     //#region typeProperty
@@ -4863,7 +4470,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(ButtonElement.prototype, "type", {
                     //#endregion typeProperty
                     //#region type
@@ -4880,8 +4486,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(ButtonElement.prototype, "valueProperty", {
                     //#endregion type
                     //#region valueProperty
@@ -4896,7 +4500,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(ButtonElement.prototype, "value", {
                     //#endregion valueProperty
                     //#region value
@@ -4912,8 +4515,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 //#endregion Constructor
                 //#region Base Class Overrides
                 /**
@@ -4935,7 +4536,6 @@ var Classical;
                 return ButtonElement;
             })(HtmlElementContainer);
             Elements.ButtonElement = ButtonElement;
-
             //#endregion ButtonElement
             //#region CanvasElement
             /**
@@ -4967,7 +4567,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(CanvasElement.prototype, "width", {
                     //#endregion widthProperty
                     //#region width
@@ -4983,8 +4582,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(CanvasElement.prototype, "heightProperty", {
                     //#endregion width
                     //#region heightProperty
@@ -4999,7 +4596,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(CanvasElement.prototype, "height", {
                     //#endregion heightProperty
                     //#region height
@@ -5015,8 +4611,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 //#endregion Constructor
                 //#region Base Class Overrides
                 /**
@@ -5034,7 +4628,6 @@ var Classical;
                 return CanvasElement;
             })(HtmlElementContainer);
             Elements.CanvasElement = CanvasElement;
-
             //#endregion CanvasElement
             //#region CitationElement
             /**
@@ -5068,7 +4661,6 @@ var Classical;
                 return CitationElement;
             })(HtmlElementContainer);
             Elements.CitationElement = CitationElement;
-
             //#endregion CitationElement
             //#region CodeElement
             /**
@@ -5102,7 +4694,6 @@ var Classical;
                 return CodeElement;
             })(HtmlElementContainer);
             Elements.CodeElement = CodeElement;
-
             //#endregion CodeElement
             //#region DataElement
             /**
@@ -5134,7 +4725,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(DataElement.prototype, "value", {
                     //#endregion valueProperty
                     //#region value
@@ -5150,8 +4740,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 //#endregion Constructor
                 //#region Base Class Overrides
                 /**
@@ -5168,7 +4756,6 @@ var Classical;
                 return DataElement;
             })(HtmlElementContainer);
             Elements.DataElement = DataElement;
-
             //#endregion DataElement
             //#region DataListElement
             /**
@@ -5202,7 +4789,6 @@ var Classical;
                 return DataListElement;
             })(HtmlElementContainer);
             Elements.DataListElement = DataListElement;
-
             //#endregion DataListElement
             //#region DefinitionElement
             /**
@@ -5236,7 +4822,6 @@ var Classical;
                 return DefinitionElement;
             })(HtmlElementContainer);
             Elements.DefinitionElement = DefinitionElement;
-
             //#endregion DefinitionElement
             //#region DefinitionTermElement
             /**
@@ -5270,7 +4855,6 @@ var Classical;
                 return DefinitionTermElement;
             })(HtmlElementContainer);
             Elements.DefinitionTermElement = DefinitionTermElement;
-
             //#endregion DefinitionTermElement
             //#region DeletedTextElement
             /**
@@ -5302,7 +4886,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(DeletedTextElement.prototype, "citation", {
                     //#endregion citationProperty
                     //#region citation
@@ -5318,8 +4901,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 //#endregion Constructor
                 //#region Base Class Overrides
                 /**
@@ -5336,7 +4917,6 @@ var Classical;
                 return DeletedTextElement;
             })(HtmlElementContainer);
             Elements.DeletedTextElement = DeletedTextElement;
-
             //#endregion DeletedTextElement
             //#region DescriptionElement
             /**
@@ -5370,7 +4950,6 @@ var Classical;
                 return DescriptionElement;
             })(HtmlElementContainer);
             Elements.DescriptionElement = DescriptionElement;
-
             //#endregion DescriptionElement
             //#region DescriptionListElement
             /**
@@ -5404,7 +4983,6 @@ var Classical;
                 return DescriptionListElement;
             })(HtmlElementContainer);
             Elements.DescriptionListElement = DescriptionListElement;
-
             //#endregion DescriptionListElement
             //#region DetailsElement
             /**
@@ -5438,7 +5016,6 @@ var Classical;
                 return DetailsElement;
             })(HtmlElementContainer);
             Elements.DetailsElement = DetailsElement;
-
             //#endregion DetailsElement
             //#region DivisionElement
             /**
@@ -5472,7 +5049,6 @@ var Classical;
                 return DivisionElement;
             })(HtmlElementContainer);
             Elements.DivisionElement = DivisionElement;
-
             //#endregion DivisionElement
             //#region EmbedElement
             /**
@@ -5504,7 +5080,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(EmbedElement.prototype, "height", {
                     //#endregion heightProperty
                     //#region height
@@ -5520,8 +5095,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(EmbedElement.prototype, "sourceProperty", {
                     //#endregion height
                     //#region sourceProperty
@@ -5536,7 +5109,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(EmbedElement.prototype, "source", {
                     //#endregion sourceProperty
                     //#region source
@@ -5552,8 +5124,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(EmbedElement.prototype, "widthProperty", {
                     //#endregion source
                     //#region widthProperty
@@ -5568,7 +5138,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(EmbedElement.prototype, "width", {
                     //#endregion widthProperty
                     //#region width
@@ -5584,8 +5153,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 //#endregion Constructor
                 //#region Base Class Overrides
                 /**
@@ -5604,7 +5171,6 @@ var Classical;
                 return EmbedElement;
             })(HtmlElement);
             Elements.EmbedElement = EmbedElement;
-
             //#endregion EmbedElement
             //#region EmbeddedObjectElement
             /**
@@ -5636,7 +5202,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(EmbeddedObjectElement.prototype, "data", {
                     //#endregion dataProperty
                     //#region data
@@ -5652,8 +5217,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(EmbeddedObjectElement.prototype, "form", {
                     //#endregion data
                     //#region form
@@ -5669,8 +5232,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(EmbeddedObjectElement.prototype, "heightProperty", {
                     //#endregion form
                     //#region heightProperty
@@ -5685,7 +5246,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(EmbeddedObjectElement.prototype, "height", {
                     //#endregion heightProperty
                     //#region height
@@ -5701,8 +5261,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(EmbeddedObjectElement.prototype, "nameProperty", {
                     //#endregion height
                     //#region nameProperty
@@ -5717,7 +5275,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(EmbeddedObjectElement.prototype, "name", {
                     //#endregion nameProperty
                     //#region name
@@ -5733,8 +5290,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(EmbeddedObjectElement.prototype, "typeProperty", {
                     //#endregion name
                     //#region typeProperty
@@ -5749,7 +5304,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(EmbeddedObjectElement.prototype, "type", {
                     //#endregion typeProperty
                     //#region type
@@ -5765,8 +5319,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(EmbeddedObjectElement.prototype, "widthProperty", {
                     //#endregion type
                     //#region widthProperty
@@ -5781,7 +5333,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(EmbeddedObjectElement.prototype, "width", {
                     //#endregion widthProperty
                     //#region width
@@ -5797,8 +5348,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 //#endregion Constructor
                 //#region Base Class Overrides
                 /**
@@ -5820,7 +5369,6 @@ var Classical;
                 return EmbeddedObjectElement;
             })(HtmlElementContainer);
             Elements.EmbeddedObjectElement = EmbeddedObjectElement;
-
             //#endregion EmbeddedObjectElement
             //#region EmphasisElement
             /**
@@ -5854,7 +5402,6 @@ var Classical;
                 return EmphasisElement;
             })(HtmlElementContainer);
             Elements.EmphasisElement = EmphasisElement;
-
             //#endregion EmphasisElement
             //#region FieldsetElement
             /**
@@ -5886,7 +5433,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(FieldsetElement.prototype, "disabled", {
                     //#endregion disabledProperty
                     //#region disabled
@@ -5902,8 +5448,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(FieldsetElement.prototype, "form", {
                     //#endregion disabled
                     //#region form
@@ -5919,8 +5463,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 //#endregion Constructor
                 //#region Base Class Overrides
                 /**
@@ -5938,7 +5480,6 @@ var Classical;
                 return FieldsetElement;
             })(HtmlElementContainer);
             Elements.FieldsetElement = FieldsetElement;
-
             //#endregion FieldsetElement
             //#region FigureElement
             /**
@@ -5972,7 +5513,6 @@ var Classical;
                 return FigureElement;
             })(HtmlElementContainer);
             Elements.FigureElement = FigureElement;
-
             //#endregion FigureElement
             //#region FigureCaptionElement
             /**
@@ -6006,7 +5546,6 @@ var Classical;
                 return FigureCaptionElement;
             })(HtmlElementContainer);
             Elements.FigureCaptionElement = FigureCaptionElement;
-
             //#endregion FigureCaptionElement
             //#region FooterElement
             /**
@@ -6040,7 +5579,6 @@ var Classical;
                 return FooterElement;
             })(HtmlElementContainer);
             Elements.FooterElement = FooterElement;
-
             //#endregion FooterElement
             //#region FormElement
             /**
@@ -6072,7 +5610,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(FormElement.prototype, "acceptCharset", {
                     //#endregion acceptCharsetProperty
                     //#region acceptCharset
@@ -6088,8 +5625,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(FormElement.prototype, "actionProperty", {
                     //#endregion acceptCharset
                     //#region actionProperty
@@ -6104,7 +5639,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(FormElement.prototype, "action", {
                     //#endregion actionProperty
                     //#region action
@@ -6120,8 +5654,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(FormElement.prototype, "autoCompleteProperty", {
                     //#endregion action
                     //#region autoCompleteProperty
@@ -6138,7 +5670,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(FormElement.prototype, "autoComplete", {
                     //#endregion autoCompleteProperty
                     //#region autoComplete
@@ -6156,8 +5687,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(FormElement.prototype, "encodingTypeProperty", {
                     //#endregion autoComplete
                     //#region encodingTypeProperty
@@ -6173,7 +5702,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(FormElement.prototype, "encodingType", {
                     //#endregion encodingTypeProperty
                     //#region encodingType
@@ -6190,8 +5718,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(FormElement.prototype, "methodProperty", {
                     //#endregion encodingType
                     //#region methodProperty
@@ -6207,7 +5733,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(FormElement.prototype, "method", {
                     //#endregion methodProperty
                     //#region method
@@ -6224,8 +5749,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(FormElement.prototype, "nameProperty", {
                     //#endregion method
                     //#region nameProperty
@@ -6240,7 +5763,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(FormElement.prototype, "name", {
                     //#endregion nameProperty
                     //#region name
@@ -6256,8 +5778,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(FormElement.prototype, "targetProperty", {
                     //#endregion name
                     //#region targetProperty
@@ -6273,7 +5793,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(FormElement.prototype, "target", {
                     //#endregion targetProperty
                     //#region target
@@ -6290,8 +5809,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(FormElement.prototype, "resetEvent", {
                     //#endregion target
                     //#region resetEvent
@@ -6303,13 +5820,11 @@ var Classical;
                     get: function () {
                         if (!this._resetEvent)
                             this._resetEvent = new Html.HtmlElementEvent('reset', 'Event', this);
-
                         return this._resetEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(FormElement.prototype, "submitEvent", {
                     //#endregion resetEvent
                     //#region submitEvent
@@ -6321,13 +5836,11 @@ var Classical;
                     get: function () {
                         if (!this._submitEvent)
                             this._submitEvent = new Html.HtmlElementEvent('submit', 'Event', this);
-
                         return this._submitEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 //#endregion Constructor
                 //#region Base Class Overrides
                 /**
@@ -6346,17 +5859,14 @@ var Classical;
                     setPropertyFromConfig(this, config, 'method', true);
                     setPropertyFromConfig(this, config, 'name', true);
                     setPropertyFromConfig(this, config, 'target', true);
-
                     if (config.resetHandler)
                         this.resetEvent.subscribe(config.resetHandler);
-
                     if (config.submitHandler)
                         this.submitEvent.subscribe(config.submitHandler);
                 };
                 return FormElement;
             })(HtmlElementContainer);
             Elements.FormElement = FormElement;
-
             //#endregion FormElement
             //#region HeadElement
             /**
@@ -6364,7 +5874,9 @@ var Classical;
             */
             var HeadElement = (function (_super) {
                 __extends(HeadElement, _super);
-                //#endregion profile
+                //#region Fields
+                //#endregion Fields
+                //#region Properties
                 //#endregion Properties
                 //#region Constructor
                 /**
@@ -6373,39 +5885,6 @@ var Classical;
                 function HeadElement(config) {
                     _super.call(this, 'head', config);
                 }
-                Object.defineProperty(HeadElement.prototype, "profileProperty", {
-                    //#endregion Fields
-                    //#region Properties
-                    //#region profileProperty
-                    /**
-                    * The URIs of one or more metadata profiles, separated by white space [MDN].
-                    */
-                    get: function () {
-                        if (!this._profileProperty)
-                            initializeProperty(this, 'profile', 'profile');
-                        return this._profileProperty;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
-
-                Object.defineProperty(HeadElement.prototype, "profile", {
-                    //#endregion profileProperty
-                    //#region profile
-                    /**
-                    * The URIs of one or more metadata profiles, separated by white space [MDN].
-                    */
-                    get: function () {
-                        return this.profileProperty.value;
-                    },
-                    set: function (value) {
-                        this.profileProperty.value = value;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
-
-
                 //#endregion Constructor
                 //#region Base Class Overrides
                 /**
@@ -6417,12 +5896,10 @@ var Classical;
                 HeadElement.prototype.configure = function (element, document) {
                     _super.prototype.configure.call(this, element, document);
                     var config = this.getConfig();
-                    setPropertyFromConfig(this, config, 'profile', true);
                 };
                 return HeadElement;
             })(HtmlElementContainer);
             Elements.HeadElement = HeadElement;
-
             //#endregion HeadElement
             //#region HeaderElement
             /**
@@ -6456,7 +5933,6 @@ var Classical;
                 return HeaderElement;
             })(HtmlElementContainer);
             Elements.HeaderElement = HeaderElement;
-
             //#endregion HeaderElement
             //#region HeaderFiveElement
             /**
@@ -6490,7 +5966,6 @@ var Classical;
                 return HeaderFiveElement;
             })(HtmlElementContainer);
             Elements.HeaderFiveElement = HeaderFiveElement;
-
             //#endregion HeaderFiveElement
             //#region HeaderFourElement
             /**
@@ -6524,7 +5999,6 @@ var Classical;
                 return HeaderFourElement;
             })(HtmlElementContainer);
             Elements.HeaderFourElement = HeaderFourElement;
-
             //#endregion HeaderFourElement
             //#region HeaderOneElement
             /**
@@ -6558,7 +6032,6 @@ var Classical;
                 return HeaderOneElement;
             })(HtmlElementContainer);
             Elements.HeaderOneElement = HeaderOneElement;
-
             //#endregion HeaderOneElement
             //#region HeaderSixElement
             /**
@@ -6592,7 +6065,6 @@ var Classical;
                 return HeaderSixElement;
             })(HtmlElementContainer);
             Elements.HeaderSixElement = HeaderSixElement;
-
             //#endregion HeaderSixElement
             //#region HeaderThreeElement
             /**
@@ -6626,7 +6098,6 @@ var Classical;
                 return HeaderThreeElement;
             })(HtmlElementContainer);
             Elements.HeaderThreeElement = HeaderThreeElement;
-
             //#endregion HeaderThreeElement
             //#region HeaderTwoElement
             /**
@@ -6660,7 +6131,6 @@ var Classical;
                 return HeaderTwoElement;
             })(HtmlElementContainer);
             Elements.HeaderTwoElement = HeaderTwoElement;
-
             //#endregion HeaderTwoElement
             //#region HorizontalRuleElement
             /**
@@ -6694,7 +6164,6 @@ var Classical;
                 return HorizontalRuleElement;
             })(HtmlElement);
             Elements.HorizontalRuleElement = HorizontalRuleElement;
-
             //#endregion HorizontalRuleElement
             //#region ImageElement
             /**
@@ -6727,7 +6196,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(ImageElement.prototype, "alternate", {
                     //#endregion alternateProperty
                     //#region alternate
@@ -6744,8 +6212,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(ImageElement.prototype, "heightProperty", {
                     //#endregion alternate
                     //#region heightProperty
@@ -6760,7 +6226,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(ImageElement.prototype, "height", {
                     //#endregion heightProperty
                     //#region height
@@ -6776,8 +6241,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(ImageElement.prototype, "longDescriptionProperty", {
                     //#endregion height
                     //#region longDescriptionProperty
@@ -6792,7 +6255,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(ImageElement.prototype, "longDescription", {
                     //#endregion longDescriptionProperty
                     //#region longDescription
@@ -6808,8 +6270,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(ImageElement.prototype, "sourceProperty", {
                     //#endregion longDescription
                     //#region sourceProperty
@@ -6824,7 +6284,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(ImageElement.prototype, "source", {
                     //#endregion sourceProperty
                     //#region source
@@ -6840,8 +6299,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(ImageElement.prototype, "widthProperty", {
                     //#endregion source
                     //#region widthProperty
@@ -6856,7 +6313,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(ImageElement.prototype, "width", {
                     //#endregion widthProperty
                     //#region width
@@ -6872,8 +6328,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(ImageElement.prototype, "abortEvent", {
                     //#endregion width
                     //#region abortEvent
@@ -6885,13 +6339,11 @@ var Classical;
                     get: function () {
                         if (!this._abortEvent)
                             this._abortEvent = new Html.HtmlElementEvent('abort', 'UIEvent', this);
-
                         return this._abortEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(ImageElement.prototype, "errorEvent", {
                     //#endregion abortEvent
                     //#region errorEvent
@@ -6903,13 +6355,11 @@ var Classical;
                     get: function () {
                         if (!this._errorEvent)
                             this._errorEvent = new Html.HtmlElementEvent('error', 'UIEvent', this);
-
                         return this._errorEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 //#endregion Constructor
                 //#region Base Class Overrides
                 /**
@@ -6926,17 +6376,14 @@ var Classical;
                     setPropertyFromConfig(this, config, 'longDescription', true);
                     setPropertyFromConfig(this, config, 'source', true);
                     setPropertyFromConfig(this, config, 'width', true);
-
                     if (config.abortHandler)
                         this.abortEvent.subscribe(config.abortHandler);
-
                     if (config.errorHandler)
                         this.errorEvent.subscribe(config.errorHandler);
                 };
                 return ImageElement;
             })(HtmlElement);
             Elements.ImageElement = ImageElement;
-
             //#endregion ImageElement
             //#region InlineFrameElement
             /**
@@ -6968,7 +6415,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(InlineFrameElement.prototype, "height", {
                     //#endregion heightProperty
                     //#region height
@@ -6984,8 +6430,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(InlineFrameElement.prototype, "nameProperty", {
                     //#endregion height
                     //#region nameProperty
@@ -7000,7 +6444,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(InlineFrameElement.prototype, "name", {
                     //#endregion nameProperty
                     //#region name
@@ -7016,8 +6459,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(InlineFrameElement.prototype, "scrollingProperty", {
                     //#endregion name
                     //#region scrollingProperty
@@ -7033,7 +6474,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(InlineFrameElement.prototype, "scrolling", {
                     //#endregion scrollingProperty
                     //#region scrolling
@@ -7050,46 +6490,8 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
-                Object.defineProperty(InlineFrameElement.prototype, "sandboxProperty", {
-                    //#endregion scrolling
-                    //#region sandboxProperty
-                    /**
-                    * Html.InlineFrameSandbox enumerates the values of this property.
-                    * If specified as an empty string, this attribute enables extra restrictions on the content that can appear in the inline frame. The value of the attribute can either be an empty string (all the restrictions are applied), or a space-separated list of tokens that lift particular restrictions. Valid tokens are:  allow-same-origin: Allows the content to be treated as being from its normal origin. If this keyword is not used, the embedded content is treated as being from a unique origin. allow-top-navigation: Allows the embedded browsing context to navigate (load) content to the top-level browsing context. If this keyword is not used, this operation is not allowed. allow-forms: Allows the embedded browsing context to submit forms. If this keyword is not used, this operation is not allowed. allow-scripts: Allows the embedded browsing context to run scripts (but not create pop-up windows). If this keyword is not used, this operation is not allowed.
-                    * Note:  When the embedded document has the same origin as the main page, it is strongly discouraged to use both allow-scripts and allow-same-origin at the same time, as that allows the embedded document to programmatically remove the sandbox attribute. Although it is accepted, this case is no more secure than not using the sandbox attribute. Sandboxing in general is only of minimal help if the attacker can arrange for the potentially hostile content to be displayed in the user's browser outside a sandboxed iframe. It is recommended that such content should be served from a separate dedicated domain, to limit the potential damage. The sandbox attribute is not supported in Internet Explorer 9 and earlier versions, or in Opera [MDN].
-                    */
-                    get: function () {
-                        if (!this._sandboxProperty)
-                            initializeProperty(this, 'sandbox', 'sandbox');
-                        return this._sandboxProperty;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
-
-                Object.defineProperty(InlineFrameElement.prototype, "sandbox", {
-                    //#endregion sandboxProperty
-                    //#region sandbox
-                    /**
-                    * Html.InlineFrameSandbox enumerates the values of this property.
-                    * If specified as an empty string, this attribute enables extra restrictions on the content that can appear in the inline frame. The value of the attribute can either be an empty string (all the restrictions are applied), or a space-separated list of tokens that lift particular restrictions. Valid tokens are:  allow-same-origin: Allows the content to be treated as being from its normal origin. If this keyword is not used, the embedded content is treated as being from a unique origin. allow-top-navigation: Allows the embedded browsing context to navigate (load) content to the top-level browsing context. If this keyword is not used, this operation is not allowed. allow-forms: Allows the embedded browsing context to submit forms. If this keyword is not used, this operation is not allowed. allow-scripts: Allows the embedded browsing context to run scripts (but not create pop-up windows). If this keyword is not used, this operation is not allowed.
-                    * Note:  When the embedded document has the same origin as the main page, it is strongly discouraged to use both allow-scripts and allow-same-origin at the same time, as that allows the embedded document to programmatically remove the sandbox attribute. Although it is accepted, this case is no more secure than not using the sandbox attribute. Sandboxing in general is only of minimal help if the attacker can arrange for the potentially hostile content to be displayed in the user's browser outside a sandboxed iframe. It is recommended that such content should be served from a separate dedicated domain, to limit the potential damage. The sandbox attribute is not supported in Internet Explorer 9 and earlier versions, or in Opera [MDN].
-                    */
-                    get: function () {
-                        return this.sandboxProperty.value;
-                    },
-                    set: function (value) {
-                        this.sandboxProperty.value = value;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
-
-
                 Object.defineProperty(InlineFrameElement.prototype, "sourceProperty", {
-                    //#endregion sandbox
+                    //#endregion scrolling
                     //#region sourceProperty
                     /**
                     * The URL of the page to embed [MDN].
@@ -7102,7 +6504,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(InlineFrameElement.prototype, "source", {
                     //#endregion sourceProperty
                     //#region source
@@ -7118,8 +6519,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(InlineFrameElement.prototype, "widthProperty", {
                     //#endregion source
                     //#region widthProperty
@@ -7134,7 +6533,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(InlineFrameElement.prototype, "width", {
                     //#endregion widthProperty
                     //#region width
@@ -7150,8 +6548,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 //#endregion Constructor
                 //#region Base Class Overrides
                 /**
@@ -7166,14 +6562,12 @@ var Classical;
                     setPropertyFromConfig(this, config, 'height', true);
                     setPropertyFromConfig(this, config, 'name', true);
                     setPropertyFromConfig(this, config, 'scrolling', true);
-                    setPropertyFromConfig(this, config, 'sandbox', true);
                     setPropertyFromConfig(this, config, 'source', true);
                     setPropertyFromConfig(this, config, 'width', true);
                 };
                 return InlineFrameElement;
             })(HtmlElementContainer);
             Elements.InlineFrameElement = InlineFrameElement;
-
             //#endregion InlineFrameElement
             //#region InputElement
             /**
@@ -7206,7 +6600,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(InputElement.prototype, "type", {
                     //#endregion typeProperty
                     //#region type
@@ -7223,8 +6616,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(InputElement.prototype, "acceptProperty", {
                     //#endregion type
                     //#region acceptProperty
@@ -7240,7 +6631,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(InputElement.prototype, "accept", {
                     //#endregion acceptProperty
                     //#region accept
@@ -7257,8 +6647,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(InputElement.prototype, "autoCompleteProperty", {
                     //#endregion accept
                     //#region autoCompleteProperty
@@ -7274,7 +6662,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(InputElement.prototype, "autoComplete", {
                     //#endregion autoCompleteProperty
                     //#region autoComplete
@@ -7291,8 +6678,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(InputElement.prototype, "autoFocusProperty", {
                     //#endregion autoComplete
                     //#region autoFocusProperty
@@ -7307,7 +6692,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(InputElement.prototype, "autoFocus", {
                     //#endregion autoFocusProperty
                     //#region autoFocus
@@ -7323,8 +6707,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(InputElement.prototype, "checkedProperty", {
                     //#endregion autoFocus
                     //#region checkedProperty
@@ -7339,7 +6721,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(InputElement.prototype, "checked", {
                     //#endregion checkedProperty
                     //#region checked
@@ -7355,8 +6736,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(InputElement.prototype, "disabledProperty", {
                     //#endregion checked
                     //#region disabledProperty
@@ -7371,7 +6750,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(InputElement.prototype, "disabled", {
                     //#endregion disabledProperty
                     //#region disabled
@@ -7387,8 +6765,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(InputElement.prototype, "form", {
                     //#endregion disabled
                     //#region form
@@ -7404,8 +6780,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(InputElement.prototype, "heightProperty", {
                     //#endregion form
                     //#region heightProperty
@@ -7420,7 +6794,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(InputElement.prototype, "height", {
                     //#endregion heightProperty
                     //#region height
@@ -7436,8 +6809,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(InputElement.prototype, "list", {
                     //#endregion height
                     //#region list
@@ -7453,8 +6824,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(InputElement.prototype, "maxProperty", {
                     //#endregion list
                     //#region maxProperty
@@ -7469,7 +6838,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(InputElement.prototype, "max", {
                     //#endregion maxProperty
                     //#region max
@@ -7485,8 +6853,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(InputElement.prototype, "minProperty", {
                     //#endregion max
                     //#region minProperty
@@ -7501,7 +6867,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(InputElement.prototype, "min", {
                     //#endregion minProperty
                     //#region min
@@ -7517,8 +6882,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(InputElement.prototype, "multipleProperty", {
                     //#endregion min
                     //#region multipleProperty
@@ -7533,7 +6896,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(InputElement.prototype, "multiple", {
                     //#endregion multipleProperty
                     //#region multiple
@@ -7549,8 +6911,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(InputElement.prototype, "nameProperty", {
                     //#endregion multiple
                     //#region nameProperty
@@ -7565,7 +6925,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(InputElement.prototype, "name", {
                     //#endregion nameProperty
                     //#region name
@@ -7581,8 +6940,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(InputElement.prototype, "patternProperty", {
                     //#endregion name
                     //#region patternProperty
@@ -7597,7 +6954,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(InputElement.prototype, "pattern", {
                     //#endregion patternProperty
                     //#region pattern
@@ -7613,8 +6969,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(InputElement.prototype, "placeHolderProperty", {
                     //#endregion pattern
                     //#region placeHolderProperty
@@ -7630,7 +6984,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(InputElement.prototype, "placeHolder", {
                     //#endregion placeHolderProperty
                     //#region placeHolder
@@ -7647,8 +7000,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(InputElement.prototype, "requiredProperty", {
                     //#endregion placeHolder
                     //#region requiredProperty
@@ -7663,7 +7014,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(InputElement.prototype, "required", {
                     //#endregion requiredProperty
                     //#region required
@@ -7679,8 +7029,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(InputElement.prototype, "sizeProperty", {
                     //#endregion required
                     //#region sizeProperty
@@ -7695,7 +7043,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(InputElement.prototype, "size", {
                     //#endregion sizeProperty
                     //#region size
@@ -7711,8 +7058,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(InputElement.prototype, "sourceProperty", {
                     //#endregion size
                     //#region sourceProperty
@@ -7727,7 +7072,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(InputElement.prototype, "source", {
                     //#endregion sourceProperty
                     //#region source
@@ -7743,8 +7087,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(InputElement.prototype, "stepProperty", {
                     //#endregion source
                     //#region stepProperty
@@ -7759,7 +7101,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(InputElement.prototype, "step", {
                     //#endregion stepProperty
                     //#region step
@@ -7775,8 +7116,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(InputElement.prototype, "valueProperty", {
                     //#endregion step
                     //#region valueProperty
@@ -7791,7 +7130,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(InputElement.prototype, "value", {
                     //#endregion valueProperty
                     //#region value
@@ -7807,8 +7145,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(InputElement.prototype, "widthProperty", {
                     //#endregion value
                     //#region widthProperty
@@ -7823,7 +7159,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(InputElement.prototype, "width", {
                     //#endregion widthProperty
                     //#region width
@@ -7839,8 +7174,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(InputElement.prototype, "changeEvent", {
                     //#endregion width
                     //#region changeEvent
@@ -7852,13 +7185,11 @@ var Classical;
                     get: function () {
                         if (!this._changeEvent)
                             this._changeEvent = new Html.HtmlElementEvent('change', 'Event', this);
-
                         return this._changeEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(InputElement.prototype, "inputEvent", {
                     //#endregion changeEvent
                     //#region inputEvent
@@ -7870,13 +7201,11 @@ var Classical;
                     get: function () {
                         if (!this._inputEvent)
                             this._inputEvent = new Html.HtmlElementEvent('input', 'Event', this);
-
                         return this._inputEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 //#endregion Constructor
                 //#region Base Class Overrides
                 /**
@@ -7909,17 +7238,14 @@ var Classical;
                     setPropertyFromConfig(this, config, 'step', true);
                     setPropertyFromConfig(this, config, 'value', true);
                     setPropertyFromConfig(this, config, 'width', true);
-
                     if (config.changeHandler)
                         this.changeEvent.subscribe(config.changeHandler);
-
                     if (config.inputHandler)
                         this.inputEvent.subscribe(config.inputHandler);
                 };
                 return InputElement;
             })(HtmlElement);
             Elements.InputElement = InputElement;
-
             //#endregion InputElement
             //#region InsertedElement
             /**
@@ -7951,7 +7277,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(InsertedElement.prototype, "citation", {
                     //#endregion citationProperty
                     //#region citation
@@ -7967,8 +7292,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 //#endregion Constructor
                 //#region Base Class Overrides
                 /**
@@ -7985,7 +7308,6 @@ var Classical;
                 return InsertedElement;
             })(HtmlElementContainer);
             Elements.InsertedElement = InsertedElement;
-
             //#endregion InsertedElement
             //#region ItalicElement
             /**
@@ -8019,7 +7341,6 @@ var Classical;
                 return ItalicElement;
             })(HtmlElementContainer);
             Elements.ItalicElement = ItalicElement;
-
             //#endregion ItalicElement
             //#region KeyboardInputElement
             /**
@@ -8053,7 +7374,6 @@ var Classical;
                 return KeyboardInputElement;
             })(HtmlElementContainer);
             Elements.KeyboardInputElement = KeyboardInputElement;
-
             //#endregion KeyboardInputElement
             //#region LabelElement
             /**
@@ -8086,8 +7406,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 //#endregion Constructor
                 //#region Base Class Overrides
                 /**
@@ -8104,7 +7422,6 @@ var Classical;
                 return LabelElement;
             })(HtmlElementContainer);
             Elements.LabelElement = LabelElement;
-
             //#endregion LabelElement
             //#region LegendFieldElement
             /**
@@ -8138,7 +7455,6 @@ var Classical;
                 return LegendFieldElement;
             })(HtmlElementContainer);
             Elements.LegendFieldElement = LegendFieldElement;
-
             //#endregion LegendFieldElement
             //#region LineBreakElement
             /**
@@ -8172,7 +7488,6 @@ var Classical;
                 return LineBreakElement;
             })(HtmlElement);
             Elements.LineBreakElement = LineBreakElement;
-
             //#endregion LineBreakElement
             //#region LinkElement
             /**
@@ -8205,7 +7520,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(LinkElement.prototype, "characterSet", {
                     //#endregion characterSetProperty
                     //#region characterSet
@@ -8222,8 +7536,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(LinkElement.prototype, "hrefProperty", {
                     //#endregion characterSet
                     //#region hrefProperty
@@ -8238,7 +7550,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(LinkElement.prototype, "href", {
                     //#endregion hrefProperty
                     //#region href
@@ -8254,8 +7565,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(LinkElement.prototype, "hrefLanguageProperty", {
                     //#endregion href
                     //#region hrefLanguageProperty
@@ -8270,7 +7579,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(LinkElement.prototype, "hrefLanguage", {
                     //#endregion hrefLanguageProperty
                     //#region hrefLanguage
@@ -8286,8 +7594,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(LinkElement.prototype, "mediaProperty", {
                     //#endregion hrefLanguage
                     //#region mediaProperty
@@ -8303,7 +7609,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(LinkElement.prototype, "media", {
                     //#endregion mediaProperty
                     //#region media
@@ -8320,8 +7625,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(LinkElement.prototype, "relationshipProperty", {
                     //#endregion media
                     //#region relationshipProperty
@@ -8336,7 +7639,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(LinkElement.prototype, "relationship", {
                     //#endregion relationshipProperty
                     //#region relationship
@@ -8352,8 +7654,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(LinkElement.prototype, "reverseRelationshipProperty", {
                     //#endregion relationship
                     //#region reverseRelationshipProperty
@@ -8369,7 +7669,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(LinkElement.prototype, "reverseRelationship", {
                     //#endregion reverseRelationshipProperty
                     //#region reverseRelationship
@@ -8386,8 +7685,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(LinkElement.prototype, "typeProperty", {
                     //#endregion reverseRelationship
                     //#region typeProperty
@@ -8402,7 +7699,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(LinkElement.prototype, "type", {
                     //#endregion typeProperty
                     //#region type
@@ -8418,8 +7714,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 //#endregion Constructor
                 //#region Base Class Overrides
                 /**
@@ -8442,7 +7736,6 @@ var Classical;
                 return LinkElement;
             })(HtmlElement);
             Elements.LinkElement = LinkElement;
-
             //#endregion LinkElement
             //#region ListItemElement
             /**
@@ -8476,7 +7769,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(ListItemElement.prototype, "value", {
                     //#endregion valueProperty
                     //#region value
@@ -8494,8 +7786,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(ListItemElement.prototype, "typeProperty", {
                     //#endregion value
                     //#region typeProperty
@@ -8512,7 +7802,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(ListItemElement.prototype, "type", {
                     //#endregion typeProperty
                     //#region type
@@ -8530,8 +7819,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 //#endregion Constructor
                 //#region Base Class Overrides
                 /**
@@ -8549,7 +7836,6 @@ var Classical;
                 return ListItemElement;
             })(HtmlElementContainer);
             Elements.ListItemElement = ListItemElement;
-
             //#endregion ListItemElement
             //#region MainElement
             /**
@@ -8583,7 +7869,6 @@ var Classical;
                 return MainElement;
             })(HtmlElementContainer);
             Elements.MainElement = MainElement;
-
             //#endregion MainElement
             //#region MapElement
             /**
@@ -8615,7 +7900,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(MapElement.prototype, "name", {
                     //#endregion nameProperty
                     //#region name
@@ -8631,8 +7915,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 //#endregion Constructor
                 //#region Base Class Overrides
                 /**
@@ -8649,7 +7931,6 @@ var Classical;
                 return MapElement;
             })(HtmlElementContainer);
             Elements.MapElement = MapElement;
-
             //#endregion MapElement
             //#region MarkElement
             /**
@@ -8683,7 +7964,6 @@ var Classical;
                 return MarkElement;
             })(HtmlElementContainer);
             Elements.MarkElement = MarkElement;
-
             //#endregion MarkElement
             //#region MetaElement
             /**
@@ -8715,7 +7995,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(MetaElement.prototype, "content", {
                     //#endregion contentProperty
                     //#region content
@@ -8731,8 +8010,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(MetaElement.prototype, "httpEquivProperty", {
                     //#endregion content
                     //#region httpEquivProperty
@@ -8751,7 +8028,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(MetaElement.prototype, "httpEquiv", {
                     //#endregion httpEquivProperty
                     //#region httpEquiv
@@ -8771,8 +8047,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(MetaElement.prototype, "nameProperty", {
                     //#endregion httpEquiv
                     //#region nameProperty
@@ -8789,7 +8063,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(MetaElement.prototype, "name", {
                     //#endregion nameProperty
                     //#region name
@@ -8807,8 +8080,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(MetaElement.prototype, "schemeProperty", {
                     //#endregion name
                     //#region schemeProperty
@@ -8823,7 +8094,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(MetaElement.prototype, "scheme", {
                     //#endregion schemeProperty
                     //#region scheme
@@ -8839,8 +8109,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 //#endregion Constructor
                 //#region Base Class Overrides
                 /**
@@ -8860,7 +8128,6 @@ var Classical;
                 return MetaElement;
             })(HtmlElement);
             Elements.MetaElement = MetaElement;
-
             //#endregion MetaElement
             //#region NavigationElement
             /**
@@ -8894,7 +8161,6 @@ var Classical;
                 return NavigationElement;
             })(HtmlElementContainer);
             Elements.NavigationElement = NavigationElement;
-
             //#endregion NavigationElement
             //#region NoScriptElement
             /**
@@ -8928,7 +8194,6 @@ var Classical;
                 return NoScriptElement;
             })(HtmlElementContainer);
             Elements.NoScriptElement = NoScriptElement;
-
             //#endregion NoScriptElement
             //#region OptionElement
             /**
@@ -8960,7 +8225,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(OptionElement.prototype, "disabled", {
                     //#endregion disabledProperty
                     //#region disabled
@@ -8976,8 +8240,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(OptionElement.prototype, "labelProperty", {
                     //#endregion disabled
                     //#region labelProperty
@@ -8993,7 +8255,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(OptionElement.prototype, "label", {
                     //#endregion labelProperty
                     //#region label
@@ -9010,8 +8271,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(OptionElement.prototype, "selectedProperty", {
                     //#endregion label
                     //#region selectedProperty
@@ -9026,7 +8285,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(OptionElement.prototype, "selected", {
                     //#endregion selectedProperty
                     //#region selected
@@ -9042,8 +8300,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(OptionElement.prototype, "valueProperty", {
                     //#endregion selected
                     //#region valueProperty
@@ -9058,7 +8314,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(OptionElement.prototype, "value", {
                     //#endregion valueProperty
                     //#region value
@@ -9074,8 +8329,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 //#endregion Constructor
                 //#region Base Class Overrides
                 /**
@@ -9095,7 +8348,6 @@ var Classical;
                 return OptionElement;
             })(HtmlElementContainer);
             Elements.OptionElement = OptionElement;
-
             //#endregion OptionElement
             //#region OptionsGroupElement
             /**
@@ -9127,7 +8379,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(OptionsGroupElement.prototype, "disabled", {
                     //#endregion disabledProperty
                     //#region disabled
@@ -9143,8 +8394,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(OptionsGroupElement.prototype, "labelProperty", {
                     //#endregion disabled
                     //#region labelProperty
@@ -9159,7 +8408,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(OptionsGroupElement.prototype, "label", {
                     //#endregion labelProperty
                     //#region label
@@ -9175,8 +8423,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 //#endregion Constructor
                 //#region Base Class Overrides
                 /**
@@ -9194,7 +8440,6 @@ var Classical;
                 return OptionsGroupElement;
             })(HtmlElementContainer);
             Elements.OptionsGroupElement = OptionsGroupElement;
-
             //#endregion OptionsGroupElement
             //#region OrderedListElement
             /**
@@ -9226,7 +8471,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(OrderedListElement.prototype, "compact", {
                     //#endregion compactProperty
                     //#region compact
@@ -9242,8 +8486,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(OrderedListElement.prototype, "startProperty", {
                     //#endregion compact
                     //#region startProperty
@@ -9259,7 +8501,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(OrderedListElement.prototype, "start", {
                     //#endregion startProperty
                     //#region start
@@ -9276,8 +8517,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(OrderedListElement.prototype, "typeProperty", {
                     //#endregion start
                     //#region typeProperty
@@ -9293,7 +8532,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(OrderedListElement.prototype, "type", {
                     //#endregion typeProperty
                     //#region type
@@ -9310,8 +8548,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 //#endregion Constructor
                 //#region Base Class Overrides
                 /**
@@ -9330,7 +8566,6 @@ var Classical;
                 return OrderedListElement;
             })(HtmlElementContainer);
             Elements.OrderedListElement = OrderedListElement;
-
             //#endregion OrderedListElement
             //#region ParagraphElement
             /**
@@ -9364,7 +8599,6 @@ var Classical;
                 return ParagraphElement;
             })(HtmlElementContainer);
             Elements.ParagraphElement = ParagraphElement;
-
             //#endregion ParagraphElement
             //#region ParameterElement
             /**
@@ -9396,7 +8630,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(ParameterElement.prototype, "name", {
                     //#endregion nameProperty
                     //#region name
@@ -9412,8 +8645,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(ParameterElement.prototype, "typeProperty", {
                     //#endregion name
                     //#region typeProperty
@@ -9428,7 +8659,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(ParameterElement.prototype, "type", {
                     //#endregion typeProperty
                     //#region type
@@ -9444,8 +8674,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(ParameterElement.prototype, "valueProperty", {
                     //#endregion type
                     //#region valueProperty
@@ -9460,7 +8688,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(ParameterElement.prototype, "value", {
                     //#endregion valueProperty
                     //#region value
@@ -9476,8 +8703,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(ParameterElement.prototype, "valueTypeProperty", {
                     //#endregion value
                     //#region valueTypeProperty
@@ -9492,7 +8717,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(ParameterElement.prototype, "valueType", {
                     //#endregion valueTypeProperty
                     //#region valueType
@@ -9508,8 +8732,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 //#endregion Constructor
                 //#region Base Class Overrides
                 /**
@@ -9529,7 +8751,6 @@ var Classical;
                 return ParameterElement;
             })(HtmlElement);
             Elements.ParameterElement = ParameterElement;
-
             //#endregion ParameterElement
             //#region PreformattedElement
             /**
@@ -9563,7 +8784,6 @@ var Classical;
                 return PreformattedElement;
             })(HtmlElementContainer);
             Elements.PreformattedElement = PreformattedElement;
-
             //#endregion PreformattedElement
             //#region ProgressElement
             /**
@@ -9595,7 +8815,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(ProgressElement.prototype, "max", {
                     //#endregion maxProperty
                     //#region max
@@ -9611,8 +8830,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(ProgressElement.prototype, "valueProperty", {
                     //#endregion max
                     //#region valueProperty
@@ -9627,7 +8844,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(ProgressElement.prototype, "value", {
                     //#endregion valueProperty
                     //#region value
@@ -9643,8 +8859,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(ProgressElement.prototype, "progressErrorEvent", {
                     //#endregion value
                     //#region progressErrorEvent
@@ -9656,13 +8870,11 @@ var Classical;
                     get: function () {
                         if (!this._progressErrorEvent)
                             this._progressErrorEvent = new Html.HtmlElementEvent('error', 'ProgressEvent', this);
-
                         return this._progressErrorEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(ProgressElement.prototype, "progressEvent", {
                     //#endregion progressErrorEvent
                     //#region progressEvent
@@ -9674,13 +8886,11 @@ var Classical;
                     get: function () {
                         if (!this._progressEvent)
                             this._progressEvent = new Html.HtmlElementEvent('progress', 'ProgressEvent', this);
-
                         return this._progressEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(ProgressElement.prototype, "progressLoadEndEvent", {
                     //#endregion progressEvent
                     //#region progressLoadEndEvent
@@ -9692,13 +8902,11 @@ var Classical;
                     get: function () {
                         if (!this._progressLoadEndEvent)
                             this._progressLoadEndEvent = new Html.HtmlElementEvent('loadend', 'ProgressEvent', this);
-
                         return this._progressLoadEndEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 //#endregion Constructor
                 //#region Base Class Overrides
                 /**
@@ -9712,20 +8920,16 @@ var Classical;
                     var config = this.getConfig();
                     setPropertyFromConfig(this, config, 'max', true);
                     setPropertyFromConfig(this, config, 'value', true);
-
                     if (config.progressErrorHandler)
                         this.progressErrorEvent.subscribe(config.progressErrorHandler);
-
                     if (config.progressHandler)
                         this.progressEvent.subscribe(config.progressHandler);
-
                     if (config.progressLoadEndHandler)
                         this.progressLoadEndEvent.subscribe(config.progressLoadEndHandler);
                 };
                 return ProgressElement;
             })(HtmlElementContainer);
             Elements.ProgressElement = ProgressElement;
-
             //#endregion ProgressElement
             //#region QuoteElement
             /**
@@ -9757,7 +8961,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(QuoteElement.prototype, "citation", {
                     //#endregion citationProperty
                     //#region citation
@@ -9773,8 +8976,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 //#endregion Constructor
                 //#region Base Class Overrides
                 /**
@@ -9791,7 +8992,6 @@ var Classical;
                 return QuoteElement;
             })(HtmlElementContainer);
             Elements.QuoteElement = QuoteElement;
-
             //#endregion QuoteElement
             //#region RootElement
             /**
@@ -9825,7 +9025,6 @@ var Classical;
                 return RootElement;
             })(HtmlElementContainer);
             Elements.RootElement = RootElement;
-
             //#endregion RootElement
             //#region RubyElement
             /**
@@ -9859,7 +9058,6 @@ var Classical;
                 return RubyElement;
             })(HtmlElementContainer);
             Elements.RubyElement = RubyElement;
-
             //#endregion RubyElement
             //#region RubyParenthesisElement
             /**
@@ -9893,7 +9091,6 @@ var Classical;
                 return RubyParenthesisElement;
             })(HtmlElementContainer);
             Elements.RubyParenthesisElement = RubyParenthesisElement;
-
             //#endregion RubyParenthesisElement
             //#region RubyPronunciationElement
             /**
@@ -9927,7 +9124,6 @@ var Classical;
                 return RubyPronunciationElement;
             })(HtmlElementContainer);
             Elements.RubyPronunciationElement = RubyPronunciationElement;
-
             //#endregion RubyPronunciationElement
             //#region SampleElement
             /**
@@ -9961,7 +9157,6 @@ var Classical;
                 return SampleElement;
             })(HtmlElementContainer);
             Elements.SampleElement = SampleElement;
-
             //#endregion SampleElement
             //#region ScriptElement
             /**
@@ -9993,7 +9188,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(ScriptElement.prototype, "async", {
                     //#endregion asyncProperty
                     //#region async
@@ -10009,8 +9203,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(ScriptElement.prototype, "sourceProperty", {
                     //#endregion async
                     //#region sourceProperty
@@ -10025,7 +9217,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(ScriptElement.prototype, "source", {
                     //#endregion sourceProperty
                     //#region source
@@ -10041,8 +9232,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(ScriptElement.prototype, "typeProperty", {
                     //#endregion source
                     //#region typeProperty
@@ -10057,7 +9246,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(ScriptElement.prototype, "type", {
                     //#endregion typeProperty
                     //#region type
@@ -10073,8 +9261,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(ScriptElement.prototype, "deferProperty", {
                     //#endregion type
                     //#region deferProperty
@@ -10089,7 +9275,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(ScriptElement.prototype, "defer", {
                     //#endregion deferProperty
                     //#region defer
@@ -10105,8 +9290,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(ScriptElement.prototype, "errorEvent", {
                     //#endregion defer
                     //#region errorEvent
@@ -10118,13 +9301,11 @@ var Classical;
                     get: function () {
                         if (!this._errorEvent)
                             this._errorEvent = new Html.HtmlElementEvent('error', 'UIEvent', this);
-
                         return this._errorEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 //#endregion Constructor
                 //#region Base Class Overrides
                 /**
@@ -10140,14 +9321,12 @@ var Classical;
                     setPropertyFromConfig(this, config, 'source', true);
                     setPropertyFromConfig(this, config, 'type', true);
                     setPropertyFromConfig(this, config, 'defer', true);
-
                     if (config.errorHandler)
                         this.errorEvent.subscribe(config.errorHandler);
                 };
                 return ScriptElement;
             })(HtmlElementContainer);
             Elements.ScriptElement = ScriptElement;
-
             //#endregion ScriptElement
             //#region SectionElement
             /**
@@ -10181,7 +9360,6 @@ var Classical;
                 return SectionElement;
             })(HtmlElementContainer);
             Elements.SectionElement = SectionElement;
-
             //#endregion SectionElement
             //#region SelectElement
             /**
@@ -10213,7 +9391,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(SelectElement.prototype, "autoFocus", {
                     //#endregion autoFocusProperty
                     //#region autoFocus
@@ -10229,8 +9406,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(SelectElement.prototype, "disabledProperty", {
                     //#endregion autoFocus
                     //#region disabledProperty
@@ -10245,7 +9420,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(SelectElement.prototype, "disabled", {
                     //#endregion disabledProperty
                     //#region disabled
@@ -10261,8 +9435,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(SelectElement.prototype, "form", {
                     //#endregion disabled
                     //#region form
@@ -10278,8 +9450,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(SelectElement.prototype, "multipleOptionsProperty", {
                     //#endregion form
                     //#region multipleOptionsProperty
@@ -10294,7 +9464,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(SelectElement.prototype, "multipleOptions", {
                     //#endregion multipleOptionsProperty
                     //#region multipleOptions
@@ -10310,8 +9479,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(SelectElement.prototype, "nameProperty", {
                     //#endregion multipleOptions
                     //#region nameProperty
@@ -10326,7 +9493,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(SelectElement.prototype, "name", {
                     //#endregion nameProperty
                     //#region name
@@ -10342,8 +9508,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(SelectElement.prototype, "requiredProperty", {
                     //#endregion name
                     //#region requiredProperty
@@ -10358,7 +9522,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(SelectElement.prototype, "required", {
                     //#endregion requiredProperty
                     //#region required
@@ -10374,8 +9537,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(SelectElement.prototype, "sizeProperty", {
                     //#endregion required
                     //#region sizeProperty
@@ -10390,7 +9551,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(SelectElement.prototype, "size", {
                     //#endregion sizeProperty
                     //#region size
@@ -10406,8 +9566,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(SelectElement.prototype, "changeEvent", {
                     //#endregion size
                     //#region changeEvent
@@ -10419,13 +9577,11 @@ var Classical;
                     get: function () {
                         if (!this._changeEvent)
                             this._changeEvent = new Html.HtmlElementEvent('change', 'Event', this);
-
                         return this._changeEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 //#endregion Constructor
                 //#region Base Class Overrides
                 /**
@@ -10444,14 +9600,12 @@ var Classical;
                     setPropertyFromConfig(this, config, 'name', true);
                     setPropertyFromConfig(this, config, 'required', true);
                     setPropertyFromConfig(this, config, 'size', true);
-
                     if (config.changeHandler)
                         this.changeEvent.subscribe(config.changeHandler);
                 };
                 return SelectElement;
             })(HtmlElementContainer);
             Elements.SelectElement = SelectElement;
-
             //#endregion SelectElement
             //#region SmallElement
             /**
@@ -10485,7 +9639,6 @@ var Classical;
                 return SmallElement;
             })(HtmlElementContainer);
             Elements.SmallElement = SmallElement;
-
             //#endregion SmallElement
             //#region SourceElement
             /**
@@ -10517,7 +9670,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(SourceElement.prototype, "source", {
                     //#endregion sourceProperty
                     //#region source
@@ -10533,8 +9685,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(SourceElement.prototype, "typeProperty", {
                     //#endregion source
                     //#region typeProperty
@@ -10549,7 +9699,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(SourceElement.prototype, "type", {
                     //#endregion typeProperty
                     //#region type
@@ -10565,8 +9714,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 //#endregion Constructor
                 //#region Base Class Overrides
                 /**
@@ -10584,7 +9731,6 @@ var Classical;
                 return SourceElement;
             })(HtmlElementContainer);
             Elements.SourceElement = SourceElement;
-
             //#endregion SourceElement
             //#region SpanElement
             /**
@@ -10618,7 +9764,6 @@ var Classical;
                 return SpanElement;
             })(HtmlElementContainer);
             Elements.SpanElement = SpanElement;
-
             //#endregion SpanElement
             //#region StrikethroughElement
             /**
@@ -10652,7 +9797,6 @@ var Classical;
                 return StrikethroughElement;
             })(HtmlElementContainer);
             Elements.StrikethroughElement = StrikethroughElement;
-
             //#endregion StrikethroughElement
             //#region StrongElement
             /**
@@ -10686,7 +9830,6 @@ var Classical;
                 return StrongElement;
             })(HtmlElementContainer);
             Elements.StrongElement = StrongElement;
-
             //#endregion StrongElement
             //#region StyleElement
             /**
@@ -10718,7 +9861,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(StyleElement.prototype, "type", {
                     //#endregion typeProperty
                     //#region type
@@ -10734,8 +9876,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(StyleElement.prototype, "mediaProperty", {
                     //#endregion type
                     //#region mediaProperty
@@ -10750,7 +9890,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(StyleElement.prototype, "media", {
                     //#endregion mediaProperty
                     //#region media
@@ -10766,8 +9905,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(StyleElement.prototype, "disabledProperty", {
                     //#endregion media
                     //#region disabledProperty
@@ -10782,7 +9919,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(StyleElement.prototype, "disabled", {
                     //#endregion disabledProperty
                     //#region disabled
@@ -10798,8 +9934,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(StyleElement.prototype, "errorEvent", {
                     //#endregion disabled
                     //#region errorEvent
@@ -10811,13 +9945,11 @@ var Classical;
                     get: function () {
                         if (!this._errorEvent)
                             this._errorEvent = new Html.HtmlElementEvent('error', 'UIEvent', this);
-
                         return this._errorEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 //#endregion Constructor
                 //#region Base Class Overrides
                 /**
@@ -10832,14 +9964,12 @@ var Classical;
                     setPropertyFromConfig(this, config, 'type', true);
                     setPropertyFromConfig(this, config, 'media', true);
                     setPropertyFromConfig(this, config, 'disabled', false);
-
                     if (config.errorHandler)
                         this.errorEvent.subscribe(config.errorHandler);
                 };
                 return StyleElement;
             })(HtmlElementContainer);
             Elements.StyleElement = StyleElement;
-
             //#endregion StyleElement
             //#region SubscriptElement
             /**
@@ -10873,7 +10003,6 @@ var Classical;
                 return SubscriptElement;
             })(HtmlElementContainer);
             Elements.SubscriptElement = SubscriptElement;
-
             //#endregion SubscriptElement
             //#region SummaryElement
             /**
@@ -10907,7 +10036,6 @@ var Classical;
                 return SummaryElement;
             })(HtmlElementContainer);
             Elements.SummaryElement = SummaryElement;
-
             //#endregion SummaryElement
             //#region SuperscriptElement
             /**
@@ -10941,7 +10069,6 @@ var Classical;
                 return SuperscriptElement;
             })(HtmlElementContainer);
             Elements.SuperscriptElement = SuperscriptElement;
-
             //#endregion SuperscriptElement
             //#region TableElement
             /**
@@ -10975,7 +10102,6 @@ var Classical;
                 return TableElement;
             })(HtmlElementContainer);
             Elements.TableElement = TableElement;
-
             //#endregion TableElement
             //#region TableCaptionElement
             /**
@@ -11009,7 +10135,6 @@ var Classical;
                 return TableCaptionElement;
             })(HtmlElementContainer);
             Elements.TableCaptionElement = TableCaptionElement;
-
             //#endregion TableCaptionElement
             //#region TableColumnElement
             /**
@@ -11041,7 +10166,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(TableColumnElement.prototype, "span", {
                     //#endregion spanProperty
                     //#region span
@@ -11057,8 +10181,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 //#endregion Constructor
                 //#region Base Class Overrides
                 /**
@@ -11075,7 +10197,6 @@ var Classical;
                 return TableColumnElement;
             })(HtmlElement);
             Elements.TableColumnElement = TableColumnElement;
-
             //#endregion TableColumnElement
             //#region TableColumnGroupElement
             /**
@@ -11108,7 +10229,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(TableColumnGroupElement.prototype, "span", {
                     //#endregion spanProperty
                     //#region span
@@ -11125,8 +10245,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(TableColumnGroupElement.prototype, "widthProperty", {
                     //#endregion span
                     //#region widthProperty
@@ -11141,7 +10259,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(TableColumnGroupElement.prototype, "width", {
                     //#endregion widthProperty
                     //#region width
@@ -11157,8 +10274,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 //#endregion Constructor
                 //#region Base Class Overrides
                 /**
@@ -11176,7 +10291,6 @@ var Classical;
                 return TableColumnGroupElement;
             })(HtmlElement);
             Elements.TableColumnGroupElement = TableColumnGroupElement;
-
             //#endregion TableColumnGroupElement
             //#region TableDataCellElement
             /**
@@ -11209,7 +10323,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(TableDataCellElement.prototype, "columnSpan", {
                     //#endregion columnSpanProperty
                     //#region columnSpan
@@ -11226,8 +10339,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(TableDataCellElement.prototype, "headersProperty", {
                     //#endregion columnSpan
                     //#region headersProperty
@@ -11242,7 +10353,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(TableDataCellElement.prototype, "headers", {
                     //#endregion headersProperty
                     //#region headers
@@ -11258,8 +10368,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(TableDataCellElement.prototype, "rowSpanProperty", {
                     //#endregion headers
                     //#region rowSpanProperty
@@ -11274,7 +10382,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(TableDataCellElement.prototype, "rowSpan", {
                     //#endregion rowSpanProperty
                     //#region rowSpan
@@ -11290,8 +10397,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(TableDataCellElement.prototype, "scopeProperty", {
                     //#endregion rowSpan
                     //#region scopeProperty
@@ -11306,7 +10411,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(TableDataCellElement.prototype, "scope", {
                     //#endregion scopeProperty
                     //#region scope
@@ -11322,8 +10426,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 //#endregion Constructor
                 //#region Base Class Overrides
                 /**
@@ -11343,7 +10445,6 @@ var Classical;
                 return TableDataCellElement;
             })(HtmlElementContainer);
             Elements.TableDataCellElement = TableDataCellElement;
-
             //#endregion TableDataCellElement
             //#region TableHeaderCellElement
             /**
@@ -11375,7 +10476,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(TableHeaderCellElement.prototype, "columnSpan", {
                     //#endregion columnSpanProperty
                     //#region columnSpan
@@ -11391,8 +10491,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(TableHeaderCellElement.prototype, "headersProperty", {
                     //#endregion columnSpan
                     //#region headersProperty
@@ -11407,7 +10505,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(TableHeaderCellElement.prototype, "headers", {
                     //#endregion headersProperty
                     //#region headers
@@ -11423,8 +10520,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(TableHeaderCellElement.prototype, "rowSpanProperty", {
                     //#endregion headers
                     //#region rowSpanProperty
@@ -11439,7 +10534,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(TableHeaderCellElement.prototype, "rowSpan", {
                     //#endregion rowSpanProperty
                     //#region rowSpan
@@ -11455,8 +10549,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 //#endregion Constructor
                 //#region Base Class Overrides
                 /**
@@ -11475,7 +10567,6 @@ var Classical;
                 return TableHeaderCellElement;
             })(HtmlElementContainer);
             Elements.TableHeaderCellElement = TableHeaderCellElement;
-
             //#endregion TableHeaderCellElement
             //#region TableRowElement
             /**
@@ -11509,7 +10600,6 @@ var Classical;
                 return TableRowElement;
             })(HtmlElementContainer);
             Elements.TableRowElement = TableRowElement;
-
             //#endregion TableRowElement
             //#region TextAreaElement
             /**
@@ -11541,7 +10631,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(TextAreaElement.prototype, "autoFocus", {
                     //#endregion autoFocusProperty
                     //#region autoFocus
@@ -11557,8 +10646,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(TextAreaElement.prototype, "columnsProperty", {
                     //#endregion autoFocus
                     //#region columnsProperty
@@ -11573,7 +10660,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(TextAreaElement.prototype, "columns", {
                     //#endregion columnsProperty
                     //#region columns
@@ -11589,8 +10675,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(TextAreaElement.prototype, "disabledProperty", {
                     //#endregion columns
                     //#region disabledProperty
@@ -11605,7 +10689,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(TextAreaElement.prototype, "disabled", {
                     //#endregion disabledProperty
                     //#region disabled
@@ -11621,8 +10704,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(TextAreaElement.prototype, "form", {
                     //#endregion disabled
                     //#region form
@@ -11638,8 +10719,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(TextAreaElement.prototype, "maxLengthProperty", {
                     //#endregion form
                     //#region maxLengthProperty
@@ -11654,7 +10733,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(TextAreaElement.prototype, "maxLength", {
                     //#endregion maxLengthProperty
                     //#region maxLength
@@ -11670,8 +10748,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(TextAreaElement.prototype, "nameProperty", {
                     //#endregion maxLength
                     //#region nameProperty
@@ -11686,7 +10762,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(TextAreaElement.prototype, "name", {
                     //#endregion nameProperty
                     //#region name
@@ -11702,8 +10777,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(TextAreaElement.prototype, "placeHolderProperty", {
                     //#endregion name
                     //#region placeHolderProperty
@@ -11718,7 +10791,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(TextAreaElement.prototype, "placeHolder", {
                     //#endregion placeHolderProperty
                     //#region placeHolder
@@ -11734,8 +10806,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(TextAreaElement.prototype, "readOnlyProperty", {
                     //#endregion placeHolder
                     //#region readOnlyProperty
@@ -11750,7 +10820,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(TextAreaElement.prototype, "readOnly", {
                     //#endregion readOnlyProperty
                     //#region readOnly
@@ -11766,8 +10835,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(TextAreaElement.prototype, "requiredProperty", {
                     //#endregion readOnly
                     //#region requiredProperty
@@ -11782,7 +10849,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(TextAreaElement.prototype, "required", {
                     //#endregion requiredProperty
                     //#region required
@@ -11798,8 +10864,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(TextAreaElement.prototype, "rowsProperty", {
                     //#endregion required
                     //#region rowsProperty
@@ -11814,7 +10878,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(TextAreaElement.prototype, "rows", {
                     //#endregion rowsProperty
                     //#region rows
@@ -11830,8 +10893,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(TextAreaElement.prototype, "selectionEndProperty", {
                     //#endregion rows
                     //#region selectionEndProperty
@@ -11846,7 +10907,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(TextAreaElement.prototype, "selectionEnd", {
                     //#endregion selectionEndProperty
                     //#region selectionEnd
@@ -11862,8 +10922,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(TextAreaElement.prototype, "selectionStartProperty", {
                     //#endregion selectionEnd
                     //#region selectionStartProperty
@@ -11878,7 +10936,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(TextAreaElement.prototype, "selectionStart", {
                     //#endregion selectionStartProperty
                     //#region selectionStart
@@ -11894,8 +10951,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(TextAreaElement.prototype, "wrapProperty", {
                     //#endregion selectionStart
                     //#region wrapProperty
@@ -11911,7 +10966,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(TextAreaElement.prototype, "wrap", {
                     //#endregion wrapProperty
                     //#region wrap
@@ -11928,8 +10982,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(TextAreaElement.prototype, "changeEvent", {
                     //#endregion wrap
                     //#region changeEvent
@@ -11941,13 +10993,11 @@ var Classical;
                     get: function () {
                         if (!this._changeEvent)
                             this._changeEvent = new Html.HtmlElementEvent('change', 'Event', this);
-
                         return this._changeEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(TextAreaElement.prototype, "inputEvent", {
                     //#endregion changeEvent
                     //#region inputEvent
@@ -11959,13 +11009,11 @@ var Classical;
                     get: function () {
                         if (!this._inputEvent)
                             this._inputEvent = new Html.HtmlElementEvent('input', 'Event', this);
-
                         return this._inputEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 //#endregion Constructor
                 //#region Base Class Overrides
                 /**
@@ -11990,17 +11038,14 @@ var Classical;
                     setPropertyFromConfig(this, config, 'selectionEnd', false);
                     setPropertyFromConfig(this, config, 'selectionStart', false);
                     setPropertyFromConfig(this, config, 'wrap', true);
-
                     if (config.changeHandler)
                         this.changeEvent.subscribe(config.changeHandler);
-
                     if (config.inputHandler)
                         this.inputEvent.subscribe(config.inputHandler);
                 };
                 return TextAreaElement;
             })(HtmlElementContainer);
             Elements.TextAreaElement = TextAreaElement;
-
             //#endregion TextAreaElement
             //#region TitleElement
             /**
@@ -12034,7 +11079,6 @@ var Classical;
                 return TitleElement;
             })(HtmlElementContainer);
             Elements.TitleElement = TitleElement;
-
             //#endregion TitleElement
             //#region TrackElement
             /**
@@ -12066,7 +11110,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(TrackElement.prototype, "default", {
                     //#endregion defaultProperty
                     //#region default
@@ -12082,8 +11125,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(TrackElement.prototype, "kindProperty", {
                     //#endregion default
                     //#region kindProperty
@@ -12099,7 +11140,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(TrackElement.prototype, "kind", {
                     //#endregion kindProperty
                     //#region kind
@@ -12116,8 +11156,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(TrackElement.prototype, "labelProperty", {
                     //#endregion kind
                     //#region labelProperty
@@ -12132,7 +11170,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(TrackElement.prototype, "label", {
                     //#endregion labelProperty
                     //#region label
@@ -12148,8 +11185,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(TrackElement.prototype, "sourceProperty", {
                     //#endregion label
                     //#region sourceProperty
@@ -12164,7 +11199,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(TrackElement.prototype, "source", {
                     //#endregion sourceProperty
                     //#region source
@@ -12180,8 +11214,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(TrackElement.prototype, "sourceLanguageProperty", {
                     //#endregion source
                     //#region sourceLanguageProperty
@@ -12196,7 +11228,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(TrackElement.prototype, "sourceLanguage", {
                     //#endregion sourceLanguageProperty
                     //#region sourceLanguage
@@ -12212,8 +11243,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 //#endregion Constructor
                 //#region Base Class Overrides
                 /**
@@ -12234,7 +11263,6 @@ var Classical;
                 return TrackElement;
             })(HtmlElementContainer);
             Elements.TrackElement = TrackElement;
-
             //#endregion TrackElement
             //#region UnderlineElement
             /**
@@ -12268,7 +11296,6 @@ var Classical;
                 return UnderlineElement;
             })(HtmlElementContainer);
             Elements.UnderlineElement = UnderlineElement;
-
             //#endregion UnderlineElement
             //#region UnorderedListElement
             /**
@@ -12300,7 +11327,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(UnorderedListElement.prototype, "compact", {
                     //#endregion compactProperty
                     //#region compact
@@ -12316,8 +11342,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(UnorderedListElement.prototype, "typeProperty", {
                     //#endregion compact
                     //#region typeProperty
@@ -12334,7 +11358,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(UnorderedListElement.prototype, "type", {
                     //#endregion typeProperty
                     //#region type
@@ -12352,8 +11375,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 //#endregion Constructor
                 //#region Base Class Overrides
                 /**
@@ -12371,7 +11392,6 @@ var Classical;
                 return UnorderedListElement;
             })(HtmlElementContainer);
             Elements.UnorderedListElement = UnorderedListElement;
-
             //#endregion UnorderedListElement
             //#region VariableElement
             /**
@@ -12405,7 +11425,6 @@ var Classical;
                 return VariableElement;
             })(HtmlElementContainer);
             Elements.VariableElement = VariableElement;
-
             //#endregion VariableElement
             //#region VideoElement
             /**
@@ -12437,7 +11456,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(VideoElement.prototype, "autoPlay", {
                     //#endregion autoPlayProperty
                     //#region autoPlay
@@ -12453,8 +11471,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(VideoElement.prototype, "bufferedProperty", {
                     //#endregion autoPlay
                     //#region bufferedProperty
@@ -12469,7 +11485,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(VideoElement.prototype, "buffered", {
                     //#endregion bufferedProperty
                     //#region buffered
@@ -12485,8 +11500,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(VideoElement.prototype, "controlsProperty", {
                     //#endregion buffered
                     //#region controlsProperty
@@ -12501,7 +11514,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(VideoElement.prototype, "controls", {
                     //#endregion controlsProperty
                     //#region controls
@@ -12517,8 +11529,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(VideoElement.prototype, "heightProperty", {
                     //#endregion controls
                     //#region heightProperty
@@ -12533,7 +11543,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(VideoElement.prototype, "height", {
                     //#endregion heightProperty
                     //#region height
@@ -12549,8 +11558,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(VideoElement.prototype, "loopProperty", {
                     //#endregion height
                     //#region loopProperty
@@ -12565,7 +11572,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(VideoElement.prototype, "loop", {
                     //#endregion loopProperty
                     //#region loop
@@ -12581,8 +11587,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(VideoElement.prototype, "mutedProperty", {
                     //#endregion loop
                     //#region mutedProperty
@@ -12597,7 +11601,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(VideoElement.prototype, "muted", {
                     //#endregion mutedProperty
                     //#region muted
@@ -12613,8 +11616,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(VideoElement.prototype, "playedProperty", {
                     //#endregion muted
                     //#region playedProperty
@@ -12629,7 +11630,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(VideoElement.prototype, "played", {
                     //#endregion playedProperty
                     //#region played
@@ -12645,8 +11645,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(VideoElement.prototype, "preloadProperty", {
                     //#endregion played
                     //#region preloadProperty
@@ -12662,7 +11660,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(VideoElement.prototype, "preload", {
                     //#endregion preloadProperty
                     //#region preload
@@ -12679,8 +11676,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(VideoElement.prototype, "posterProperty", {
                     //#endregion preload
                     //#region posterProperty
@@ -12695,7 +11690,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(VideoElement.prototype, "poster", {
                     //#endregion posterProperty
                     //#region poster
@@ -12711,8 +11705,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(VideoElement.prototype, "sourceProperty", {
                     //#endregion poster
                     //#region sourceProperty
@@ -12727,7 +11719,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(VideoElement.prototype, "source", {
                     //#endregion sourceProperty
                     //#region source
@@ -12743,8 +11734,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(VideoElement.prototype, "widthProperty", {
                     //#endregion source
                     //#region widthProperty
@@ -12759,7 +11748,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(VideoElement.prototype, "width", {
                     //#endregion widthProperty
                     //#region width
@@ -12775,8 +11763,6 @@ var Classical;
                     enumerable: true,
                     configurable: true
                 });
-
-
                 Object.defineProperty(VideoElement.prototype, "mediaCanPlayEvent", {
                     //#endregion width
                     //#region mediaCanPlayEvent
@@ -12788,13 +11774,11 @@ var Classical;
                     get: function () {
                         if (!this._mediaCanPlayEvent)
                             this._mediaCanPlayEvent = new Html.HtmlElementEvent('canplay', 'Event', this);
-
                         return this._mediaCanPlayEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(VideoElement.prototype, "mediaCanPlayThroughEvent", {
                     //#endregion mediaCanPlayEvent
                     //#region mediaCanPlayThroughEvent
@@ -12806,13 +11790,11 @@ var Classical;
                     get: function () {
                         if (!this._mediaCanPlayThroughEvent)
                             this._mediaCanPlayThroughEvent = new Html.HtmlElementEvent('canplaythrough', 'Event', this);
-
                         return this._mediaCanPlayThroughEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(VideoElement.prototype, "mediaDurationChangeEvent", {
                     //#endregion mediaCanPlayThroughEvent
                     //#region mediaDurationChangeEvent
@@ -12824,13 +11806,11 @@ var Classical;
                     get: function () {
                         if (!this._mediaDurationChangeEvent)
                             this._mediaDurationChangeEvent = new Html.HtmlElementEvent('durationchange', 'Event', this);
-
                         return this._mediaDurationChangeEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(VideoElement.prototype, "mediaEmptiedEvent", {
                     //#endregion mediaDurationChangeEvent
                     //#region mediaEmptiedEvent
@@ -12842,13 +11822,11 @@ var Classical;
                     get: function () {
                         if (!this._mediaEmptiedEvent)
                             this._mediaEmptiedEvent = new Html.HtmlElementEvent('emptied', 'Event', this);
-
                         return this._mediaEmptiedEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(VideoElement.prototype, "mediaEndedEvent", {
                     //#endregion mediaEmptiedEvent
                     //#region mediaEndedEvent
@@ -12860,13 +11838,11 @@ var Classical;
                     get: function () {
                         if (!this._mediaEndedEvent)
                             this._mediaEndedEvent = new Html.HtmlElementEvent('ended', 'Event', this);
-
                         return this._mediaEndedEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(VideoElement.prototype, "mediaLoadedDataEvent", {
                     //#endregion mediaEndedEvent
                     //#region mediaLoadedDataEvent
@@ -12878,13 +11854,11 @@ var Classical;
                     get: function () {
                         if (!this._mediaLoadedDataEvent)
                             this._mediaLoadedDataEvent = new Html.HtmlElementEvent('loadeddata', 'Event', this);
-
                         return this._mediaLoadedDataEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(VideoElement.prototype, "mediaLoadedMetadataEvent", {
                     //#endregion mediaLoadedDataEvent
                     //#region mediaLoadedMetadataEvent
@@ -12896,13 +11870,11 @@ var Classical;
                     get: function () {
                         if (!this._mediaLoadedMetadataEvent)
                             this._mediaLoadedMetadataEvent = new Html.HtmlElementEvent('loadedmetadata', 'Event', this);
-
                         return this._mediaLoadedMetadataEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(VideoElement.prototype, "mediaPauseEvent", {
                     //#endregion mediaLoadedMetadataEvent
                     //#region mediaPauseEvent
@@ -12914,13 +11886,11 @@ var Classical;
                     get: function () {
                         if (!this._mediaPauseEvent)
                             this._mediaPauseEvent = new Html.HtmlElementEvent('pause', 'Event', this);
-
                         return this._mediaPauseEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(VideoElement.prototype, "mediaPlayEvent", {
                     //#endregion mediaPauseEvent
                     //#region mediaPlayEvent
@@ -12932,13 +11902,11 @@ var Classical;
                     get: function () {
                         if (!this._mediaPlayEvent)
                             this._mediaPlayEvent = new Html.HtmlElementEvent('play', 'Event', this);
-
                         return this._mediaPlayEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(VideoElement.prototype, "mediaPlayingEvent", {
                     //#endregion mediaPlayEvent
                     //#region mediaPlayingEvent
@@ -12950,13 +11918,11 @@ var Classical;
                     get: function () {
                         if (!this._mediaPlayingEvent)
                             this._mediaPlayingEvent = new Html.HtmlElementEvent('playing', 'Event', this);
-
                         return this._mediaPlayingEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(VideoElement.prototype, "mediaRateChangeEvent", {
                     //#endregion mediaPlayingEvent
                     //#region mediaRateChangeEvent
@@ -12968,13 +11934,11 @@ var Classical;
                     get: function () {
                         if (!this._mediaRateChangeEvent)
                             this._mediaRateChangeEvent = new Html.HtmlElementEvent('ratechange', 'Event', this);
-
                         return this._mediaRateChangeEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(VideoElement.prototype, "mediaSeekedEvent", {
                     //#endregion mediaRateChangeEvent
                     //#region mediaSeekedEvent
@@ -12986,13 +11950,11 @@ var Classical;
                     get: function () {
                         if (!this._mediaSeekedEvent)
                             this._mediaSeekedEvent = new Html.HtmlElementEvent('seeked', 'Event', this);
-
                         return this._mediaSeekedEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(VideoElement.prototype, "mediaSeekingEvent", {
                     //#endregion mediaSeekedEvent
                     //#region mediaSeekingEvent
@@ -13004,13 +11966,11 @@ var Classical;
                     get: function () {
                         if (!this._mediaSeekingEvent)
                             this._mediaSeekingEvent = new Html.HtmlElementEvent('seeking', 'Event', this);
-
                         return this._mediaSeekingEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(VideoElement.prototype, "mediaStalledEvent", {
                     //#endregion mediaSeekingEvent
                     //#region mediaStalledEvent
@@ -13022,13 +11982,11 @@ var Classical;
                     get: function () {
                         if (!this._mediaStalledEvent)
                             this._mediaStalledEvent = new Html.HtmlElementEvent('stalled', 'Event', this);
-
                         return this._mediaStalledEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(VideoElement.prototype, "mediaSuspendEvent", {
                     //#endregion mediaStalledEvent
                     //#region mediaSuspendEvent
@@ -13040,13 +11998,11 @@ var Classical;
                     get: function () {
                         if (!this._mediaSuspendEvent)
                             this._mediaSuspendEvent = new Html.HtmlElementEvent('suspend', 'Event', this);
-
                         return this._mediaSuspendEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(VideoElement.prototype, "mediaTimeUpdateEvent", {
                     //#endregion mediaSuspendEvent
                     //#region mediaTimeUpdateEvent
@@ -13058,13 +12014,11 @@ var Classical;
                     get: function () {
                         if (!this._mediaTimeUpdateEvent)
                             this._mediaTimeUpdateEvent = new Html.HtmlElementEvent('timeupdate', 'Event', this);
-
                         return this._mediaTimeUpdateEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(VideoElement.prototype, "mediaVolumeChangeEvent", {
                     //#endregion mediaTimeUpdateEvent
                     //#region mediaVolumeChangeEvent
@@ -13076,13 +12030,11 @@ var Classical;
                     get: function () {
                         if (!this._mediaVolumeChangeEvent)
                             this._mediaVolumeChangeEvent = new Html.HtmlElementEvent('volumechange', 'Event', this);
-
                         return this._mediaVolumeChangeEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 Object.defineProperty(VideoElement.prototype, "mediaWaitingEvent", {
                     //#endregion mediaVolumeChangeEvent
                     //#region mediaWaitingEvent
@@ -13094,13 +12046,11 @@ var Classical;
                     get: function () {
                         if (!this._mediaWaitingEvent)
                             this._mediaWaitingEvent = new Html.HtmlElementEvent('waiting', 'Event', this);
-
                         return this._mediaWaitingEvent;
                     },
                     enumerable: true,
                     configurable: true
                 });
-
                 //#endregion Constructor
                 //#region Base Class Overrides
                 /**
@@ -13123,65 +12073,46 @@ var Classical;
                     setPropertyFromConfig(this, config, 'poster', true);
                     setPropertyFromConfig(this, config, 'source', true);
                     setPropertyFromConfig(this, config, 'width', true);
-
                     if (config.mediaCanPlayHandler)
                         this.mediaCanPlayEvent.subscribe(config.mediaCanPlayHandler);
-
                     if (config.mediaCanPlayThroughHandler)
                         this.mediaCanPlayThroughEvent.subscribe(config.mediaCanPlayThroughHandler);
-
                     if (config.mediaDurationChangeHandler)
                         this.mediaDurationChangeEvent.subscribe(config.mediaDurationChangeHandler);
-
                     if (config.mediaEmptiedHandler)
                         this.mediaEmptiedEvent.subscribe(config.mediaEmptiedHandler);
-
                     if (config.mediaEndedHandler)
                         this.mediaEndedEvent.subscribe(config.mediaEndedHandler);
-
                     if (config.mediaLoadedDataHandler)
                         this.mediaLoadedDataEvent.subscribe(config.mediaLoadedDataHandler);
-
                     if (config.mediaLoadedMetadataHandler)
                         this.mediaLoadedMetadataEvent.subscribe(config.mediaLoadedMetadataHandler);
-
                     if (config.mediaPauseHandler)
                         this.mediaPauseEvent.subscribe(config.mediaPauseHandler);
-
                     if (config.mediaPlayHandler)
                         this.mediaPlayEvent.subscribe(config.mediaPlayHandler);
-
                     if (config.mediaPlayingHandler)
                         this.mediaPlayingEvent.subscribe(config.mediaPlayingHandler);
-
                     if (config.mediaRateChangeHandler)
                         this.mediaRateChangeEvent.subscribe(config.mediaRateChangeHandler);
-
                     if (config.mediaSeekedHandler)
                         this.mediaSeekedEvent.subscribe(config.mediaSeekedHandler);
-
                     if (config.mediaSeekingHandler)
                         this.mediaSeekingEvent.subscribe(config.mediaSeekingHandler);
-
                     if (config.mediaStalledHandler)
                         this.mediaStalledEvent.subscribe(config.mediaStalledHandler);
-
                     if (config.mediaSuspendHandler)
                         this.mediaSuspendEvent.subscribe(config.mediaSuspendHandler);
-
                     if (config.mediaTimeUpdateHandler)
                         this.mediaTimeUpdateEvent.subscribe(config.mediaTimeUpdateHandler);
-
                     if (config.mediaVolumeChangeHandler)
                         this.mediaVolumeChangeEvent.subscribe(config.mediaVolumeChangeHandler);
-
                     if (config.mediaWaitingHandler)
                         this.mediaWaitingEvent.subscribe(config.mediaWaitingHandler);
                 };
                 return VideoElement;
             })(HtmlElementContainer);
             Elements.VideoElement = VideoElement;
-
             //#endregion VideoElement
             //#region WordBreakOpportunityElement
             /**
@@ -13215,14 +12146,12 @@ var Classical;
                 return WordBreakOpportunityElement;
             })(HtmlElementContainer);
             Elements.WordBreakOpportunityElement = WordBreakOpportunityElement;
-
             //#endregion WordBreakOpportunityElement
             //#region Utilities
             //#region isTextNode
             function isTextNode(node) {
                 return node.nodeName === '#text';
             }
-
             //#endregion isTextNode
             //#region initializeProperty
             /**
@@ -13231,30 +12160,26 @@ var Classical;
             function initializeProperty(element, propertyName, htmlPropertyName) {
                 var bindingProperyName = propertyName + 'Property', fieldName = '_' + bindingProperyName, htmlElement = element.element, htmlValue = htmlElement[htmlPropertyName], property = new b.Property(element);
                 property['htmlValue'] = htmlValue;
-
                 property.observe(function (values, host) {
                     var value = values[0], currentHtmlValue = htmlElement[htmlPropertyName];
-
                     var valueWasNotChanged = false;
-                    try  {
+                    try {
                         if (currentHtmlValue !== value) {
                             htmlElement[htmlPropertyName] = value;
                             if (htmlElement[htmlPropertyName] !== value)
                                 valueWasNotChanged = true;
                         }
-                    } catch (ex) {
+                    }
+                    catch (ex) {
                         valueWasNotChanged = true;
                     }
-
                     if (valueWasNotChanged) {
                         property.value = htmlElement[htmlPropertyName];
                         Classical.Assert.isInvalid(Classical.Utilities.format('{0} is not a valid value for {1}.{2} in the current context.', value, element.getType().name, propertyName));
                     }
                 });
-
                 element[fieldName] = property;
             }
-
             //#endregion initializeProperty
             //#region initializeChildrenProperty
             /**
@@ -13265,35 +12190,31 @@ var Classical;
                     return HtmlNode.getHtmlNode(node);
                 }));
                 collectionProperty.observe(function (collection, info) {
-                    if (info.action.equals(bc.CollectionUpdateType.Add)) {
+                    if (info.action.equals(0 /* Add */)) {
                         var oldChild = htmlElementChildren[info.newIndex], newIndex = info.newIndex, newItem = info.newItem, newElement = newItem.element;
-
                         if (!newElement) {
                             newItem.initialize();
                             newElement = newItem.element;
                         }
-
                         Classical.Assert.isTrue(htmlElementChildren.length <= newIndex, 'The index of the element to add is out of range of the HtmlNode.');
-
                         element._updating = true;
                         if (!oldChild)
                             htmlElement.appendChild(newElement);
                         else
                             htmlElement.replaceChild(newElement, oldChild);
-                    } else if (info.action.equals(bc.CollectionUpdateType.Remove)) {
+                    }
+                    else if (info.action.equals(2 /* Remove */)) {
                         var oldChild = htmlElementChildren[info.oldIndex];
                         Classical.Assert.isDefined(oldChild, 'The element to remove could not be found.');
-
                         element._updating = true;
                         htmlElement.removeChild(oldChild);
-                    } else {
+                    }
+                    else {
                         Classical.Assert.isInvalid('The CollectionAction was not recognized.');
                     }
                 });
-
                 element['_children'] = collectionProperty;
             }
-
             //#endregion initializeProperty
             //#region setPropertyFromConfig
             /**
@@ -13301,15 +12222,14 @@ var Classical;
             */
             function setPropertyFromConfig(element, config, propertyName, isInitializable) {
                 var binderPropertyName = propertyName + 'Binder', bindingPropertyName = propertyName + 'Property', configValue = config[propertyName], configBinder = config[binderPropertyName];
-
                 if (configValue !== undefined && !configBinder && isInitializable) {
                     element[propertyName] = configValue;
-                } else if (configBinder) {
+                }
+                else if (configBinder) {
                     var property = element[bindingPropertyName];
                     property.bind(configBinder);
                 }
             }
-
             //#endregion setPropertyFromConfig
             //#region setChildrenPropertyFromConfig
             /**
@@ -13317,28 +12237,24 @@ var Classical;
             */
             function setChildrenPropertyFromConfig(element, config) {
                 var children = config.children, childrenBinder = config.childrenBinder, childrenCollection = element.children;
-
                 if (children && !childrenBinder) {
                     childrenCollection.addRange(children);
-                } else if (childrenBinder) {
+                }
+                else if (childrenBinder) {
                     childrenCollection.bind(childrenBinder);
                 }
             }
-
             //#endregion setChildrenPropertyFromConfig
             //#region getElementPropertyValue
             function getElementPropertyValue(element, propertyName) {
                 var propertyFieldName = '_' + propertyName, value = element[propertyFieldName];
                 if (value)
                     return value;
-
                 var id = element[propertyFieldName + 'ID'];
                 value = Html.wrap(id);
-
                 element[propertyFieldName] = value;
                 return value;
             }
-
             //#endregion getElementPropertyValue
             //#region setElementPropertyValue
             function setElementPropertyValue(element, propertyName, value) {
@@ -13347,40 +12263,30 @@ var Classical;
                     element[propertyFieldID] = value.element.id;
                 else
                     element[propertyFieldID] = null;
-
                 element[propertyFieldName] = value;
             }
-
             //#endregion getElementPropertyValue
             //#region setElementPropertyFromConfig
             function setElementPropertyFromConfig(element, config, propertyName) {
                 var configPropertyName = propertyName + 'ID', configValue = config[configPropertyName];
-
                 element['_' + configPropertyName] = configValue;
             }
-
             //#endregion setElementPropertyFromConfig
             //#endregion Utilities
             //#region Variables
             var toString = Object.prototype.toString;
-
             var elementMap = new Classical.Collections.Dictionary(5000);
-
             var propertyMap = new Classical.Collections.Dictionary(50).add('textContent', 'text').add('className', 'classes').add('dir', 'direction').add('lang', 'language').add('spellcheck', 'spellCheck').add('hreflang', 'hrefLanguage').add('rel', 'relationship').add('alt', 'alternate').add('coords', 'coordinates').add('autoplay', 'autoPlay').add('src', 'source').add('cite', 'citation').add('autofocus', 'autoFocus').add('autocomplete', 'autoComplete').add('enctype', 'encodingType').add('longDesc', 'longDescription').add('placeholder', 'placeHolder').add('charset', 'characterSet').add('rev', 'reverseRelationship').add('multiple', 'multipleOptions').add('colSpan', 'columnSpan').add('cols', 'columns').add('srclang', 'sourceLanguage');
-
             var contentMap = new Classical.Collections.Dictionary(10).add('accept-charset', 'acceptCharset').add('longdesc', 'longDesc').add('http-equiv', 'httpEquiv').add('colspan', 'colSpan').add('rowspan', 'rowSpan').add('maxlength', 'maxLength').add('readonly', 'readOnly');
-
             var constructorMap = new Classical.Collections.Dictionary(150).add('#text', TextNode).add('ABBR', AbbreviationElement).add('ADDRESS', AddressElement).add('A', AnchorElement).add('AREA', AreaElement).add('ARTICLE', ArticleElement).add('ASIDE', AsideElement).add('AUDIO', AudioElement).add('BASE', BaseElement).add('BDI', BidirectionalIsolationElement).add('BDO', BidirectionalOverrideElement).add('BLOCKQUOTE', BlockQuotationElement).add('BODY', BodyElement).add('B', BoldElement).add('BUTTON', ButtonElement).add('CANVAS', CanvasElement).add('CITE', CitationElement).add('CODE', CodeElement).add('DATA', DataElement).add('DATALIST', DataListElement).add('DFN', DefinitionElement).add('DT', DefinitionTermElement).add('DEL', DeletedTextElement).add('DD', DescriptionElement).add('DL', DescriptionListElement).add('DETAILS', DetailsElement).add('DIV', DivisionElement).add('EMBED', EmbedElement).add('OBJECT', EmbeddedObjectElement).add('EM', EmphasisElement).add('FIELDSET', FieldsetElement).add('FIGURE', FigureElement).add('FIGCAPTION', FigureCaptionElement).add('FOOTER', FooterElement).add('FORM', FormElement).add('HEAD', HeadElement).add('HEADER', HeaderElement).add('H5', HeaderFiveElement).add('H4', HeaderFourElement).add('H1', HeaderOneElement).add('H6', HeaderSixElement).add('H3', HeaderThreeElement).add('H2', HeaderTwoElement).add('HR', HorizontalRuleElement).add('IMG', ImageElement).add('IFRAME', InlineFrameElement).add('INPUT', InputElement).add('INS', InsertedElement).add('I', ItalicElement).add('KBD', KeyboardInputElement).add('LABEL', LabelElement).add('LEGEND', LegendFieldElement).add('BR', LineBreakElement).add('LINK', LinkElement).add('LI', ListItemElement).add('MAIN', MainElement).add('MAP', MapElement).add('MARK', MarkElement).add('META', MetaElement).add('NAV', NavigationElement).add('NOSCRIPT', NoScriptElement).add('OPTION', OptionElement).add('OPTGROUP', OptionsGroupElement).add('OL', OrderedListElement).add('P', ParagraphElement).add('PARAM', ParameterElement).add('PRE', PreformattedElement).add('PROGRESS', ProgressElement).add('Q', QuoteElement).add('HTML', RootElement).add('RUBY', RubyElement).add('RP', RubyParenthesisElement).add('RT', RubyPronunciationElement).add('SAMP', SampleElement).add('SCRIPT', ScriptElement).add('SECTION', SectionElement).add('SELECT', SelectElement).add('SMALL', SmallElement).add('SOURCE', SourceElement).add('SPAN', SpanElement).add('S', StrikethroughElement).add('STRONG', StrongElement).add('STYLE', StyleElement).add('SUB', SubscriptElement).add('SUMMARY', SummaryElement).add('SUP', SuperscriptElement).add('TABLE', TableElement).add('CAPTION', TableCaptionElement).add('COL', TableColumnElement).add('COLGROUP', TableColumnGroupElement).add('TD', TableDataCellElement).add('TH', TableHeaderCellElement).add('TR', TableRowElement).add('TEXTAREA', TextAreaElement).add('TITLE', TitleElement).add('TRACK', TrackElement).add('U', UnderlineElement).add('UL', UnorderedListElement).add('VAR', VariableElement).add('VIDEO', VideoElement).add('WBR', WordBreakOpportunityElement);
-        })(Html.Elements || (Html.Elements = {}));
-        var Elements = Html.Elements;
-    })(Classical.Html || (Classical.Html = {}));
-    var Html = Classical.Html;
+        })(Elements = Html.Elements || (Html.Elements = {}));
+    })(Html = Classical.Html || (Classical.Html = {}));
 })(Classical || (Classical = {}));
-
+//#endregion Elements
+//#region Factory Methods
 var Classical;
 (function (Classical) {
-    //#endregion Elements
-    //#region Factory Methods
+    var Html;
     (function (Html) {
         //#region create
         /**
@@ -13391,15 +12297,9 @@ var Classical;
         function create(node) {
             Classical.Assert.isDefined(node, 'The HtmlNode was not defined');
             node.initialize();
-
             return node;
         }
         Html.create = create;
-
-        
-
-        
-
         /**
         * For overload resolution only.
         */
@@ -13407,27 +12307,20 @@ var Classical;
             var element = arg;
             if (Classical.Utilities.isString(arg))
                 element = document.getElementById(arg);
-
             return Html.Elements.HtmlNode.getHtmlNode(element);
         }
         Html.wrap = wrap;
-
-        
-
         function text(content) {
             if (!Classical.Utilities.isDefined(content))
                 content = '';
             if (Classical.Utilities.isString(content) || !content.bind) {
                 if (!content.bind)
                     content = content.toString();
-
                 return new Html.Elements.TextNode({ text: content });
             }
-
             return new Html.Elements.TextNode({ textBinder: content });
         }
         Html.text = text;
-
         //#endregion text
         //#region abbr
         /**
@@ -13439,7 +12332,6 @@ var Classical;
             return new Html.Elements.AbbreviationElement(config);
         }
         Html.abbr = abbr;
-
         //#endregion abbr
         //#region address
         /**
@@ -13451,7 +12343,6 @@ var Classical;
             return new Html.Elements.AddressElement(config);
         }
         Html.address = address;
-
         //#endregion address
         //#region a
         /**
@@ -13463,7 +12354,6 @@ var Classical;
             return new Html.Elements.AnchorElement(config);
         }
         Html.a = a;
-
         //#endregion a
         //#region area
         /**
@@ -13475,7 +12365,6 @@ var Classical;
             return new Html.Elements.AreaElement(config);
         }
         Html.area = area;
-
         //#endregion area
         //#region article
         /**
@@ -13487,7 +12376,6 @@ var Classical;
             return new Html.Elements.ArticleElement(config);
         }
         Html.article = article;
-
         //#endregion article
         //#region aside
         /**
@@ -13499,7 +12387,6 @@ var Classical;
             return new Html.Elements.AsideElement(config);
         }
         Html.aside = aside;
-
         //#endregion aside
         //#region audio
         /**
@@ -13511,7 +12398,6 @@ var Classical;
             return new Html.Elements.AudioElement(config);
         }
         Html.audio = audio;
-
         //#endregion audio
         //#region base
         /**
@@ -13523,7 +12409,6 @@ var Classical;
             return new Html.Elements.BaseElement(config);
         }
         Html.base = base;
-
         //#endregion base
         //#region bdi
         /**
@@ -13535,7 +12420,6 @@ var Classical;
             return new Html.Elements.BidirectionalIsolationElement(config);
         }
         Html.bdi = bdi;
-
         //#endregion bdi
         //#region bdo
         /**
@@ -13547,7 +12431,6 @@ var Classical;
             return new Html.Elements.BidirectionalOverrideElement(config);
         }
         Html.bdo = bdo;
-
         //#endregion bdo
         //#region blockquote
         /**
@@ -13559,7 +12442,6 @@ var Classical;
             return new Html.Elements.BlockQuotationElement(config);
         }
         Html.blockquote = blockquote;
-
         //#endregion blockquote
         //#region body
         /**
@@ -13571,7 +12453,6 @@ var Classical;
             return new Html.Elements.BodyElement(config);
         }
         Html.body = body;
-
         //#endregion body
         //#region b
         /**
@@ -13583,7 +12464,6 @@ var Classical;
             return new Html.Elements.BoldElement(config);
         }
         Html.b = b;
-
         //#endregion b
         //#region button
         /**
@@ -13595,7 +12475,6 @@ var Classical;
             return new Html.Elements.ButtonElement(config);
         }
         Html.button = button;
-
         //#endregion button
         //#region canvas
         /**
@@ -13607,7 +12486,6 @@ var Classical;
             return new Html.Elements.CanvasElement(config);
         }
         Html.canvas = canvas;
-
         //#endregion canvas
         //#region cite
         /**
@@ -13619,7 +12497,6 @@ var Classical;
             return new Html.Elements.CitationElement(config);
         }
         Html.cite = cite;
-
         //#endregion cite
         //#region code
         /**
@@ -13631,7 +12508,6 @@ var Classical;
             return new Html.Elements.CodeElement(config);
         }
         Html.code = code;
-
         //#endregion code
         //#region data
         /**
@@ -13643,7 +12519,6 @@ var Classical;
             return new Html.Elements.DataElement(config);
         }
         Html.data = data;
-
         //#endregion data
         //#region datalist
         /**
@@ -13655,7 +12530,6 @@ var Classical;
             return new Html.Elements.DataListElement(config);
         }
         Html.datalist = datalist;
-
         //#endregion datalist
         //#region dfn
         /**
@@ -13667,7 +12541,6 @@ var Classical;
             return new Html.Elements.DefinitionElement(config);
         }
         Html.dfn = dfn;
-
         //#endregion dfn
         //#region dt
         /**
@@ -13679,7 +12552,6 @@ var Classical;
             return new Html.Elements.DefinitionTermElement(config);
         }
         Html.dt = dt;
-
         //#endregion dt
         //#region del
         /**
@@ -13691,7 +12563,6 @@ var Classical;
             return new Html.Elements.DeletedTextElement(config);
         }
         Html.del = del;
-
         //#endregion del
         //#region dd
         /**
@@ -13703,7 +12574,6 @@ var Classical;
             return new Html.Elements.DescriptionElement(config);
         }
         Html.dd = dd;
-
         //#endregion dd
         //#region dl
         /**
@@ -13715,7 +12585,6 @@ var Classical;
             return new Html.Elements.DescriptionListElement(config);
         }
         Html.dl = dl;
-
         //#endregion dl
         //#region details
         /**
@@ -13727,7 +12596,6 @@ var Classical;
             return new Html.Elements.DetailsElement(config);
         }
         Html.details = details;
-
         //#endregion details
         //#region div
         /**
@@ -13739,7 +12607,6 @@ var Classical;
             return new Html.Elements.DivisionElement(config);
         }
         Html.div = div;
-
         //#endregion div
         //#region embed
         /**
@@ -13751,7 +12618,6 @@ var Classical;
             return new Html.Elements.EmbedElement(config);
         }
         Html.embed = embed;
-
         //#endregion embed
         //#region obj
         /**
@@ -13763,7 +12629,6 @@ var Classical;
             return new Html.Elements.EmbeddedObjectElement(config);
         }
         Html.obj = obj;
-
         //#endregion obj
         //#region em
         /**
@@ -13775,7 +12640,6 @@ var Classical;
             return new Html.Elements.EmphasisElement(config);
         }
         Html.em = em;
-
         //#endregion em
         //#region fieldset
         /**
@@ -13787,7 +12651,6 @@ var Classical;
             return new Html.Elements.FieldsetElement(config);
         }
         Html.fieldset = fieldset;
-
         //#endregion fieldset
         //#region figure
         /**
@@ -13799,7 +12662,6 @@ var Classical;
             return new Html.Elements.FigureElement(config);
         }
         Html.figure = figure;
-
         //#endregion figure
         //#region figcaption
         /**
@@ -13811,7 +12673,6 @@ var Classical;
             return new Html.Elements.FigureCaptionElement(config);
         }
         Html.figcaption = figcaption;
-
         //#endregion figcaption
         //#region footer
         /**
@@ -13823,7 +12684,6 @@ var Classical;
             return new Html.Elements.FooterElement(config);
         }
         Html.footer = footer;
-
         //#endregion footer
         //#region form
         /**
@@ -13835,7 +12695,6 @@ var Classical;
             return new Html.Elements.FormElement(config);
         }
         Html.form = form;
-
         //#endregion form
         //#region head
         /**
@@ -13847,7 +12706,6 @@ var Classical;
             return new Html.Elements.HeadElement(config);
         }
         Html.head = head;
-
         //#endregion head
         //#region header
         /**
@@ -13859,7 +12717,6 @@ var Classical;
             return new Html.Elements.HeaderElement(config);
         }
         Html.header = header;
-
         //#endregion header
         //#region h5
         /**
@@ -13871,7 +12728,6 @@ var Classical;
             return new Html.Elements.HeaderFiveElement(config);
         }
         Html.h5 = h5;
-
         //#endregion h5
         //#region h4
         /**
@@ -13883,7 +12739,6 @@ var Classical;
             return new Html.Elements.HeaderFourElement(config);
         }
         Html.h4 = h4;
-
         //#endregion h4
         //#region h1
         /**
@@ -13895,7 +12750,6 @@ var Classical;
             return new Html.Elements.HeaderOneElement(config);
         }
         Html.h1 = h1;
-
         //#endregion h1
         //#region h6
         /**
@@ -13907,7 +12761,6 @@ var Classical;
             return new Html.Elements.HeaderSixElement(config);
         }
         Html.h6 = h6;
-
         //#endregion h6
         //#region h3
         /**
@@ -13919,7 +12772,6 @@ var Classical;
             return new Html.Elements.HeaderThreeElement(config);
         }
         Html.h3 = h3;
-
         //#endregion h3
         //#region h2
         /**
@@ -13931,7 +12783,6 @@ var Classical;
             return new Html.Elements.HeaderTwoElement(config);
         }
         Html.h2 = h2;
-
         //#endregion h2
         //#region hr
         /**
@@ -13943,7 +12794,6 @@ var Classical;
             return new Html.Elements.HorizontalRuleElement(config);
         }
         Html.hr = hr;
-
         //#endregion hr
         //#region img
         /**
@@ -13955,7 +12805,6 @@ var Classical;
             return new Html.Elements.ImageElement(config);
         }
         Html.img = img;
-
         //#endregion img
         //#region iframe
         /**
@@ -13967,7 +12816,6 @@ var Classical;
             return new Html.Elements.InlineFrameElement(config);
         }
         Html.iframe = iframe;
-
         //#endregion iframe
         //#region input
         /**
@@ -13979,7 +12827,6 @@ var Classical;
             return new Html.Elements.InputElement(config);
         }
         Html.input = input;
-
         //#endregion input
         //#region ins
         /**
@@ -13991,7 +12838,6 @@ var Classical;
             return new Html.Elements.InsertedElement(config);
         }
         Html.ins = ins;
-
         //#endregion ins
         //#region i
         /**
@@ -14003,7 +12849,6 @@ var Classical;
             return new Html.Elements.ItalicElement(config);
         }
         Html.i = i;
-
         //#endregion i
         //#region kbd
         /**
@@ -14015,7 +12860,6 @@ var Classical;
             return new Html.Elements.KeyboardInputElement(config);
         }
         Html.kbd = kbd;
-
         //#endregion kbd
         //#region label
         /**
@@ -14027,7 +12871,6 @@ var Classical;
             return new Html.Elements.LabelElement(config);
         }
         Html.label = label;
-
         //#endregion label
         //#region legend
         /**
@@ -14039,7 +12882,6 @@ var Classical;
             return new Html.Elements.LegendFieldElement(config);
         }
         Html.legend = legend;
-
         //#endregion legend
         //#region br
         /**
@@ -14051,7 +12893,6 @@ var Classical;
             return new Html.Elements.LineBreakElement(config);
         }
         Html.br = br;
-
         //#endregion br
         //#region link
         /**
@@ -14063,7 +12904,6 @@ var Classical;
             return new Html.Elements.LinkElement(config);
         }
         Html.link = link;
-
         //#endregion link
         //#region li
         /**
@@ -14075,7 +12915,6 @@ var Classical;
             return new Html.Elements.ListItemElement(config);
         }
         Html.li = li;
-
         //#endregion li
         //#region main
         /**
@@ -14087,7 +12926,6 @@ var Classical;
             return new Html.Elements.MainElement(config);
         }
         Html.main = main;
-
         //#endregion main
         //#region map
         /**
@@ -14099,7 +12937,6 @@ var Classical;
             return new Html.Elements.MapElement(config);
         }
         Html.map = map;
-
         //#endregion map
         //#region mark
         /**
@@ -14111,7 +12948,6 @@ var Classical;
             return new Html.Elements.MarkElement(config);
         }
         Html.mark = mark;
-
         //#endregion mark
         //#region meta
         /**
@@ -14123,7 +12959,6 @@ var Classical;
             return new Html.Elements.MetaElement(config);
         }
         Html.meta = meta;
-
         //#endregion meta
         //#region nav
         /**
@@ -14135,7 +12970,6 @@ var Classical;
             return new Html.Elements.NavigationElement(config);
         }
         Html.nav = nav;
-
         //#endregion nav
         //#region noscript
         /**
@@ -14147,7 +12981,6 @@ var Classical;
             return new Html.Elements.NoScriptElement(config);
         }
         Html.noscript = noscript;
-
         //#endregion noscript
         //#region option
         /**
@@ -14159,7 +12992,6 @@ var Classical;
             return new Html.Elements.OptionElement(config);
         }
         Html.option = option;
-
         //#endregion option
         //#region optgroup
         /**
@@ -14171,7 +13003,6 @@ var Classical;
             return new Html.Elements.OptionsGroupElement(config);
         }
         Html.optgroup = optgroup;
-
         //#endregion optgroup
         //#region ol
         /**
@@ -14183,7 +13014,6 @@ var Classical;
             return new Html.Elements.OrderedListElement(config);
         }
         Html.ol = ol;
-
         //#endregion ol
         //#region p
         /**
@@ -14195,7 +13025,6 @@ var Classical;
             return new Html.Elements.ParagraphElement(config);
         }
         Html.p = p;
-
         //#endregion p
         //#region param
         /**
@@ -14207,7 +13036,6 @@ var Classical;
             return new Html.Elements.ParameterElement(config);
         }
         Html.param = param;
-
         //#endregion param
         //#region pre
         /**
@@ -14219,7 +13047,6 @@ var Classical;
             return new Html.Elements.PreformattedElement(config);
         }
         Html.pre = pre;
-
         //#endregion pre
         //#region progress
         /**
@@ -14231,7 +13058,6 @@ var Classical;
             return new Html.Elements.ProgressElement(config);
         }
         Html.progress = progress;
-
         //#endregion progress
         //#region q
         /**
@@ -14243,7 +13069,6 @@ var Classical;
             return new Html.Elements.QuoteElement(config);
         }
         Html.q = q;
-
         //#endregion q
         //#region html
         /**
@@ -14255,7 +13080,6 @@ var Classical;
             return new Html.Elements.RootElement(config);
         }
         Html.html = html;
-
         //#endregion html
         //#region ruby
         /**
@@ -14267,7 +13091,6 @@ var Classical;
             return new Html.Elements.RubyElement(config);
         }
         Html.ruby = ruby;
-
         //#endregion ruby
         //#region rp
         /**
@@ -14279,7 +13102,6 @@ var Classical;
             return new Html.Elements.RubyParenthesisElement(config);
         }
         Html.rp = rp;
-
         //#endregion rp
         //#region rt
         /**
@@ -14291,7 +13113,6 @@ var Classical;
             return new Html.Elements.RubyPronunciationElement(config);
         }
         Html.rt = rt;
-
         //#endregion rt
         //#region samp
         /**
@@ -14303,7 +13124,6 @@ var Classical;
             return new Html.Elements.SampleElement(config);
         }
         Html.samp = samp;
-
         //#endregion samp
         //#region script
         /**
@@ -14315,7 +13135,6 @@ var Classical;
             return new Html.Elements.ScriptElement(config);
         }
         Html.script = script;
-
         //#endregion script
         //#region section
         /**
@@ -14327,7 +13146,6 @@ var Classical;
             return new Html.Elements.SectionElement(config);
         }
         Html.section = section;
-
         //#endregion section
         //#region select
         /**
@@ -14339,7 +13157,6 @@ var Classical;
             return new Html.Elements.SelectElement(config);
         }
         Html.select = select;
-
         //#endregion select
         //#region small
         /**
@@ -14351,7 +13168,6 @@ var Classical;
             return new Html.Elements.SmallElement(config);
         }
         Html.small = small;
-
         //#endregion small
         //#region source
         /**
@@ -14363,7 +13179,6 @@ var Classical;
             return new Html.Elements.SourceElement(config);
         }
         Html.source = source;
-
         //#endregion source
         //#region span
         /**
@@ -14375,7 +13190,6 @@ var Classical;
             return new Html.Elements.SpanElement(config);
         }
         Html.span = span;
-
         //#endregion span
         //#region s
         /**
@@ -14387,7 +13201,6 @@ var Classical;
             return new Html.Elements.StrikethroughElement(config);
         }
         Html.s = s;
-
         //#endregion s
         //#region strong
         /**
@@ -14399,7 +13212,6 @@ var Classical;
             return new Html.Elements.StrongElement(config);
         }
         Html.strong = strong;
-
         //#endregion strong
         //#region style
         /**
@@ -14411,7 +13223,6 @@ var Classical;
             return new Html.Elements.StyleElement(config);
         }
         Html.style = style;
-
         //#endregion style
         //#region sub
         /**
@@ -14423,7 +13234,6 @@ var Classical;
             return new Html.Elements.SubscriptElement(config);
         }
         Html.sub = sub;
-
         //#endregion sub
         //#region summary
         /**
@@ -14435,7 +13245,6 @@ var Classical;
             return new Html.Elements.SummaryElement(config);
         }
         Html.summary = summary;
-
         //#endregion summary
         //#region sup
         /**
@@ -14447,7 +13256,6 @@ var Classical;
             return new Html.Elements.SuperscriptElement(config);
         }
         Html.sup = sup;
-
         //#endregion sup
         //#region table
         /**
@@ -14459,7 +13267,6 @@ var Classical;
             return new Html.Elements.TableElement(config);
         }
         Html.table = table;
-
         //#endregion table
         //#region caption
         /**
@@ -14471,7 +13278,6 @@ var Classical;
             return new Html.Elements.TableCaptionElement(config);
         }
         Html.caption = caption;
-
         //#endregion caption
         //#region col
         /**
@@ -14483,7 +13289,6 @@ var Classical;
             return new Html.Elements.TableColumnElement(config);
         }
         Html.col = col;
-
         //#endregion col
         //#region colgroup
         /**
@@ -14495,7 +13300,6 @@ var Classical;
             return new Html.Elements.TableColumnGroupElement(config);
         }
         Html.colgroup = colgroup;
-
         //#endregion colgroup
         //#region td
         /**
@@ -14507,7 +13311,6 @@ var Classical;
             return new Html.Elements.TableDataCellElement(config);
         }
         Html.td = td;
-
         //#endregion td
         //#region th
         /**
@@ -14519,7 +13322,6 @@ var Classical;
             return new Html.Elements.TableHeaderCellElement(config);
         }
         Html.th = th;
-
         //#endregion th
         //#region tr
         /**
@@ -14531,7 +13333,6 @@ var Classical;
             return new Html.Elements.TableRowElement(config);
         }
         Html.tr = tr;
-
         //#endregion tr
         //#region textarea
         /**
@@ -14543,7 +13344,6 @@ var Classical;
             return new Html.Elements.TextAreaElement(config);
         }
         Html.textarea = textarea;
-
         //#endregion textarea
         //#region title
         /**
@@ -14555,7 +13355,6 @@ var Classical;
             return new Html.Elements.TitleElement(config);
         }
         Html.title = title;
-
         //#endregion title
         //#region track
         /**
@@ -14567,7 +13366,6 @@ var Classical;
             return new Html.Elements.TrackElement(config);
         }
         Html.track = track;
-
         //#endregion track
         //#region u
         /**
@@ -14579,7 +13377,6 @@ var Classical;
             return new Html.Elements.UnderlineElement(config);
         }
         Html.u = u;
-
         //#endregion u
         //#region ul
         /**
@@ -14591,7 +13388,6 @@ var Classical;
             return new Html.Elements.UnorderedListElement(config);
         }
         Html.ul = ul;
-
         //#endregion ul
         //#region variable
         /**
@@ -14603,7 +13399,6 @@ var Classical;
             return new Html.Elements.VariableElement(config);
         }
         Html.variable = variable;
-
         //#endregion variable
         //#region video
         /**
@@ -14615,7 +13410,6 @@ var Classical;
             return new Html.Elements.VideoElement(config);
         }
         Html.video = video;
-
         //#endregion video
         //#region wbr
         /**
@@ -14627,14 +13421,13 @@ var Classical;
             return new Html.Elements.WordBreakOpportunityElement(config);
         }
         Html.wbr = wbr;
-    })(Classical.Html || (Classical.Html = {}));
-    var Html = Classical.Html;
+    })(Html = Classical.Html || (Classical.Html = {}));
 })(Classical || (Classical = {}));
-
+//#endregion Factory Methods
+//#region Utilities
 var Classical;
 (function (Classical) {
-    //#endregion Factory Methods
-    //#region Utilities
+    var Html;
     (function (Html) {
         /**
         * An event that decorates native DOM events.
@@ -14656,7 +13449,6 @@ var Classical;
                 enumerable: true,
                 configurable: true
             });
-
             Object.defineProperty(HtmlElementEvent.prototype, "eventName", {
                 get: function () {
                     return this._eventName;
@@ -14664,7 +13456,6 @@ var Classical;
                 enumerable: true,
                 configurable: true
             });
-
             Object.defineProperty(HtmlElementEvent.prototype, "eventType", {
                 get: function () {
                     return this._eventType;
@@ -14672,31 +13463,26 @@ var Classical;
                 enumerable: true,
                 configurable: true
             });
-
             Object.defineProperty(HtmlElementEvent.prototype, "event", {
                 get: function () {
                     if (!this._event) {
                         this._event = document.createEvent(this._eventType);
                         this._event.initEvent(this._eventName, true, true);
                     }
-
                     return this._event;
                 },
                 enumerable: true,
                 configurable: true
             });
-
             Object.defineProperty(HtmlElementEvent.prototype, "registrationMap", {
                 get: function () {
                     if (!this._registrationMap)
                         this._registrationMap = new Classical.Collections.Dictionary();
-
                     return this._registrationMap;
                 },
                 enumerable: true,
                 configurable: true
             });
-
             //#endregion Constructor
             //#region IEvent Members
             //#region subscribe
@@ -14704,38 +13490,30 @@ var Classical;
             HtmlElementEvent.prototype.subscribe = function (registration) {
                 var _this = this;
                 Classical.Assert.isDefined(registration, 'The registration is not defined.');
-
                 var elementRegistration = function (domInfo) {
                     registration(_this.node, domInfo);
                 };
-
                 this.registrationMap.add(registration, elementRegistration);
-
                 //TODO: Remove cast when lib.ts is correct.
                 this.node.element.addEventListener(this._eventName, elementRegistration);
             };
-
             //#endregion subscribe
             //#region unsubscribe
             //Unsubscribe from an event by providing a registration.
             HtmlElementEvent.prototype.unsubscribe = function (registration) {
                 Classical.Assert.isDefined(registration, 'The registration is not defined.');
-
                 var map = this.registrationMap, elementRegistration = map.getValue(registration);
                 Classical.Assert.isDefined(elementRegistration, Classical.Utilities.format('The registration has not been subscribed to the {0} event.', this._eventName));
-
                 //TODO: Remove cast when lib.ts is correct.
                 this.node.element.removeEventListener(this._eventName, elementRegistration);
                 map.remove(registration);
             };
-
             //#endregion unsubscribe
             //#region execute
             //Execute the event for all the registered attendees.
             HtmlElementEvent.prototype.execute = function (info) {
                 this.node.element.dispatchEvent(this.event);
             };
-
             //#endregion execute
             //#region clear
             //Clears all subscribers from the event.
@@ -14746,7 +13524,6 @@ var Classical;
                     _this.unsubscribe(registration);
                 });
             };
-
             //#endregion clear
             //#region count
             //Counts the numbers of subscribers of the event.
@@ -14757,7 +13534,5 @@ var Classical;
             return HtmlElementEvent;
         })();
         Html.HtmlElementEvent = HtmlElementEvent;
-    })(Classical.Html || (Classical.Html = {}));
-    var Html = Classical.Html;
+    })(Html = Classical.Html || (Classical.Html = {}));
 })(Classical || (Classical = {}));
-//#endregion Utilities

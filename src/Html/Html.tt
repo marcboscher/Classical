@@ -200,7 +200,7 @@ module Classical.Html {
 			var propertyType = property.Type;
 			var binderName = propertyName + "Binder";
 			var binderComment = propertyComment;
-			var binderPropertyType = "b.IPropertyBinder<" + propertyType + ">";
+			var binderPropertyType = "b.IBinder<b.PropertyUpdate<" + propertyType + ">>";
             if (property.IsInitializable) 
             {
 #>
@@ -267,7 +267,7 @@ module Classical.Html {
 			var propertyType = property.Type;
 			var binderName = propertyName + "Binder";
 			var binderComment = propertyComment;
-			var binderPropertyType = "b.IPropertyBinder<" + propertyType + ">";
+			var binderPropertyType = "b.IBinder<b.PropertyUpdate<" + propertyType + ">>";
             if (property.IsInitializable) 
             {
 #>
@@ -329,7 +329,7 @@ module Classical.Html {
 			var propertyType = property.Type;
 			var binderName = propertyName + "Binder";
 			var binderComment = propertyComment;
-			var binderPropertyType = "b.IPropertyBinder<" + propertyType + ">";
+			var binderPropertyType = "b.IBinder<b.PropertyUpdate<" + propertyType + ">>";
 
 			if(!property.IsElementReference)
             {

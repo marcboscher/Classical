@@ -184,7 +184,7 @@ module Classical.Html.spec {
                         expect(audioElement.element['volume']).toBe(audioElement.volume);
 
                         audioElement = m.create(m.audio({
-                            volumeBinder: bind(model.property)
+                            volumeBinder: bind(model.property, p => p.value)
                         }));
                         expect(() => model.property.value = 2).toThrow();
                         expect(audioElement.element['volume']).toBe(audioElement.volume);
@@ -202,7 +202,7 @@ module Classical.Html.spec {
                         expect(inputElement.element['size']).toBe(inputElement.size);
 
                         inputElement = m.create(m.input({
-                            sizeBinder: bind<number>(model.property)
+                            sizeBinder: bind(model.property, p => p.value)
                         }));
                         expect(() => model.property.value = 0).toThrow();
                         expect(inputElement.size).toBe(10);
@@ -251,7 +251,7 @@ module Classical.Html.spec {
                                         var config = new Object();
 
                                         prop.testItems.query().forEach(testItem => {
-                                            config[propertyName + 'Binder'] = bind(new b.Property(testItem));
+                                            config[propertyName + 'Binder'] = bind(testItem, t => t);
 
                                             element = m.create(m[factoryMethod](config));
                                             expect(element[propertyName]).toBe(testItem);
@@ -328,7 +328,8 @@ module Classical.Html.spec {
                                     it('should have the same value as the ' + propertyName + 'Binder property in the config.', () => {
                                         prop.testItems.query().forEach(testItem => {
                                             var config = new Object();
-                                            config[propertyName + 'Binder'] = bind(new b.Property(testItem));
+
+                                            config[propertyName + 'Binder'] = bind(testItem, t => t);
 
                                             var element = m.create(m[factoryMethod](config));
                                             if (testCode) eval(testCode);
@@ -367,8 +368,8 @@ module Classical.Html.spec {
 
                                         element = m.create(m[factoryMethod]());
                                         if (testCode) eval(testCode);
-                                        var binder = bind(model.property);
-                                        binder.property = element[propertyName + 'Property'];
+                                        var binder = bind(model.property, p => p.value);
+                                        binder.source = element[propertyName + 'Property'];
 
                                         model.property.value = second;
                                         expect(element[propertyName]).toBe(second);

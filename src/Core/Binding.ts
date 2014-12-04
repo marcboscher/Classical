@@ -1,8 +1,16 @@
 ﻿
 //#region bind
 
-function bind<T>(property: Classical.Binding.Property<T>): Classical.Binding.IPropertyBinder<T> {
-    return null;
+function bind<TModel, TProperty>(model: TModel, selector: (obj: TModel) => TProperty): Classical.Binding.IBinder<Classical.Binding.PropertyUpdate<TProperty>> {
+    var propertyName = Classical.Expression.getProperty(selector);
+    var property = Classical.Binding.getProperty(model, propertyName);
+    return Classical.Binding.propertyBinderToBinder<TProperty>({
+        property: property,
+        converter: {
+            convert: x => x,
+            convertBack: x => x
+        }
+    });
 }
 
 //#endregion bind
@@ -12,6 +20,7 @@ module Classical.Binding {
     //#region Imports
 
     import u = Classical.Utilities;
+    import cc = Classical.Collections;
     import e = Classical.Events;
     import Assert = Classical.Assert;
 
@@ -518,7 +527,7 @@ module Classical.Binding {
                 currentBinder = this._sourceToBinder(source);
             } else if (arg1.property) /*propertyBinder*/ {
                 var propertyBinder: IPropertyBinder<TValue> = arg1;
-                currentBinder = this._propertyBinderToBinder(arg1);
+                currentBinder = propertyBinderToBinder<TValue>(arg1);
             } else  /*binder*/ {
                 currentBinder = arg1;
             }
@@ -604,42 +613,6 @@ module Classical.Binding {
         }
 
         //#endregion sourceToBinder
-
-        //#region propertyBinderToBinder
-
-        private _propertyBinderToBinder(propertyBinder: IPropertyBinder<TValue>): IBinder<PropertyUpdate<TValue>> {
-            var converter: IConverter<Update, PropertyUpdate<TValue>> = null,
-                valueConverter = propertyBinder.converter;
-
-            converter = {
-                convert: sourceUpdate => {
-                    var value = valueConverter.convert(
-                        (<any>sourceUpdate).value);
-                    return sourceUpdate.transferSourcesTo(
-                        new PropertyUpdate(value));
-                },
-            };
-
-            if (valueConverter.convertBack) {
-                converter.convertBack = targetUpdate => {
-                    var value = valueConverter.convertBack(
-                        targetUpdate.value);
-                    return targetUpdate.transferSourcesTo(
-                        new PropertyUpdate(value));
-                }
-            }
-
-            return {
-                source: propertyBinder.property,
-                converter: converter,
-                init: () => {
-                    this.value = valueConverter.convert(
-                        propertyBinder.property.value);
-                }
-            };
-        }
-
-        //#endregion propertyBinderToBinder
 
         //#endregion Utilities
     }
@@ -769,4 +742,77 @@ module Classical.Binding {
     }
 
     //#endregion PropertyUpdate
+
+    //#region Functions
+
+    export function getProperty<T>(obj: any, propertyName: string): Property<T> {
+        var value = obj[propertyName];
+        if (!value.getType().isAssignableTo(typeOf(Property)))
+            setProperty(obj, propertyName, value);
+
+        return objectToPropertyMap.getValue(obj).getValue(propertyName);
+    }
+
+    export function setProperty<T>(obj: any, propertyName: string, value: T): void {
+        if (!objectToPropertyMap.containsKey(obj))
+            objectToPropertyMap.add(obj, new cc.Dictionary<string, Property<T>>());
+
+        var propertyMap = objectToPropertyMap.getValue(obj);
+        if (!propertyMap.containsKey(propertyName)) {
+            var property = new Property<T>(value);
+            propertyMap.add(propertyName, property);
+
+            delete obj[propertyName];
+            Object.defineProperty(obj, propertyName, {
+                get: () => property.value,
+                set: (value: T) => property.value = value,
+                configurable: true,
+                enumerable: true,
+            });
+
+            return;
+        }
+
+        propertyMap.getValue(propertyName).value = value;
+    }
+
+    export function propertyBinderToBinder<TValue>(propertyBinder: IPropertyBinder<TValue>): IBinder<PropertyUpdate<TValue>> {
+        var converter: IConverter<Update, PropertyUpdate<TValue>> = null,
+            valueConverter = propertyBinder.converter;
+
+        converter = {
+            convert: sourceUpdate => {
+                var value = valueConverter.convert(
+                    (<any>sourceUpdate).value);
+                return sourceUpdate.transferSourcesTo(
+                    new PropertyUpdate(value));
+            },
+        };
+
+        if (valueConverter.convertBack) {
+            converter.convertBack = targetUpdate => {
+                var value = valueConverter.convertBack(
+                    targetUpdate.value);
+                return targetUpdate.transferSourcesTo(
+                    new PropertyUpdate(value));
+            }
+        }
+
+        return {
+            source: propertyBinder.property,
+            converter: converter,
+            init: () => {
+                this.value = valueConverter.convert(
+                    propertyBinder.property.value);
+            }
+        };
+    }
+
+    //#endregion Functions
+
+    //#region Utilities
+
+    var objectToPropertyMap = new cc.Dictionary<any, cc.Dictionary<string, Property<any>>>(100);
+
+    //#endregion Utilities
 } 

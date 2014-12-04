@@ -1305,6 +1305,7 @@ module Classical.Reflection {
         //Looks up or creates a type for the specified constructor.
         static getType(ctor: IFunction): Type {
             Assert.isDefined(ctor, 'The constructor is not defined.');
+            Assert.isTrue(u.isFunction(ctor), 'The constructor must be a function.');
             var type = types.getValue(ctor);
             if (type === undefined) {
                 type = new Type(constructorPassword, ctor);

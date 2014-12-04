@@ -1,20 +1,20 @@
-declare module Classical.Native {
-}
 declare module Classical.Hash {
     function forNumber(key: number, seed?: number): number;
     /**
-    * JS Implementation of MurmurHash3 (r136) (as of May 20, 2011)
-    *
-    * @author <a href="mailto:gary.court@gmail.com">Gary Court</a>
-    * @see http://github.com/garycourt/murmurhash-js
-    * @author <a href="mailto:aappleby@gmail.com">Austin Appleby</a>
-    * @see http://sites.google.com/site/murmurhash/
-    *
-    * @param {string} key ASCII only
-    * @param {number} seed Positive integer only
-    * @return {number} 32-bit positive integer hash (default 37)
-    */
+        * JS Implementation of MurmurHash3 (r136) (as of May 20, 2011)
+        *
+        * @author <a href="mailto:gary.court@gmail.com">Gary Court</a>
+        * @see http://github.com/garycourt/murmurhash-js
+        * @author <a href="mailto:aappleby@gmail.com">Austin Appleby</a>
+        * @see http://sites.google.com/site/murmurhash/
+        *
+        * @param {string} key ASCII only
+        * @param {number} seed Positive integer only
+        * @return {number} 32-bit positive integer hash (default 37)
+        */
     function forString(key: string, seed?: number): number;
+}
+declare module Classical.Native {
 }
 declare module Classical.Utilities {
     function areEqual(first: any, second: any): boolean;
@@ -51,11 +51,11 @@ declare module Classical.Assert {
     function isInvalid(message?: string): void;
     function notImplemented(message?: string): Exception;
     class Exception {
-        public message: string;
-        public stackTrace: string;
+        message: string;
+        stackTrace: string;
         constructor(message?: string);
-        public toString(): string;
-        public setStackTrace(): void;
+        toString(): string;
+        setStackTrace(): void;
     }
 }
 interface IHashable {
@@ -79,10 +79,10 @@ interface Boolean extends IObject {
 declare module Classical {
     class Enum<TValue extends IObject> {
         private _value;
-        public value : TValue;
+        value: TValue;
         constructor(value: TValue);
-        public equals(other: any): boolean;
-        public getHashCode(): number;
+        equals(other: any): boolean;
+        getHashCode(): number;
     }
 }
 interface IFunction extends Function {
@@ -94,19 +94,19 @@ declare module Classical.Collections {
         private _numberOfBuckets;
         private _numberOfElements;
         private _initialCapacity;
-        public keys : IEnumerable<TKey>;
-        public values : IEnumerable<TValue>;
+        keys: IEnumerable<TKey>;
+        values: IEnumerable<TValue>;
         constructor(capacity?: number);
-        public getEnumerator(): IEnumerator<KeyValuePair<TKey, TValue>>;
-        public query(): IQueryable<KeyValuePair<TKey, TValue>>;
-        public forEach(operation: (item: KeyValuePair<TKey, TValue>) => void): void;
-        public array(): KeyValuePair<TKey, TValue>[];
-        public add(key: TKey, value: TValue): Dictionary<TKey, TValue>;
-        public remove(key: TKey): Dictionary<TKey, TValue>;
-        public getValue(key: TKey): TValue;
-        public containsKey(key: TKey): boolean;
-        public clear(): void;
-        public count(): number;
+        getEnumerator(): IEnumerator<KeyValuePair<TKey, TValue>>;
+        query(): IQueryable<KeyValuePair<TKey, TValue>>;
+        forEach(operation: (item: KeyValuePair<TKey, TValue>) => void): void;
+        array(): KeyValuePair<TKey, TValue>[];
+        add(key: TKey, value: TValue): Dictionary<TKey, TValue>;
+        remove(key: TKey): Dictionary<TKey, TValue>;
+        getValue(key: TKey): TValue;
+        containsKey(key: TKey): boolean;
+        clear(): void;
+        count(): number;
         private getIndex(key);
         private getElements(key);
         private getPair(elements, hashTable, numberOfBuckets, key);
@@ -115,8 +115,8 @@ declare module Classical.Collections {
         private rebalance();
     }
     class KeyValuePair<TKey, TValue> {
-        public key: TKey;
-        public value: TValue;
+        key: TKey;
+        value: TValue;
         constructor(key: TKey, value: TValue);
     }
 }
@@ -139,14 +139,14 @@ declare module Classical.Reflection {
         private _types;
         private _functions;
         private _variables;
-        public name : string;
-        public fullName : string;
-        public scope : any;
+        name: string;
+        fullName: string;
+        scope: any;
         constructor(password: number, name: string, scope: any, base?: Module);
-        public getModules(): IQueryable<Module>;
-        public getTypes(): IQueryable<Type>;
-        public getFunctions(): IQueryable<Function>;
-        public getVariables(): IQueryable<Variable>;
+        getModules(): IQueryable<Module>;
+        getTypes(): IQueryable<Type>;
+        getFunctions(): IQueryable<Function>;
+        getVariables(): IQueryable<Variable>;
         private _initializeModules();
         private _initializeTypes();
         private _initializeFunctions();
@@ -155,8 +155,8 @@ declare module Classical.Reflection {
         private static _global;
         private static _anonymous;
         private static _modules;
-        static global : Module;
-        static anonymous : Module;
+        static global: Module;
+        static anonymous: Module;
         static getModule(type: Type): Module;
         private static _isModule(moduleCandidate, moduleName?);
         private static _isType(typeCandidate);
@@ -169,28 +169,28 @@ declare module Classical.Reflection {
         private _properties;
         private _fields;
         private _methods;
-        public isPublic : boolean;
-        public isPrivate : boolean;
-        public isProtected : boolean;
-        public isPrimitive : boolean;
-        public name : string;
-        public fullName : string;
-        public ctor : IFunction;
-        public prototype : any;
-        public base : Type;
-        public module : Module;
+        isPublic: boolean;
+        isPrivate: boolean;
+        isProtected: boolean;
+        isPrimitive: boolean;
+        name: string;
+        fullName: string;
+        ctor: IFunction;
+        prototype: any;
+        base: Type;
+        module: Module;
         constructor(password: number, ctor: IFunction, mod?: Module);
-        public toString(): string;
-        public equals(other: any): boolean;
-        public getHashCode(): number;
-        public isAssignableTo(other: Type): boolean;
-        public isAssignableFrom(other: Type): boolean;
-        public getFields(...options: Modifier[]): IQueryable<Field>;
-        public getField(name: string, ...options: Modifier[]): Field;
-        public getProperties(...options: Modifier[]): IQueryable<Property>;
-        public getProperty(name: string, ...options: Modifier[]): Property;
-        public getMethods(...options: Modifier[]): IQueryable<Method>;
-        public getMethod(name: string, ...options: Modifier[]): Method;
+        toString(): string;
+        equals(other: any): boolean;
+        getHashCode(): number;
+        isAssignableTo(other: Type): boolean;
+        isAssignableFrom(other: Type): boolean;
+        getFields(...options: Modifier[]): IQueryable<Field>;
+        getField(name: string, ...options: Modifier[]): Field;
+        getProperties(...options: Modifier[]): IQueryable<Property>;
+        getProperty(name: string, ...options: Modifier[]): Property;
+        getMethods(...options: Modifier[]): IQueryable<Method>;
+        getMethod(name: string, ...options: Modifier[]): Method;
         private _initializeProperties();
         private _getStaticProperties();
         private _getInstanceProperties();
@@ -202,9 +202,9 @@ declare module Classical.Reflection {
         private _name;
         private _declaringType;
         private _isStatic;
-        public name : string;
-        public declaringType : Type;
-        public isStatic : boolean;
+        name: string;
+        declaringType: Type;
+        isStatic: boolean;
         constructor(password: number, name: string, declaringType: Type, isStatic: boolean);
     }
     class Property extends Member {
@@ -213,38 +213,38 @@ declare module Classical.Reflection {
         private _isMethod;
         private _isField;
         private _propertyDescriptor;
-        public isPublic : boolean;
-        public isPrivate : boolean;
-        public isProtected : boolean;
-        public canWrite : boolean;
-        public canRead : boolean;
-        public enumerable : boolean;
-        public configurable : boolean;
-        public isMethod : boolean;
-        public isField : boolean;
+        isPublic: boolean;
+        isPrivate: boolean;
+        isProtected: boolean;
+        canWrite: boolean;
+        canRead: boolean;
+        enumerable: boolean;
+        configurable: boolean;
+        isMethod: boolean;
+        isField: boolean;
         constructor(password: number, name: string, declaringType: Type, propertyDescriptor: PropertyDescriptor, canRead: boolean, canWrite: boolean, isMethod: boolean, isField: boolean, isStatic: boolean);
-        public getValue(instance: any): any;
-        public setValue(instance: any, value: any): void;
+        getValue(instance: any): any;
+        setValue(instance: any, value: any): void;
     }
     class Field extends Property {
-        public isPublic : boolean;
-        public isPrivate : boolean;
-        public isProtected : boolean;
+        isPublic: boolean;
+        isPrivate: boolean;
+        isProtected: boolean;
         constructor(password: number, name: string, declaringType: Type, isStatic: boolean);
-        public getValue(instance: any): any;
-        public setValue(instance: any, value: any): void;
+        getValue(instance: any): any;
+        setValue(instance: any, value: any): void;
     }
     class Variable extends Property {
         private _module;
-        public module : Module;
+        module: Module;
         constructor(password: number, name: string, module: Module);
     }
     class Method extends Property {
         private _underlyingFunction;
         private _parameters;
         constructor(password: number, name: string, declaringType: Type, propertyDescriptor: PropertyDescriptor, canWrite: boolean, underlyingFunction: IFunction, isStatic: boolean);
-        public invoke(instance: any, ...args: any[]): any;
-        public getParameters(): IQueryable<Parameter>;
+        invoke(instance: any, ...args: any[]): any;
+        getParameters(): IQueryable<Parameter>;
         private _initializeParameters();
     }
     class Function extends Method {
@@ -253,8 +253,8 @@ declare module Classical.Reflection {
     class Parameter {
         private _name;
         private _position;
-        public name : string;
-        public position : number;
+        name: string;
+        position: number;
         constructor(password: number, name: string, position: number);
     }
 }
@@ -318,50 +318,50 @@ declare module Classical.Collections {
     class ImmutableCollection<T> implements IAccessibleCollection<T> {
         private _get;
         constructor(elements: IEnumerable<T>);
-        public get(index: number): T;
-        public getEnumerator(): IEnumerator<T>;
-        public query(): IQueryable<T>;
-        public forEach(operation: (item: T) => void): void;
-        public array(): T[];
-        public count(): number;
+        get(index: number): T;
+        getEnumerator(): IEnumerator<T>;
+        query(): IQueryable<T>;
+        forEach(operation: (item: T) => void): void;
+        array(): T[];
+        count(): number;
     }
     class Queryable<T> implements IQueryable<T> {
-        public _enumerable: IEnumerable<T>;
+        _enumerable: IEnumerable<T>;
         constructor(enumerable: IEnumerable<T>);
-        public toString(): string;
-        public getEnumerator(): IEnumerator<T>;
-        public query(): Queryable<T>;
-        public array(): T[];
-        public count(): number;
-        public forEach(operation: (item?: T) => void): void;
-        public forEach(operation: (item: T) => void): IQueryable<T>;
-        public cast<TElement>(): IQueryable<TElement>;
-        public where(predicate: (item: T) => boolean): IQueryable<T>;
-        public select<TSelected>(selector: (item: T) => TSelected): IQueryable<TSelected>;
-        public selectMany<TSelected>(selector: (item: T) => IEnumerable<TSelected>): IQueryable<TSelected>;
-        public orderBy<TSelected>(selector: (item: T) => TSelected, comparison?: (first: TSelected, second: TSelected) => number): IQueryable<T>;
-        public orderByDescending<TSelected>(selector: (item: T) => TSelected, comparison?: (first: TSelected, second: TSelected) => number): IQueryable<T>;
-        public aggregate<TAccumulate>(accumulator: (first: TAccumulate, second: T) => TAccumulate, seed?: TAccumulate): TAccumulate;
-        public sum(selector?: (item: T) => number): number;
-        public max(selector?: (item: T) => number): number;
-        public min(selector?: (item: T) => number): number;
-        public hasNone(predicate?: (item: T) => boolean): boolean;
-        public hasAny(predicate?: (item: T) => boolean): boolean;
-        public first(predicate?: (item: T) => boolean): T;
-        public firstOrDefault(predicate?: (item: T) => boolean): T;
-        public last(predicate?: (item: T) => boolean): T;
-        public lastOrDefault(predicate?: (item: T) => boolean): T;
-        public single(predicate?: (item: T) => boolean): T;
-        public singleOrDefault(predicate?: (item: T) => boolean): T;
-        public skip(count: number): IQueryable<T>;
-        public take(count: number): IQueryable<T>;
-        public at(index: number): T;
-        public concat(other: IEnumerable<T>): IQueryable<T>;
-        public distinct(): IQueryable<T>;
-        public reverse(): IQueryable<T>;
-        public dictionary<TKey, TValue>(keySelector: (item: T) => TKey, valueSelector: (item: T) => TValue): Dictionary<TKey, TValue>;
-        public execute(): IQueryable<T>;
-        public result(): T[];
+        toString(): string;
+        getEnumerator(): IEnumerator<T>;
+        query(): Queryable<T>;
+        array(): T[];
+        count(): number;
+        forEach(operation: (item?: T) => void): void;
+        forEach(operation: (item: T) => void): IQueryable<T>;
+        cast<TElement>(): IQueryable<TElement>;
+        where(predicate: (item: T) => boolean): IQueryable<T>;
+        select<TSelected>(selector: (item: T) => TSelected): IQueryable<TSelected>;
+        selectMany<TSelected>(selector: (item: T) => IEnumerable<TSelected>): IQueryable<TSelected>;
+        orderBy<TSelected>(selector: (item: T) => TSelected, comparison?: (first: TSelected, second: TSelected) => number): IQueryable<T>;
+        orderByDescending<TSelected>(selector: (item: T) => TSelected, comparison?: (first: TSelected, second: TSelected) => number): IQueryable<T>;
+        aggregate<TAccumulate>(accumulator: (first: TAccumulate, second: T) => TAccumulate, seed?: TAccumulate): TAccumulate;
+        sum(selector?: (item: T) => number): number;
+        max(selector?: (item: T) => number): number;
+        min(selector?: (item: T) => number): number;
+        hasNone(predicate?: (item: T) => boolean): boolean;
+        hasAny(predicate?: (item: T) => boolean): boolean;
+        first(predicate?: (item: T) => boolean): T;
+        firstOrDefault(predicate?: (item: T) => boolean): T;
+        last(predicate?: (item: T) => boolean): T;
+        lastOrDefault(predicate?: (item: T) => boolean): T;
+        single(predicate?: (item: T) => boolean): T;
+        singleOrDefault(predicate?: (item: T) => boolean): T;
+        skip(count: number): IQueryable<T>;
+        take(count: number): IQueryable<T>;
+        at(index: number): T;
+        concat(other: IEnumerable<T>): IQueryable<T>;
+        distinct(): IQueryable<T>;
+        reverse(): IQueryable<T>;
+        dictionary<TKey, TValue>(keySelector: (item: T) => TKey, valueSelector: (item: T) => TValue): Dictionary<TKey, TValue>;
+        execute(): IQueryable<T>;
+        result(): T[];
         private coalescePredicate(predicate);
     }
     module Enumerable {
@@ -398,45 +398,45 @@ interface ITallyRequest<THost, TInformation> extends IRequest<THost, TInformatio
 }
 declare module Classical.Events {
     class Event<THost, TInformation> implements IEvent<THost, TInformation> {
-        public _subscribers: {
+        _subscribers: {
             (host: THost, info: TInformation): void;
         }[];
-        public _host: THost;
+        _host: THost;
         constructor(host: THost);
-        public subscribe(registration: (host: THost, info: TInformation) => void): void;
-        public unsubscribe(registration: (host: THost, info: TInformation) => void): void;
-        public execute(info?: TInformation): void;
-        public clear(): void;
-        public count(): number;
+        subscribe(registration: (host: THost, info: TInformation) => void): void;
+        unsubscribe(registration: (host: THost, info: TInformation) => void): void;
+        execute(info?: TInformation): void;
+        clear(): void;
+        count(): number;
     }
     class Request<THost, TInformation, TResponse> implements IRequest<THost, TInformation, TResponse> {
-        public _subscribers: {
+        _subscribers: {
             (host: THost, info: TInformation): TResponse;
         }[];
-        public _host: THost;
+        _host: THost;
         constructor(host?: THost);
-        public subscribe(registration: (host: THost, info: TInformation) => TResponse): void;
-        public unsubscribe(registration: (host: THost, info: TInformation) => TResponse): void;
-        public execute(info: TInformation): IEnumerable<TResponse>;
-        public clear(): void;
-        public count(): number;
+        subscribe(registration: (host: THost, info: TInformation) => TResponse): void;
+        unsubscribe(registration: (host: THost, info: TInformation) => TResponse): void;
+        execute(info: TInformation): IEnumerable<TResponse>;
+        clear(): void;
+        count(): number;
     }
     class TallyRequest<THost, TInformation> extends Request<THost, TInformation, number> implements ITallyRequest<THost, TInformation> {
         constructor(host?: THost);
-        public tally(info: TInformation): number;
+        tally(info: TInformation): number;
     }
     class VoteRequest<THost, TInformation> extends Request<THost, TInformation, boolean> implements IVoteRequest<THost, TInformation> {
-        public _undecidedResult: boolean;
+        _undecidedResult: boolean;
         constructor(host?: THost, undecidedResult?: boolean);
-        public subscribe(registration: (host: THost, info: TInformation) => boolean): void;
-        public poll(info: TInformation): boolean;
+        subscribe(registration: (host: THost, info: TInformation) => boolean): void;
+        poll(info: TInformation): boolean;
     }
     class UnanimousVoteRequest<THost, TInformation> extends VoteRequest<THost, TInformation> {
         constructor(host?: THost, undecidedResult?: boolean);
-        public poll(info: TInformation): boolean;
+        poll(info: TInformation): boolean;
     }
 }
-declare function bind<T>(property: Classical.Binding.Property<T>): Classical.Binding.IPropertyBinder<T>;
+declare function bind<TModel, TProperty>(model: TModel, selector: (obj: TModel) => TProperty): Classical.Binding.IBinder<Classical.Binding.PropertyUpdate<TProperty>>;
 declare module Classical.Binding {
     interface ISynchronizable<TTargetUpdate extends Update> extends IObject {
         hasTarget(target: ISynchronizable<TTargetUpdate>): boolean;
@@ -451,9 +451,9 @@ declare module Classical.Binding {
     class Update {
         private _sources;
         constructor(sources: IEnumerable<any>);
-        public hasSource(source: any): boolean;
-        public addSource(source: any): void;
-        public transferSourcesTo<TUpdate extends Update>(update: TUpdate): TUpdate;
+        hasSource(source: any): boolean;
+        addSource(source: any): void;
+        transferSourcesTo<TUpdate extends Update>(update: TUpdate): TUpdate;
     }
     interface IBinder<TTargetUpdate extends Update> extends IObject {
         source: ISynchronizable<Update>;
@@ -466,7 +466,7 @@ declare module Classical.Binding {
     }
     interface IConverter<TSource, TTarget> extends IObject {
         convert(value: TSource): TTarget;
-        convertBack? (value: TTarget): TSource;
+        convertBack?(value: TTarget): TSource;
     }
     class Synchronizer<TTargetUpdate extends Update> implements ISynchronizable<TTargetUpdate> {
         private _updateDepth;
@@ -474,58 +474,57 @@ declare module Classical.Binding {
         private _target;
         private _binders;
         private _onUpdateEvent;
-        public target : ISynchronizable<TTargetUpdate>;
-        public updates : TTargetUpdate[];
-        public updateDepth : number;
+        target: ISynchronizable<TTargetUpdate>;
+        updates: TTargetUpdate[];
+        updateDepth: number;
         constructor(target: ISynchronizable<TTargetUpdate>);
-        public hasTarget(target: ISynchronizable<TTargetUpdate>): boolean;
-        public hasSource(source: ISynchronizable<any>): boolean;
-        public bind(binder: IBinder<TTargetUpdate>): void;
-        public bind(binder: IComplexBinder<TTargetUpdate>): void;
-        public unbind(source: ISynchronizable<any>): boolean;
-        public apply(updates: IEnumerable<TTargetUpdate>): void;
-        public observe(registration: (update: TTargetUpdate[], source: any) => void): void;
-        public detach(): void;
-        public add(update: TTargetUpdate): void;
-        public filter(updates: IEnumerable<TTargetUpdate>): TTargetUpdate[];
-        public sync(immediate?: boolean): boolean;
-        public syncStart(): void;
+        hasTarget(target: ISynchronizable<TTargetUpdate>): boolean;
+        hasSource(source: ISynchronizable<any>): boolean;
+        bind(binder: IBinder<TTargetUpdate>): void;
+        bind(binder: IComplexBinder<TTargetUpdate>): void;
+        unbind(source: ISynchronizable<any>): boolean;
+        apply(updates: IEnumerable<TTargetUpdate>): void;
+        observe(registration: (update: TTargetUpdate[], source: any) => void): void;
+        detach(): void;
+        add(update: TTargetUpdate): void;
+        filter(updates: IEnumerable<TTargetUpdate>): TTargetUpdate[];
+        sync(immediate?: boolean): boolean;
+        syncStart(): void;
         private _createComplexBinding(binder);
         private _executeUpdates(groupUpdate);
         private _executeOnUpdate(updates);
     }
     class Property<TValue> implements ISynchronizable<PropertyUpdate<TValue>> {
-        public updating: boolean;
+        updating: boolean;
         private _value;
         private _synchronizer;
-        public value : TValue;
+        value: TValue;
         constructor(value?: TValue);
-        public toString(): string;
-        public hasTarget(target: ISynchronizable<PropertyUpdate<TValue>>): boolean;
-        public hasSource(source: ISynchronizable<any>): boolean;
-        public bind(source: Property<TValue>): any;
-        public bind(sources: ISynchronizable<Update>[], selector: (sources: any[]) => TValue): any;
-        public bind(propertyBinder: IPropertyBinder<TValue>): any;
-        public bind(binder: IBinder<PropertyUpdate<TValue>>): any;
-        public bind(binder: IComplexBinder<PropertyUpdate<TValue>>): void;
-        public unbind(partner: ISynchronizable<any>): boolean;
-        public observe(registration: (update: PropertyUpdate<TValue>[], source: Property<TValue>) => void): void;
-        public apply(updates: IEnumerable<PropertyUpdate<TValue>>): void;
-        public detach(): void;
+        toString(): string;
+        hasTarget(target: ISynchronizable<PropertyUpdate<TValue>>): boolean;
+        hasSource(source: ISynchronizable<any>): boolean;
+        bind(source: Property<TValue>): any;
+        bind(sources: ISynchronizable<Update>[], selector: (sources: any[]) => TValue): any;
+        bind(propertyBinder: IPropertyBinder<TValue>): any;
+        bind(binder: IBinder<PropertyUpdate<TValue>>): any;
+        bind(binder: IComplexBinder<PropertyUpdate<TValue>>): void;
+        unbind(partner: ISynchronizable<any>): boolean;
+        observe(registration: (update: PropertyUpdate<TValue>[], source: Property<TValue>) => void): void;
+        apply(updates: IEnumerable<PropertyUpdate<TValue>>): void;
+        detach(): void;
         private _createComplexBinder(sources, selector);
         private _sourceToBinder(source);
-        private _propertyBinderToBinder(propertyBinder);
     }
     class ConfirmationProperty<TValue> extends Property<TValue> {
         private _newValue;
         private hasAccepted;
-        public value : TValue;
-        public newValue : TValue;
+        value: TValue;
+        newValue: TValue;
         private synchronizer;
         constructor(value?: TValue);
-        public apply(updates: IEnumerable<PropertyUpdate<TValue>>): void;
-        public accept(): void;
-        public reject(): void;
+        apply(updates: IEnumerable<PropertyUpdate<TValue>>): void;
+        accept(): void;
+        reject(): void;
         private _getValue();
         private _setValue(value);
     }
@@ -534,7 +533,70 @@ declare module Classical.Binding {
         converter: IConverter<any, TValue>;
     }
     class PropertyUpdate<TValue> extends Update {
-        public value: TValue;
+        value: TValue;
         constructor(value: TValue, sources?: IEnumerable<any>);
+    }
+    function getProperty<T>(obj: any, propertyName: string): Property<T>;
+    function setProperty<T>(obj: any, propertyName: string, value: T): void;
+    function propertyBinderToBinder<TValue>(propertyBinder: IPropertyBinder<TValue>): IBinder<PropertyUpdate<TValue>>;
+}
+declare module Classical.Binding.Collections {
+    class Collection<T> implements ICollection<T>, ISynchronizable<CollectionUpdate<T>> {
+        private _items;
+        private _synchronizer;
+        constructor(items?: IEnumerable<T>);
+        getEnumerator(): IEnumerator<T>;
+        forEach(operation: (item?: T) => void): void;
+        query(): IQueryable<T>;
+        array(): T[];
+        count(): number;
+        add(item: T): ICollection<T>;
+        private _add(update);
+        addRange(items: IEnumerable<T>): ICollection<T>;
+        remove(item: T): ICollection<T>;
+        private _remove(update);
+        removeAt(index: number): ICollection<T>;
+        private _removeAt(update);
+        clear(): ICollection<T>;
+        get(index: number): T;
+        set(index: number, item: T): ICollection<T>;
+        private _set(update);
+        hasTarget(target: ISynchronizable<CollectionUpdate<T>>): boolean;
+        hasSource(source: ISynchronizable<any>): boolean;
+        bind(source: Collection<T>): void;
+        bind(collectionBinder: ICollectionBinder<T>): void;
+        bind(sources: ISynchronizable<Update>[], selector: (sources: any[]) => any): any;
+        bind(binder: IBinder<CollectionUpdate<T>>): void;
+        bind(binder: IComplexBinder<CollectionUpdate<T>>): void;
+        unbind(source: ISynchronizable<any>): boolean;
+        observe(registration: (update: CollectionUpdate<T>[], source: any) => void): void;
+        apply(updates: IEnumerable<CollectionUpdate<T>>): void;
+        detach(): void;
+        toString(): string;
+        private _createComplexBinder(sources, selector);
+        private _sourceToBinder(source);
+        private _collectionBinderToBinder(collectionBinder);
+        private _applyAdd(updates);
+        private _applySet(updates);
+        private _applyRemove(updates);
+        private _applyRemoveAt(updates);
+    }
+    interface ICollectionBinder<T> extends IObject {
+        collection: Collection<any>;
+        converter?: IConverter<any, T>;
+    }
+    class CollectionUpdate<T> extends Update {
+        type: CollectionUpdateType;
+        oldValue: T;
+        newValue: T;
+        index: number;
+        constructor(sources?: IEnumerable<any>);
+        create(type: CollectionUpdateType, oldValue: T, newValue: T, index: number): CollectionUpdate<T>;
+    }
+    enum CollectionUpdateType {
+        Add = 0,
+        Set = 1,
+        Remove = 2,
+        RemoveAt = 3,
     }
 }

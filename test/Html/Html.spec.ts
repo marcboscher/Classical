@@ -1598,25 +1598,6 @@ module Classical.Html.spec {
 
 	//#region Initialize Properties
 
-	//#region profile
-
-	var testHeadElementprofileTestItems = new Array<any>();
-	
-	//#region Initialize TestItems
-
-	testHeadElementprofileTestItems.add('');
-	testHeadElementprofileTestItems.add('234567');
-	testHeadElementprofileTestItems.add('Testing a long sentence just in case the property does not support it.');
-	testHeadElementprofileTestItems.add('Special characters !@#$@#$$%(^*$()&^%&');
-	testHeadElementprofileTestItems.add('Short string.');
-
-	//#endregion Initialize TestItems
-
-	var testHeadElementprofile = new TestProperty('profile', 'profile', 'string', testHeadElementprofileTestItems, "", true, false);
-	propertiesHeadElement.add(testHeadElementprofile);
-
-	//#endregion profile
-
 	//#endregion Initialize Properties
 
 	var testHeadElement = new TestElement('HeadElement', 'head', 'head', propertiesHeadElement);
@@ -1897,24 +1878,6 @@ module Classical.Html.spec {
 
 	//#endregion scrolling
 
-	//#region sandbox
-
-	var testInlineFrameElementsandboxTestItems = new Array<any>();
-	
-	//#region Initialize TestItems
-
-	testInlineFrameElementsandboxTestItems.add('allow-same-origin');
-	testInlineFrameElementsandboxTestItems.add('allow-top-navigation');
-	testInlineFrameElementsandboxTestItems.add('allow-forms');
-	testInlineFrameElementsandboxTestItems.add('allow-scripts');
-
-	//#endregion Initialize TestItems
-
-	var testInlineFrameElementsandbox = new TestProperty('sandbox', 'sandbox', 'string', testInlineFrameElementsandboxTestItems, "", true, false);
-	propertiesInlineFrameElement.add(testInlineFrameElementsandbox);
-
-	//#endregion sandbox
-
 	//#region source
 
 	var testInlineFrameElementsourceTestItems = new Array<any>();
@@ -1975,12 +1938,9 @@ module Classical.Html.spec {
 	testInputElementtypeTestItems.add('button');
 	testInputElementtypeTestItems.add('checkbox');
 	testInputElementtypeTestItems.add('color');
-	testInputElementtypeTestItems.add('date');
-	testInputElementtypeTestItems.add('datetime-local');
 	testInputElementtypeTestItems.add('email');
 	testInputElementtypeTestItems.add('hidden');
 	testInputElementtypeTestItems.add('image');
-	testInputElementtypeTestItems.add('month');
 	testInputElementtypeTestItems.add('number');
 	testInputElementtypeTestItems.add('password');
 	testInputElementtypeTestItems.add('radio');
@@ -1990,9 +1950,7 @@ module Classical.Html.spec {
 	testInputElementtypeTestItems.add('submit');
 	testInputElementtypeTestItems.add('tel');
 	testInputElementtypeTestItems.add('text');
-	testInputElementtypeTestItems.add('time');
 	testInputElementtypeTestItems.add('url');
-	testInputElementtypeTestItems.add('week');
 
 	//#endregion Initialize TestItems
 
@@ -4618,7 +4576,7 @@ module Classical.Html.spec {
                         expect(audioElement.element['volume']).toBe(audioElement.volume);
 
                         audioElement = m.create(m.audio({
-                            volumeBinder: bind(model.property)
+                            volumeBinder: bind(model.property, p => p.value)
                         }));
                         expect(() => model.property.value = 2).toThrow();
                         expect(audioElement.element['volume']).toBe(audioElement.volume);
@@ -4636,7 +4594,7 @@ module Classical.Html.spec {
                         expect(inputElement.element['size']).toBe(inputElement.size);
 
                         inputElement = m.create(m.input({
-                            sizeBinder: bind(model.property)
+                            sizeBinder: bind(model.property, p => p.value)
                         }));
                         expect(() => model.property.value = 0).toThrow();
                         expect(inputElement.size).toBe(10);
@@ -4685,7 +4643,7 @@ module Classical.Html.spec {
                                         var config = new Object();
 
                                         prop.testItems.query().forEach(testItem => {
-                                            config[propertyName + 'Binder'] = bind(new b.Property(testItem));
+                                            config[propertyName + 'Binder'] = bind(testItem, t => t);
 
                                             element = m.create(m[factoryMethod](config));
                                             expect(element[propertyName]).toBe(testItem);
@@ -4762,7 +4720,8 @@ module Classical.Html.spec {
                                     it('should have the same value as the ' + propertyName + 'Binder property in the config.', () => {
                                         prop.testItems.query().forEach(testItem => {
                                             var config = new Object();
-                                            config[propertyName + 'Binder'] = bind(new b.Property(testItem));
+
+                                            config[propertyName + 'Binder'] = bind(testItem, t => t);
 
                                             var element = m.create(m[factoryMethod](config));
                                             if (testCode) eval(testCode);
@@ -4801,8 +4760,8 @@ module Classical.Html.spec {
 
                                         element = m.create(m[factoryMethod]());
                                         if (testCode) eval(testCode);
-                                        var binder = bind(model.property);
-                                        binder.property = element[propertyName + 'Property'];;
+                                        var binder = bind(model.property, p => p.value);
+                                        binder.source = element[propertyName + 'Property'];
 
                                         model.property.value = second;
                                         expect(element[propertyName]).toBe(second);
