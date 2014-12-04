@@ -3,6 +3,14 @@
 //#region Enums
 
 module Classical.Html {
+
+    //#region Import
+
+    import b = Classical.Binding;
+    import bc = Classical.Binding.Collections;
+
+    //#endregion Import
+
 	/**
 	* Property values for a.target
 	*/
@@ -806,11 +814,12 @@ module Classical.Html {
 
 module Classical.Html {
 
-    //#region Imports
+    //#region Import
 
     import b = Classical.Binding;
+    import bc = Classical.Binding.Collections;
 
-    //#endregion Imports
+    //#endregion Import
 
     //#region ICssConfig
 
@@ -18264,6 +18273,13 @@ module Classical.Html.Elements {
 
 module Classical.Html {
 
+    //#region Import
+
+    import b = Classical.Binding;
+    import bc = Classical.Binding.Collections;
+
+    //#endregion Import
+
     //#region create
 
     /**
@@ -19635,6 +19651,13 @@ module Classical.Html {
 //#region Utilities
 
 module Classical.Html {
+
+    //#region Import
+
+    import b = Classical.Binding;
+    import bc = Classical.Binding.Collections;
+
+    //#endregion Import
 
     /** 
     * An event that decorates native DOM events.

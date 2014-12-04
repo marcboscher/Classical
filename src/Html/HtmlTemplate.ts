@@ -2,6 +2,14 @@
 //#region Enums
 
 module Classical.Html.Template {
+
+    //#region Import
+
+    import b = Classical.Binding;
+    import bc = Classical.Binding.Collections;
+
+    //#endregion Import
+
     //## EnumGenerators
 }
 
@@ -11,11 +19,12 @@ module Classical.Html.Template {
 
 module Classical.Html.Template {
 
-    //#region Imports
+    //#region Import
 
     import b = Classical.Binding;
+    import bc = Classical.Binding.Collections;
 
-    //#endregion Imports
+    //#endregion Import
 
     //#region ICssConfig
 
@@ -903,6 +912,13 @@ module Classical.Html.Template.Elements {
 
 module Classical.Html.Template {
 
+    //#region Import
+
+    import b = Classical.Binding;
+    import bc = Classical.Binding.Collections;
+
+    //#endregion Import
+
     //#region create
 
     /**
@@ -975,6 +991,13 @@ module Classical.Html.Template {
 //#region Utilities
 
 module Classical.Html.Template {
+
+    //#region Import
+
+    import b = Classical.Binding;
+    import bc = Classical.Binding.Collections;
+
+    //#endregion Import
 
     /** 
     * An event that decorates native DOM events.
