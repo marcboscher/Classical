@@ -140,6 +140,71 @@ module Classical.Utilities.Spec {
 
             //#endregion format
 
+            //#region titleCase
+
+            describe('titleCase', () => {
+                it('should not change a string that is null, undefined, empty or containing non-words', () => {
+                    expect(titleCase(null)).toBe(null);
+                    expect(titleCase(undefined)).toBe(undefined);
+                    expect(titleCase('')).toBe('');
+                    expect(titleCase('1')).toBe('1');
+                    expect(titleCase('1 %')).toBe('1 %');
+                    expect(titleCase('2nd !2ef |fgdfg')).toBe('2nd !2ef |fgdfg');
+                });
+                it('should not change title case text', () => {
+                    expect(titleCase('The Sky')).toBe('The Sky');
+                    expect(titleCase('The 1st Inning')).toBe('The 1st Inning');
+                    expect(titleCase('Holy #$%@!!!!')).toBe('Holy #$%@!!!!');
+                });
+                it('should uppercase all words that start with letters', () => {
+                    expect(titleCase('the')).toBe('The');
+                    expect(titleCase('the boy and his 1st cat.')).toBe('The Boy And His 1st Cat.');
+                });
+                it('should ignore excluded words', () => {
+                    expect(titleCase('if I only had a brain', 'had', 'a')).toBe('If I Only had a Brain');
+                    expect(titleCase('what is wrong with kids these days?', 'kids', 'these', 'is', 'with')).toBe('What is Wrong with kids these Days?');
+                });
+                it('should capitalize excluded words at the beginning of a sentence', () => {
+                    expect(titleCase('if I only had a brain', 'if', 'had', 'a')).toBe('If I Only had a Brain');
+                    expect(titleCase('what is wrong with kids these days?', 'what', 'kids', 'these', 'is', 'with')).toBe('What is Wrong with kids these Days?');
+                });
+                it('should lowercase all letters in the middle of words', () => {
+                    expect(titleCase('rEVERSE cASE')).toBe('Reverse Case');
+                });
+            });
+
+            //#endregion titleCase
+
+            //#region sentenceCase
+
+            describe('sentenceCase', () => {
+                it('should not change a string that is null, undefined or empty', () => {
+                    expect(sentenceCase(null)).toBe(null);
+                    expect(sentenceCase(undefined)).toBe(undefined);
+                    expect(sentenceCase('')).toBe('');
+                });
+                it('should not change proper sentences', () => {
+                    expect(sentenceCase('Everyone was looking.')).toBe('Everyone was looking.');
+                    expect(sentenceCase('It\'s a hard knock life.')).toBe('It\'s a hard knock life.');
+                });
+                it('should uppercase the first word of a sentence when it starts with a letter.', () => {
+                    expect(sentenceCase('the.')).toBe('The.');
+                    expect(sentenceCase('the boy and his 1st cat.')).toBe('The boy and his 1st cat.');
+                });
+                it('should ignore excluded words.', () => {
+                    expect(sentenceCase('if only Tom understood Sandy.', 'Tom', 'Sandy')).toBe('If only Tom understood Sandy.');
+                });
+                it('should capitalize excluded words at the beginning of a sentence.', () => {
+                    expect(sentenceCase('john is silly.', 'john')).toBe('John is silly.');
+                });
+                it('should add periods at the end of sentences with words.', () => {
+                    expect(sentenceCase('The')).toBe('The.');
+                    expect(sentenceCase('rEVERSE cASE')).toBe('Reverse case.');
+                });
+            });
+
+            //#endregion sentenceCase
+
             //#region isNull
 
             describe('isNull', () => {

@@ -22,6 +22,8 @@ declare module Classical.Utilities {
     function coalesce<T>(value: T, alternative: T): T;
     function extend(destination: any, source: any): any;
     function format(template: string, ...inputs: any[]): string;
+    function titleCase(title: string, ...exclude: string[]): string;
+    function sentenceCase(sentence: string, ...exclude: string[]): string;
     function getPropertyNames(value: any): string[];
     function isNull(value: any): boolean;
     function isUndefined(value: any): boolean;

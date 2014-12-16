@@ -801,8 +801,8 @@ module Classical.Binding {
         return {
             source: propertyBinder.property,
             converter: converter,
-            init: () => {
-                this.value = valueConverter.convert(
+            init: (target, source) => {
+                (<any>target).value = valueConverter.convert(
                     propertyBinder.property.value);
             }
         };

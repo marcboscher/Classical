@@ -126,6 +126,90 @@ module Classical.Utilities {
 
     //#endregion format
 
+    //#region titleCase
+
+    //Returns a string with the first letter of each word capitalized unless it is explicitly excluded.
+    //Excluded words are ignored if they are the first word of the title.
+    export function titleCase(title: string, ...exclude: Array<string>) {
+        if (!title) return title;
+        title = title.trim();
+
+        var hasPeriod = title[title.length - 1] === '.';
+        if (hasPeriod)
+            title = title.substr(0, title.length - 1);
+
+        var words = title.split(' ').query()
+                .where(w => w && w.length > 0),
+            excludeQuery = exclude.query(),
+            excludedWords = words
+                .dictionary(w => w,
+                w => excludeQuery
+                    .hasAny(ex => ex === w));
+
+        title = words
+            .aggregate((a, b) => a + (
+                a === '' ? properCaseWord(b) : (' ' +
+                (excludedWords.getValue(b) ? b : properCaseWord(b)))
+                ), '');
+
+        if (hasPeriod)
+            title += '.';
+
+        return title;
+    }
+
+    function properCaseWord(word: string) {
+        return word.charAt(0).toUpperCase() +
+            word.substring(1).toLowerCase();
+    }
+
+    //#endregion titleCase
+
+    //#region sentenceCase
+
+    //Returns a string with the first word of the sentence capitalized.
+    //The sentence is also guaranteed to end in a period. Empty sentences are ignored.
+    export function sentenceCase(sentence: string, ...exclude: Array<string>) {
+        if (!sentence) return sentence;
+        sentence = sentence.trim();
+
+        var hasPeriod = sentence[sentence.length - 1] === '.';
+        if (hasPeriod)
+            sentence = sentence.substr(0, sentence.length - 1);
+        
+        var words = sentence.split(' ').query()
+                .where(w => w && w.length > 0),
+            excludeQuery = exclude.query(),
+            excludedWords = words
+                .dictionary(w => w,
+                w => excludeQuery
+                    .hasAny(ex => ex === w));
+
+        sentence = words
+            .aggregate((a, b) => a + (
+                a === '' ? properCaseWord(b) :
+                (' ' + (excludedWords.getValue(b) ? b : b.toLowerCase()))
+            ), '');
+
+        return sentence + '.';
+    }
+
+    //#endregion sentenceCase
+
+    ////#region pascalCase
+
+    ////Takes a sentence and capitalizes all but the first word. 
+    ////If a word is a special case, that casing is used instead.
+    ////Special cases should be specified as lowercase strings, 
+    ////though the actual value of the special case is unconcstrained.
+    //export function pascalCase(sentence: string, specialCases: Classical.Collections.Dictionary<string, string>) {
+    //    if (!sentence) return;
+    //    if (specialCases == null)
+    //        specialCases = new Classical.Collections.Dictionary<string, string>();
+    //}
+
+    ////#endregion pascalCase
+
     //#region getPropertyNames
 
     //Returns the properties of the object and all of its prototypes

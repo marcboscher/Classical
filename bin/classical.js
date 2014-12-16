@@ -309,6 +309,43 @@ var Classical;
             return result;
         }
         Utilities.format = format;
+        function titleCase(title) {
+            var exclude = [];
+            for (var _i = 1; _i < arguments.length; _i++) {
+                exclude[_i - 1] = arguments[_i];
+            }
+            if (!title)
+                return title;
+            title = title.trim();
+            var hasPeriod = title[title.length - 1] === '.';
+            if (hasPeriod)
+                title = title.substr(0, title.length - 1);
+            var words = title.split(' ').query().where(function (w) { return w && w.length > 0; }), excludeQuery = exclude.query(), excludedWords = words.dictionary(function (w) { return w; }, function (w) { return excludeQuery.hasAny(function (ex) { return ex === w; }); });
+            title = words.aggregate(function (a, b) { return a + (a === '' ? properCaseWord(b) : (' ' + (excludedWords.getValue(b) ? b : properCaseWord(b)))); }, '');
+            if (hasPeriod)
+                title += '.';
+            return title;
+        }
+        Utilities.titleCase = titleCase;
+        function properCaseWord(word) {
+            return word.charAt(0).toUpperCase() + word.substring(1).toLowerCase();
+        }
+        function sentenceCase(sentence) {
+            var exclude = [];
+            for (var _i = 1; _i < arguments.length; _i++) {
+                exclude[_i - 1] = arguments[_i];
+            }
+            if (!sentence)
+                return sentence;
+            sentence = sentence.trim();
+            var hasPeriod = sentence[sentence.length - 1] === '.';
+            if (hasPeriod)
+                sentence = sentence.substr(0, sentence.length - 1);
+            var words = sentence.split(' ').query().where(function (w) { return w && w.length > 0; }), excludeQuery = exclude.query(), excludedWords = words.dictionary(function (w) { return w; }, function (w) { return excludeQuery.hasAny(function (ex) { return ex === w; }); });
+            sentence = words.aggregate(function (a, b) { return a + (a === '' ? properCaseWord(b) : (' ' + (excludedWords.getValue(b) ? b : b.toLowerCase()))); }, '');
+            return sentence + '.';
+        }
+        Utilities.sentenceCase = sentenceCase;
         function getPropertyNames(value) {
             if (isNullOrUndefined(value))
                 return [];
@@ -2736,7 +2773,6 @@ var Classical;
         }
         Binding.setProperty = setProperty;
         function propertyBinderToBinder(propertyBinder) {
-            var _this = this;
             var converter = null, valueConverter = propertyBinder.converter;
             converter = {
                 convert: function (sourceUpdate) {
@@ -2753,8 +2789,8 @@ var Classical;
             return {
                 source: propertyBinder.property,
                 converter: converter,
-                init: function () {
-                    _this.value = valueConverter.convert(propertyBinder.property.value);
+                init: function (target, source) {
+                    target.value = valueConverter.convert(propertyBinder.property.value);
                 }
             };
         }

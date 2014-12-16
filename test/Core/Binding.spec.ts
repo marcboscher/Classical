@@ -1054,7 +1054,7 @@ module Classical.Binding.Spec {
 
         //#region bind
 
-        bind(binder: b.IBinder<IntegerUpdate>);
+        bind(binder: IBinder<IntegerUpdate>);
         bind(binder: IComplexBinder<IntegerUpdate>): void;
 
         //For overload resolution only.
