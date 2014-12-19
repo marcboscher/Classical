@@ -1,6 +1,6 @@
 # Classical
 ####The TypeScript BCL 
-*Version 0.1.0*
+*Version 0.1.3*
 
 ## Introduction
 TypeScript was released. Now we have classes, modules, type annotations, generics and type inference on the web. We even have an ES6 preview! And we have all the design-time tooling that comes along with it. Life is good.
@@ -20,20 +20,20 @@ you with the tools you need to truly use JavaScript for application scale develo
 Here's some of what you'll get.
 
 ### Reflection
-```typescript
+```javascript
 	var type = obj.getType();
 	var properties = type.getProperties();
     var methods = type.getMethods();
 ```
 
 ### Dictionary
-```typescript
+```javascript
 	var functionMap = new Dictionary<Function, Type>();
 	var dateToFunctionMap = new Dictionary<Date, (arg: Function): Function>();
 ```
      
 ### Querying
-```typescript
+```javascript
     var squares = Enumerable.range(-1000, 1000).query()
 		.where(x => x > 0)
         .select(x => { key: x, value: x * x})
@@ -41,7 +41,7 @@ Here's some of what you'll get.
 ```
   
 ### Expressions
-```typescript
+```javascript
 	  var obj = { x: 0 };
 	  var property = Expression.getProperty(obj, o => o.x); //returns 'x'
 	  function f(x, y, z) { }
@@ -49,7 +49,7 @@ Here's some of what you'll get.
 ```
 	  
 ### Binding
-```typescript
+```javascript
 	  var source = new Property(1);
 	  var target = new Property(0);
 	  target.bind(source); //target.value === 1
@@ -71,8 +71,31 @@ and more...
 Ultimately we want to build what you need. 
 So give us a bit of time to get a bit more implemented, documented and polished.
 Then we'll see just what can be accomplished when you create with the tools you enjoy using.
+If you're a TypeScript wonk like we are, open up the bin, give the type declarations a once-over and get started with classical.js using the instructions below.
 
-If you're a TypeScript wonk like we are, open up the bin, give the type declarations a once-over and get started with classical.js.
+We'd love to hear from you! Please ping us if you have any questions or feedback:
+doug.rubino@gmail.com
+ 
 
-Ping us if you have any questions!
+## Getting Started
+
+[Install via Nuget](https://www.nuget.org/packages/Classical/)
+##PM> Install-Package Classical
+
+//Write your first few lines of Classical.js
+```javascript
+    module Classical.Introduction {
+
+        import Assert = Classical.Assert;
+        import Expression = Classical.Expression;
+        import u = Utilities;
+        import r = Classical.Reflection;
+        import e = Classical.Events;
+        import b = Classical.Binding;
+        import cc = Classical.Collections;
+        import bc = Classical.Binding.Collections;
+    
+	    //Explore each module in Classical.js using intellisense
+    }
+```
 
