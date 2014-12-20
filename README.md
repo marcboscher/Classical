@@ -1,6 +1,6 @@
 # Classical
 ####The TypeScript BCL 
-*Version 0.1.3*
+*Version 0.1.5*
 
 ## Introduction
 TypeScript was released. Now we have classes, modules, type annotations, generics and type inference on the web. We even have an ES6 preview! And we have all the design-time tooling that comes along with it. Life is good.
