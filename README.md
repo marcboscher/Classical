@@ -79,8 +79,9 @@ doug.rubino@gmail.com
 
 ## Getting Started
 
+[Install via Nuget](https://www.nuget.org/packages/Classical/)
 ####PM> Install-Package Classical
-####[Install via Nuget](https://www.nuget.org/packages/Classical/)
+
 
 ```javascript
 	//Write your first few lines of Classical.js
