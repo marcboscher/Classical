@@ -187,12 +187,13 @@ declare module Classical.Reflection {
         getHashCode(): number;
         isAssignableTo(other: Type): boolean;
         isAssignableFrom(other: Type): boolean;
-        getFields(...options: Modifier[]): IQueryable<Field>;
-        getField(name: string, ...options: Modifier[]): Field;
+        getFieldsOf(instance: any, ...options: Modifier[]): IQueryable<Field>;
+        getFieldOf(instance: any, name: string, ...options: Modifier[]): Field;
         getProperties(...options: Modifier[]): IQueryable<Property>;
         getProperty(name: string, ...options: Modifier[]): Property;
         getMethods(...options: Modifier[]): IQueryable<Method>;
         getMethod(name: string, ...options: Modifier[]): Method;
+        private _initializeFields(instance);
         private _initializeProperties();
         private _getStaticProperties();
         private _getInstanceProperties();
