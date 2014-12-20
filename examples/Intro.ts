@@ -1,4 +1,5 @@
-﻿
+﻿/// <reference path="classical.d.ts" />
+
 module Classical.Introduction {
 
     import Assert = Classical.Assert;
