@@ -76,8 +76,8 @@ If you're a TypeScript wonk like we are, open up the bin, give the type declarat
 We'd love to hear from you! Please ping us if you have any questions or feedback:
 doug.rubino@gmail.com
  
-## [Install via Nuget](https://www.nuget.org/packages/Classical/)
-_PM> Install-Package Classical_
+## Installation
+[_PM> Install-Package Classical_]((https://www.nuget.org/packages/Classical/)
 
 
 ## Getting Started
