@@ -77,7 +77,7 @@ We'd love to hear from you! Please ping us if you have any questions or feedback
 doug.rubino@gmail.com
  
 ## Installation
-[_PM> Install-Package Classical_]((https://www.nuget.org/packages/Classical/)
+[_PM> Install-Package Classical_](https://www.nuget.org/packages/Classical/)
 
 
 ## Getting Started
