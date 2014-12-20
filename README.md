@@ -1,6 +1,6 @@
 # Classical
 ####The TypeScript BCL 
-*Version 0.1.5*
+*Version 0.1.6*
 
 ## Introduction
 TypeScript was released. Now we have classes, modules, type annotations, generics and type inference on the web. We even have an ES6 preview! And we have all the design-time tooling that comes along with it. Life is good.
@@ -82,7 +82,8 @@ _[PM> Install-Package Classical](https://www.nuget.org/packages/Classical/)_
 
 ## Getting Started
 
-Start out by exploring the modules in the code below. Don't worry, tutorials, code comments and documentation are coming soon.
+Start out by exploring the modules in the code below. 
+Tutorials, code comments and documentation soon to come...
 
 ```javascript
 	module Classical.Introduction {
