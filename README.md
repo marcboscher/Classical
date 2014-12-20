@@ -79,11 +79,11 @@ doug.rubino@gmail.com
 
 ## Getting Started
 
-[Install via Nuget](https://www.nuget.org/packages/Classical/)
-##PM> Install-Package Classical
+###PM> Install-Package Classical
+####[Install via Nuget](https://www.nuget.org/packages/Classical/)
 
-//Write your first few lines of Classical.js
 ```javascript
+	//Write your first few lines of Classical.js
     module Classical.Introduction {
 
         import Assert = Classical.Assert;
