@@ -79,6 +79,8 @@ doug.rubino@gmail.com
 ## [Install via Nuget](https://www.nuget.org/packages/Classical/)
 ###PM> Install-Package Classical
 
+
+
 ## Getting Started
 
 Start out by exploring the modules in the code below. Don't worry, tutorials, code comments and documentation are coming soon.
