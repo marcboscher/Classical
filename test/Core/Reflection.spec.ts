@@ -222,6 +222,39 @@ module Classical.Reflection.Spec {
 
                 //#endregion isAssignableFrom
 
+                //#region getFieldsOf
+
+                describe('getFieldsOf', () => {
+                    it('should return the fields of the given instance of a type.', () => {
+                        var reflectionTestInstance = new ReflectionTest();
+                        var reflectionTestType = typeOf(ReflectionTest);
+                        var fields = reflectionTestType.getFieldsOf(reflectionTestInstance, Modifier.Private, Modifier.Instance);
+
+                        expect(fields.hasAny(f => f.name == '_testAge')).toBe(true);
+                        expect(fields.hasAny(f => f.name == '_testField')).toBe(true);
+                    });
+                });
+
+                //#endregion getFieldsOf
+
+                //#region getFieldOf
+
+                describe('getFieldOf', () => {
+                    it('should return the specified field of the given instance of a type.', () => {
+                        var reflectionTestInstance = new ReflectionTest();
+                        var reflectionTestType = typeOf(ReflectionTest);
+                        var testAge = reflectionTestType.getFieldOf(reflectionTestInstance, '_testAge', Modifier.Private, Modifier.Instance);
+                        var testField = reflectionTestType.getFieldOf(reflectionTestInstance, '_testField', Modifier.Private, Modifier.Instance);
+                        var notExist = reflectionTestType.getFieldOf(reflectionTestInstance, 'asljdljkh', Modifier.Private, Modifier.Instance);
+
+                        expect(testAge).toBeDefined();
+                        expect(testField).toBeDefined();
+                        expect(notExist).toBeNull();
+                    });
+                });
+
+                //#endregion getFieldOf
+
                 //#region getProperties
 
                 describe('getProperties', () => {

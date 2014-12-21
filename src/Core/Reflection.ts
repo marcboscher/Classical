@@ -1092,22 +1092,34 @@ module Classical.Reflection {
 
         //#region getFields
 
-        getFields(...options: Array<Modifier>): IQueryable<Field> {
-            return (<IQueryable<Property>>this.getProperties.apply(this, options))
-                .where(p => p.isField).cast<Field>();
+        getFieldsOf(instance: any, ...options: Array<Modifier>): IQueryable<Field> {
+            Assert.isDefined(instance);
+
+            if (instance.getType && Utilities.isFunction(instance.getType)) {
+                var instanceType = instance.getType();
+                if (instanceType !== this)
+                    throw 'The instance passed in is not of type ' + this.name;
+            }
+
+            var fields = this._initializeFields(instance);
+            options = this._getProperOptions(options);
+
+            return fields.array().query().where(f => this._isValidProperty(f, options)).distinct();
         }
 
         //#endregion getFields
 
-        //#region getField
+        //#region getFieldOf
 
-        getField(name: string, ...options: Array<Modifier>): Field {
+        getFieldOf(instance: any, name: string, ...options: Array<Modifier>): Field {
             Assert.isDefined(name);
 
-            return (<IQueryable<Method>>this.getFields.apply(this, options)).query().singleOrDefault(f => f.name === name);;
+            var args = [instance, options];
+
+            return (<IQueryable<Method>>this.getFieldsOf.apply(this, args)).query().singleOrDefault(f => f.name === name);;
         }
 
-        //#endregion getField
+        //#endregion getFieldOf
 
         //#region getProperties
 
@@ -1154,6 +1166,25 @@ module Classical.Reflection {
         //#endregion Methods
 
         //#region Utilities
+
+        //#region _initializeFields
+
+        private _initializeFields(instance: any): IEnumerable<Field> {
+            var fields = new Array<Field>();
+
+            Object.getOwnPropertyNames(instance).forEach((property) => {
+                var propertyDescriptor = Object.getOwnPropertyDescriptor(instance, property);
+                var getter = propertyDescriptor.get;
+                var setter = propertyDescriptor.set;
+
+                if (!Utilities.isDefined(getter) && !Utilities.isDefined(setter) && !Utilities.isFunction(propertyDescriptor.value))
+                    fields.add(new Field(constructorPassword, property, typeOf(instance.constructor), false));
+            });
+
+            return fields;
+        }
+
+        //#endregion _initializeFields
 
         //#region _initializeProperties
 
