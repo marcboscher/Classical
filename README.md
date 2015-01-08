@@ -212,5 +212,176 @@ Tutorials, code comments and documentation soon to come...
 	var newline = () => toScreen('visible', 'div', false);
 	var space = n => Classical.Collections.Enumerable.range(n).query()
 	    .select(x => '&nbsp;').aggregate((x, y) => x + y);
+	    
+//Console Output
+//
+//   array variable:
+//   value = [
+//         0,
+//         1,
+//         2,
+//         3,
+//         4,
+//         5,
+//         6,
+//         7,
+//         8,
+//         9
+//   ]
+//
+//   array aggregation:
+//   1
+//   query.select:
+//   select(selector)
+//   query methods:
+//   value = [
+//         aggregate,
+//         array,
+//         as,
+//         at,
+//         cast,
+//         coalescePredicate,
+//         concat,
+//         constructor,
+//         count,
+//         dictionary,
+//         distinct,
+//         equals,
+//         execute,
+//         first,
+//         firstOrDefault,
+//         forEach,
+//         getEnumerator,
+//         getHashCode,
+//         getType,
+//         hasAny,
+//         hasNone,
+//         hasOwnProperty,
+//         is,
+//         isPrototypeOf,
+//         last,
+//         lastOrDefault,
+//         max,
+//         min,
+//         orderBy,
+//         orderByDescending,
+//         propertyIsEnumerable,
+//         query,
+//         result,
+//         reverse,
+//         select,
+//         selectMany,
+//         single,
+//         singleOrDefault,
+//         skip,
+//         sum,
+//         take,
+//         toLocaleString,
+//         toString,
+//         unwatch,
+//         valueOf,
+//         watch,
+//         where
+//   ]
+//
+//   query method signatures:
+//   value = [
+//         aggregate(accumulator,seed),
+//         array(),
+//         as(),
+//         at(index),
+//         cast(),
+//         coalescePredicate(predicate),
+//         concat(other),
+//         constructor(),
+//         count(),
+//         dictionary(keySelector,valueSelector),
+//         distinct(),
+//         equals(other),
+//         execute(),
+//         first(predicate),
+//         firstOrDefault(predicate),
+//         forEach(operation),
+//         getEnumerator(),
+//         getHashCode(),
+//         getType(),
+//         hasAny(predicate),
+//         hasNone(predicate),
+//         hasOwnProperty(),
+//         is(type),
+//         isPrototypeOf(),
+//         last(predicate),
+//         lastOrDefault(predicate),
+//         max(selector),
+//         min(selector),
+//         orderBy(selector,comparison),
+//         orderByDescending(selector,comparison),
+//         propertyIsEnumerable(),
+//         query(),
+//         result(),
+//         reverse(),
+//         select(selector),
+//         selectMany(selector),
+//         single(predicate),
+//         singleOrDefault(predicate),
+//         skip(count),
+//         sum(selector),
+//         take(count),
+//         toLocaleString(),
+//         toString(),
+//         unwatch(propertyName),
+//         valueOf(),
+//         watch(propertyName,handler),
+//         where(predicate)
+//   ]
+//
+//   reflection classes:
+//   value = [
+//         Field,
+//         Function,
+//         Member,
+//         Method,
+//         Module,
+//         Parameter,
+//         Property,
+//         Type,
+//         Variable
+//   ]
+//
+//   type members:
+//   value = [
+//         as,
+//         base,
+//         constructor,
+//         ctor,
+//         equals,
+//         fullName,
+//         getField,
+//         getFields,
+//         getHashCode,
+//         getMethod,
+//         getMethods,
+//         getProperties,
+//         getProperty,
+//         getType,
+//         hasOwnProperty,
+//         is,
+//         isAssignableFrom,
+//         isAssignableTo,
+//         isPrimitive,
+//         isPrivate,
+//         isProtected,
+//         isPrototypeOf,
+//         isPublic,
+//         module,
+//         name,
+//         propertyIsEnumerable,
+//         prototype,
+//         toLocaleString,
+//         toString,
+//         unwatch,
+//         valueOf,
+//         watch
+//   ]
 ```
 
