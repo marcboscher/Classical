@@ -1,12 +1,21 @@
 ﻿
 //#region IFunction
 
+/**
+ Defines the core JavaScript function. IFunction and Function are equivalent. 
+ @remarks 
+    This interface was created as an alias so that Function can refer to 
+    the notion of a function in the reflection library.
+*/
 interface IFunction extends Function { }
 
 //#endregion IFunction
 
 //#region Collections
 
+/**
+ The core set of collections defined in Classical.
+*/
 module Classical.Collections {
 
     //#region Imports
@@ -488,6 +497,9 @@ function moduleOf(ctor: IFunction): Classical.Reflection.Module {
 
 //#endregion moduleOf
 
+/**
+ The core set of collections defined in Classical.
+*/
 module Classical.Reflection {
 
     //#region Imports
@@ -507,7 +519,13 @@ module Classical.Reflection {
         Static,
     }
 
-    var defaultModifier = [Modifier.Public, Modifier.Instance];
+    export var Public = Modifier.Public;
+    export var Protected = Modifier.Protected;
+    export var Private = Modifier.Private;
+    export var Instance = Modifier.Instance;
+    export var Static = Modifier.Static;
+
+    var defaultModifier = [Public, Instance];
 
     //#endregion Modifier
 
@@ -778,8 +796,8 @@ module Classical.Reflection {
 
         public static get global(): Module {
             if (!Module._global) {
-                Module._global = new Module(constructorPassword, 'Global', window);
-                modules.add(window, Module._global);
+                Module._global = new Module(constructorPassword, 'Global', global);
+                modules.add(global, Module._global);
             }
 
             return Module._global;
@@ -890,6 +908,52 @@ module Classical.Reflection {
 
         //#region Properties
 
+        //#region name
+
+        //The name of the Type.
+        //This is largely for debugging or record keeping.
+        //For Type equivalence, use the equals method.
+        get name(): string {
+            if (this._name === null) {
+                var name = (<any>this._ctor).name;
+                if (u.isNullOrUndefined(name)) {
+                    var match = <string[]>this._ctor.toString().match(/\s([\w\d]+)\(/);
+                    if (match && match.length > 1)
+                        name = match[1];
+                }
+                if (u.isNullOrUndefined(name))
+                    name = "`Anonymous";
+                this._name = name;
+            }
+
+            return this._name;
+        }
+
+        //#endregion name
+
+        //#region fullName
+
+        get fullName(): string {
+
+            if (this.module)
+                return u.format("{0}.{1}", this.module.fullName, this.name);
+            else
+                return this.name;
+        }
+
+        //#endregion fullName
+
+        //#region module
+
+        get module(): Module {
+            if (!this._module)
+                this._module = Module.getModule(this);
+
+            return this._module;
+        }
+
+        //#endregion module
+
         //#region isPublic
 
         get isPublic(): boolean {
@@ -923,41 +987,6 @@ module Classical.Reflection {
         }
 
         //#endregion isPrimitive
-
-        //#region name
-
-        //The name of the Type.
-        //This is largely for debugging or record keeping.
-        //For Type equivalence, use the equals method.
-        get name(): string {
-            if (this._name === null) {
-                var name = (<any>this._ctor).name;
-                if (u.isNullOrUndefined(name)) {
-                    var match = <string[]>this._ctor.toString().match(/\s([\w\d]+)\(/);
-                    if (match && match.length > 1)
-                        name = match[1];
-                }
-                if (u.isNullOrUndefined(name))
-                    name = "`Anonymous";
-                this._name = name;
-            }
-
-            return this._name;
-        }
-
-        //#endregion name
-
-        //#region fullName
-
-        get fullName(): string {
-
-            if (this.module)
-                return u.format("{0}.{1}", this.module.name, this.name);
-            else
-                return this.name;
-        }
-
-        //#endregion fullName
 
         //#region ctor
 
@@ -993,17 +1022,6 @@ module Classical.Reflection {
         }
 
         //#endregion base
-
-        //#region module
-
-        get module(): Module {
-            if (!this._module)
-                this._module = Module.getModule(this);
-
-            return this._module;
-        }
-
-        //#endregion module
 
         //#endregion Properties
 
@@ -1875,9 +1893,3 @@ module Classical.Reflection {
 
     //#endregion Initialization
 }
-
-//#region Anonymous
-
-module Classical.Anonymous { }
-
-//#endregion Anonymous

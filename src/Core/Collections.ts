@@ -1,6 +1,16 @@
 
 //#region IEnumerable
 
+/**
+ A sequence of items that can be enumerated one at a time. 
+ IEnumerables serve to allow common functionality to be defined for 
+ collections like arrays, sets, dictionaries or more complex data 
+ structures that have still represent some kind of collection.
+ @typeparam [T] The type of item in the sequence.
+ @remarks 
+    An enumeration is not constrainted to be finite but 
+    it is assumed that they are unless otherwise specified.
+*/
 interface IEnumerable<T> extends IObject {
     //Enumerates the elements of the sequence, calling the enumerator for each.
     getEnumerator(): IEnumerator<T>;
@@ -22,6 +32,11 @@ interface IEnumerable<T> extends IObject {
 
 //#region IEnumerator
 
+/**
+ Defines an object which performs the enumeration for a particular implementation of IEnumerable.
+ @typeparam [T] The type of item which is enumerated.
+ @seealso IEnumerable<T>
+*/
 interface IEnumerator<T> extends IObject {
     current: T;
     moveNext(): boolean;
@@ -31,6 +46,13 @@ interface IEnumerator<T> extends IObject {
 
 //#region IAccessibleCollection
 
+/**
+ Defines an sequence with a getter.
+ @typeparam [T] The type of item in the collection.
+ @remarks 
+    The get method cannot assumed to be fast though by convention is it implemented to be when possible. 
+    It is safe to assume that retrieving an object using the get method requires a traversal of the collection.
+*/
 interface IAccessibleCollection<T> extends IEnumerable<T> {
 
     //Returns the element at the specified index.
@@ -41,6 +63,12 @@ interface IAccessibleCollection<T> extends IEnumerable<T> {
 
 //#region ICollection
 
+/**
+ Defines a collection that can be used for storing and retrieving objects.
+ @typeparam [T] The type of item in the collection.
+ @remarks Array<T> implemements ICollection.
+ @seealso Array<T>
+*/
 interface ICollection<T> extends IAccessibleCollection<T> {
 
     //Adds an item to the collection.
@@ -66,7 +94,14 @@ interface ICollection<T> extends IAccessibleCollection<T> {
 
 //#region IQueryable
 
-//Represents a query on a collection of objects.
+/**
+ Defines a lazily executed query that performs a computation on a sequence of data.
+ @typeparam [T] The type of item being queried.
+ @remarks 
+    Not all methods of IQueryable are lazily executed.
+    In particular, methods which don't return IQueryables 
+    are expected to have executed the query.
+*/
 interface IQueryable<T> extends IEnumerable<T> {
 
     //Iterates through the elements in the queried sequence.
@@ -185,11 +220,20 @@ interface IQueryable<T> extends IEnumerable<T> {
 
 //#region Array
 
-//Delete this when the above code is legal.
+/**
+ The core JavaScript array.
+ @remarks 
+    Array implements IObject, ICollection<T> and IEnumerable<T>.
+    All Objects implement IHashable so arrays can be used as keys in Dictionaries.
+ @seealso IObject, ICollection<T> and IEnumerable<T>, IHashable, Classical.Collections.Dictionary
+*/
 interface Array<T> extends ICollection<T>, IEnumerable<T> { }
 
 //#endregion Array
 
+/**
+ The core set of collections defined in Classical.
+*/
 module Classical.Collections {
 
     //#region Imports
@@ -208,7 +252,7 @@ module Classical.Collections {
 
     //Implements IEnumerable<T>.getEnumerator
     ArrayPrototype.getEnumerator = function () {
-        return new ArrayEnumerator<any>(<any[]>this);
+        return new _ArrayEnumerator<any>(<any[]>this);
     };
 
     //Implements IEnumerable<T>.array
@@ -260,7 +304,7 @@ module Classical.Collections {
 
     //#region ArrayEnumerator
 
-    class ArrayEnumerator<T>
+    class _ArrayEnumerator<T>
         implements IEnumerator<T> {
 
         _index = -1;
@@ -287,6 +331,9 @@ module Classical.Collections {
 
     //#region ImmutableCollection
 
+    /**
+     A collection that cannot be changed.
+    */
     export class ImmutableCollection<T> implements IAccessibleCollection<T> {
 
         //#region Fields
@@ -465,7 +512,7 @@ module Classical.Collections {
 
         //Returns a queryable containing the items that satisfy the predicate.
         where(predicate: (item: T) => boolean): IQueryable<T> {
-            return new WhereQueryable<T>(this, predicate);
+            return new _WhereQueryable<T>(this, predicate);
         }
 
         //#endregion where
@@ -475,7 +522,7 @@ module Classical.Collections {
         //Returns a queryable containing the items selected by the selector.
         select<TSelected>(selector: (item: T) => TSelected): IQueryable<TSelected> {
             return <IQueryable<TSelected>><any>
-                new SelectQueryable<T, TSelected>(this, selector);
+                new _SelectQueryable<T, TSelected>(this, selector);
         }
 
         //#endregion select
@@ -484,7 +531,7 @@ module Classical.Collections {
 
         //Returns a queryable containing the concatenation of all sequences selected by the selector.
         selectMany<TSelected>(selector: (item: T) => IEnumerable<TSelected>): IQueryable<TSelected> {
-            return new ConcatQueryable<TSelected>(
+            return new _ConcatQueryable<TSelected>(
                 this.select<IEnumerable<TSelected>>(selector));
         }
 
@@ -495,12 +542,19 @@ module Classical.Collections {
         //Returns a queryable ordered by the selected item.
         //This only works well for number and string.
         orderBy<TSelected>(selector: (item: T) => TSelected, comparison?: (first: TSelected, second: TSelected) => number): IQueryable<T> {
+            Assert.isDefined(selector);
             var result = this.array();
+            if (result.length == 0)
+                return result.query();
+
             var comparer =
                 <(first: T, second: T) => number>
                 getComparer(result, selector, comparison, true);
 
-            return result.sort(comparer).query();
+            if (comparer)
+                return result.sort(comparer).query();
+            else
+                return result.query();
         }
 
         //#endregion orderBy
@@ -514,13 +568,6 @@ module Classical.Collections {
             var ordered = this.orderBy(selector, comparison);
             return ordered.where(i => u.isDefined(i)).reverse()
                 .concat(ordered.where(i => !u.isDefined(i)));
-
-            //var result = this.array();
-            //var comparer =
-            //    <(first: T, second: T) => number>
-            //    getComparer(result, selector, comparison, false);
-
-            //return result.sort(comparer).query();
         }
 
         //#endregion orderByDescending
@@ -639,7 +686,7 @@ module Classical.Collections {
         hasAny(predicate?: (item: T) => boolean): boolean {
             predicate = this.coalescePredicate(predicate);
             return new
-                WhereQueryable<T>(this._enumerable, predicate)
+                _WhereQueryable<T>(this._enumerable, predicate)
                 .getEnumerator()
                 .moveNext();
         }
@@ -744,7 +791,7 @@ module Classical.Collections {
 
         //Skips up to the specified count, and returns the remaining elements.
         skip(count: number): IQueryable<T> {
-            return new SkipQueryable<T>(this, count);
+            return new _SkipQueryable<T>(this, count);
         }
 
         //#endregion skip
@@ -753,7 +800,7 @@ module Classical.Collections {
 
         //Takes up to the specified count, omitting the remaining elements.
         take(count: number): IQueryable<T> {
-            return new TakeQueryable<T>(this, count);
+            return new _TakeQueryable<T>(this, count);
         }
 
         //#endregion take
@@ -779,7 +826,7 @@ module Classical.Collections {
         //Concatenates this query with the other query.
         concat(other: IEnumerable<T>): IQueryable<T> {
             var enumerables = [this, other].query();
-            return new ConcatQueryable<T>(enumerables);
+            return new _ConcatQueryable<T>(enumerables);
         }
 
         //#endregion take
@@ -867,7 +914,7 @@ module Classical.Collections {
 
     //#region QueryableEnumerator
 
-    class QueryableEnumerator<T, TSelected>
+    class _QueryableEnumerator<T, TSelected>
         implements IEnumerator<TSelected> {
 
         _enumerator: IEnumerator<T>;
@@ -896,7 +943,7 @@ module Classical.Collections {
 
     //#region WhereQueryable
 
-    class WhereQueryable<T>
+    class _WhereQueryable<T>
         extends Queryable<T> {
 
         _predicate: (item: T) => boolean;
@@ -910,7 +957,7 @@ module Classical.Collections {
             var predicate = this._predicate,
                 enumerator = this._enumerable.getEnumerator();
             
-            return new QueryableEnumerator<T, T>(
+            return new _QueryableEnumerator<T, T>(
                 enumerator,
                 (enumerator) => {
                     do {
@@ -926,7 +973,7 @@ module Classical.Collections {
     
     //#region SelectQueryable
 
-    class SelectQueryable<T, TSelected>
+    class _SelectQueryable<T, TSelected>
         extends Queryable<TSelected> {
 
         _selector: (item: T) => TSelected;
@@ -939,7 +986,7 @@ module Classical.Collections {
         }
 
         getEnumerator(): IEnumerator<TSelected> {
-            return new QueryableEnumerator<T, TSelected>(
+            return new _QueryableEnumerator<T, TSelected>(
                 this._selectedEnumerable.getEnumerator(),
                 (enumerator) => enumerator.moveNext(),
                 this._selector);
@@ -950,7 +997,7 @@ module Classical.Collections {
 
     //#region SkipQueryable
 
-    class SkipQueryable<T>
+    class _SkipQueryable<T>
         extends Queryable<T> {
 
         _count: number;
@@ -966,7 +1013,7 @@ module Classical.Collections {
         getEnumerator(): IEnumerator<T> {
             var count = this._count,
                 currentCount = 0;
-            return new QueryableEnumerator<T, T>(
+            return new _QueryableEnumerator<T, T>(
                 this._enumerable.getEnumerator(),
                 (enumerator) => {
                     do {
@@ -984,7 +1031,7 @@ module Classical.Collections {
 
     //#region TakeQueryable
 
-    class TakeQueryable<T>
+    class _TakeQueryable<T>
         extends Queryable<T> {
 
         _count: number;
@@ -1000,7 +1047,7 @@ module Classical.Collections {
         getEnumerator(): IEnumerator<T> {
             var count = this._count,
                 currentCount = 0;
-            return new QueryableEnumerator<T, T>(
+            return new _QueryableEnumerator<T, T>(
                 this._enumerable.getEnumerator(),
                 (enumerator) => {
                     do {
@@ -1018,7 +1065,7 @@ module Classical.Collections {
 
     //#region ConcatQueryable
 
-    class ConcatQueryable<T>
+    class _ConcatQueryable<T>
         extends Queryable<T> {
 
         _enumerables: IEnumerable<IEnumerable<T>>;
@@ -1034,7 +1081,7 @@ module Classical.Collections {
                 .where(e => u.isDefined(e))
                 .select(e => e.getEnumerator());
 
-            return new ConcatQueryableEnumerator<T>(
+            return new _ConcatQueryableEnumerator<T>(
                 <IQueryable<IEnumerator<T>>><any>
                 enumerators);
         }
@@ -1044,7 +1091,7 @@ module Classical.Collections {
 
     //#region ConcatQueryableEnumerator
 
-    class ConcatQueryableEnumerator<T>
+    class _ConcatQueryableEnumerator<T>
         implements IEnumerator<T> {
 
         _enumerator: IEnumerator<T>;
@@ -1083,6 +1130,14 @@ module Classical.Collections {
     //#region Enumerable
 
     export module Enumerable {
+
+        //#region empty
+
+        export function empty<T>(): IEnumerable<T> {
+            return [];
+        }
+
+        //#endregion empty
 
         //#region range
 

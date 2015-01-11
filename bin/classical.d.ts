@@ -1,21 +1,36 @@
+/**
+ Hash constains the functions for generating hash codes for JavaScript primitives.
+ @seealso Boolean, Number, String
+*/
 declare module Classical.Hash {
+    function forBoolean(key: boolean): number;
     function forNumber(key: number, seed?: number): number;
     /**
-        * JS Implementation of MurmurHash3 (r136) (as of May 20, 2011)
-        *
-        * @author <a href="mailto:gary.court@gmail.com">Gary Court</a>
-        * @see http://github.com/garycourt/murmurhash-js
-        * @author <a href="mailto:aappleby@gmail.com">Austin Appleby</a>
-        * @see http://sites.google.com/site/murmurhash/
-        *
-        * @param {string} key ASCII only
-        * @param {number} seed Positive integer only
-        * @return {number} 32-bit positive integer hash (default 37)
-        */
+     JavaScript Implementation of MurmurHash3 (r136) (as of May 20, 2011)
+     @author <a href="mailto:gary.court@gmail.com">Gary Court</a>
+     @see http://github.com/garycourt/murmurhash-js
+     @author <a href="mailto:aappleby@gmail.com">Austin Appleby</a>
+     @see http://sites.google.com/site/murmurhash/
+     @param [key] {string} The string to hash.
+     @param [seed?] {number} A positive integer seed to generate the hash.
+     @return {number} 32-bit positive integer hash
+     @remarks
+        Null checking is excluded for performance.
+        The string must be ASCII only.
+        The default seed is 37.
+    */
     function forString(key: string, seed?: number): number;
 }
-declare module Classical.Native {
+declare var global: any;
+/**
+ The module that performs manipulation of native JavaScript objects.
+ @remarks This is the first module of Classical to be initialized.
+ @seealso Object, String, Number, Boolean, Array
+ @private
+*/
+declare module Classical._Native {
 }
+/** An assortment of useful functions for basic type checking and data manipulation. */
 declare module Classical.Utilities {
     function areEqual(first: any, second: any): boolean;
     function argumentsToArray<T>(args: IArguments): T[];
@@ -23,7 +38,7 @@ declare module Classical.Utilities {
     function extend(destination: any, source: any): any;
     function format(template: string, ...inputs: any[]): string;
     function titleCase(title: string, ...exclude: string[]): string;
-    function sentenceCase(sentence: string, ...exclude: string[]): string;
+    function sentenceCase(sentence: string, ...ignore: string[]): string;
     function getPropertyNames(value: any): string[];
     function isNull(value: any): boolean;
     function isUndefined(value: any): boolean;
@@ -44,6 +59,11 @@ declare module Classical.Utilities {
     function isArray(value: any): boolean;
     function isFunction(value: any): boolean;
 }
+/**
+ Assert contains a collection of functions which can each be used to construct a proposition about that application.
+ If that proposition is false, an exception is thrown containing a message and a stack trace.
+ @seealso Classical.Assert.Exception
+*/
 declare module Classical.Assert {
     function staticClass(): void;
     function isDefined(value: any, message?: string): void;
@@ -52,6 +72,9 @@ declare module Classical.Assert {
     function isFalse(expression: boolean, message?: string): void;
     function isInvalid(message?: string): void;
     function notImplemented(message?: string): Exception;
+    /**
+     A message along with a stack trace that is intended to be thrown to indicate an error.
+    */
     class Exception {
         message: string;
         stackTrace: string;
@@ -60,35 +83,83 @@ declare module Classical.Assert {
         setStackTrace(): void;
     }
 }
+/**
+ Declares that a hash code can be created for the object.
+ A hash code is a permenanet, non-unqiue but well-distributed
+ integer that is associated with the object.=
+ @remarks
+     An object implementing IHashable can be used as a key in a dictionary.
+     IObject implements IHashable so all objects can be used as keys in dictionaries.
+     This is also true for booleans, numbers and strings.
+ @seealso Classical.Collections.Dictionary
+*/
 interface IHashable {
     equals(other: any): boolean;
     getHashCode(): number;
 }
+/**
+ IObject defines what it means to be a classical object.
+ @remarks
+    The core JavaScript Object implements IObject.
+    All Objects implement IHashable so they can be used as keys in Dictionaries.
+ @seealso IHashable, Classical.Collections.Dictionary
+*/
 interface IObject extends IHashable {
     is(type: Function): boolean;
     as<TObject>(): TObject;
     getType(): Classical.Reflection.Type;
-}
-interface Object extends IObject {
     watch(property: string, handler: (property: string, oldValue: any, newValue: any) => void): void;
 }
+/**
+ The core JavaScript object.
+ @remarks
+    Object implements IObject.
+    All Objects implement IHashable so they can be used as keys in Dictionaries.
+ @seealso IObject, IHashable, Classical.Collections.Dictionary
+*/
+interface Object extends IObject {
+}
+/**
+ The core JavaScript string.
+ @remarks
+    String implements IObject.
+    All Objects implement IHashable so strings can be used as keys in Dictionaries.
+ @seealso IObject, IHashable, Classical.Collections.Dictionary
+*/
 interface String extends IObject {
 }
+/**
+ The core JavaScript number.
+ @remarks
+    Number implements IObject.
+    All Objects implement IHashable so numbers can be used as keys in Dictionaries.
+ @seealso IObject, IHashable, Classical.Collections.Dictionary
+*/
 interface Number extends IObject {
 }
+/**
+ The core JavaScript boolean.
+ @remarks
+    Boolean implements IObject.
+    All Objects implement IHashable so booleans can be used as keys in Dictionaries.
+ @seealso IObject, IHashable, Classical.Collections.Dictionary
+*/
 interface Boolean extends IObject {
 }
+/** The core module of Classical.js */
 declare module Classical {
-    class Enum<TValue extends IObject> {
-        private _value;
-        value: TValue;
-        constructor(value: TValue);
-        equals(other: any): boolean;
-        getHashCode(): number;
-    }
 }
+/**
+ Defines the core JavaScript function. IFunction and Function are equivalent.
+ @remarks
+    This interface was created as an alias so that Function can refer to
+    the notion of a function in the reflection library.
+*/
 interface IFunction extends Function {
 }
+/**
+ The core set of collections defined in Classical.
+*/
 declare module Classical.Collections {
     class Dictionary<TKey, TValue> implements IEnumerable<KeyValuePair<TKey, TValue>> {
         private _hashTable;
@@ -124,6 +195,9 @@ declare module Classical.Collections {
 }
 declare function typeOf(ctor: IFunction): Classical.Reflection.Type;
 declare function moduleOf(ctor: IFunction): Classical.Reflection.Module;
+/**
+ The core set of collections defined in Classical.
+*/
 declare module Classical.Reflection {
     enum Modifier {
         Public = 0,
@@ -132,6 +206,11 @@ declare module Classical.Reflection {
         Instance = 3,
         Static = 4,
     }
+    var Public: Modifier;
+    var Protected: Modifier;
+    var Private: Modifier;
+    var Instance: Modifier;
+    var Static: Modifier;
     class Module {
         private _name;
         private _fullName;
@@ -171,16 +250,16 @@ declare module Classical.Reflection {
         private _properties;
         private _fields;
         private _methods;
+        name: string;
+        fullName: string;
+        module: Module;
         isPublic: boolean;
         isPrivate: boolean;
         isProtected: boolean;
         isPrimitive: boolean;
-        name: string;
-        fullName: string;
         ctor: IFunction;
         prototype: any;
         base: Type;
-        module: Module;
         constructor(password: number, ctor: IFunction, mod?: Module);
         toString(): string;
         equals(other: any): boolean;
@@ -261,8 +340,16 @@ declare module Classical.Reflection {
         constructor(password: number, name: string, position: number);
     }
 }
-declare module Classical.Anonymous {
-}
+/**
+ A sequence of items that can be enumerated one at a time.
+ IEnumerables serve to allow common functionality to be defined for
+ collections like arrays, sets, dictionaries or more complex data
+ structures that have still represent some kind of collection.
+ @typeparam [T] The type of item in the sequence.
+ @remarks
+    An enumeration is not constrainted to be finite but
+    it is assumed that they are unless otherwise specified.
+*/
 interface IEnumerable<T> extends IObject {
     getEnumerator(): IEnumerator<T>;
     forEach(operation: (item?: T) => void): void;
@@ -270,13 +357,31 @@ interface IEnumerable<T> extends IObject {
     array(): T[];
     count(): number;
 }
+/**
+ Defines an object which performs the enumeration for a particular implementation of IEnumerable.
+ @typeparam [T] The type of item which is enumerated.
+ @seealso IEnumerable<T>
+*/
 interface IEnumerator<T> extends IObject {
     current: T;
     moveNext(): boolean;
 }
+/**
+ Defines an sequence with a getter.
+ @typeparam [T] The type of item in the collection.
+ @remarks
+    The get method cannot assumed to be fast though by convention is it implemented to be when possible.
+    It is safe to assume that retrieving an object using the get method requires a traversal of the collection.
+*/
 interface IAccessibleCollection<T> extends IEnumerable<T> {
     get(index: number): T;
 }
+/**
+ Defines a collection that can be used for storing and retrieving objects.
+ @typeparam [T] The type of item in the collection.
+ @remarks Array<T> implemements ICollection.
+ @seealso Array<T>
+*/
 interface ICollection<T> extends IAccessibleCollection<T> {
     add(item: T): ICollection<T>;
     addRange(items: IEnumerable<T>): ICollection<T>;
@@ -285,6 +390,14 @@ interface ICollection<T> extends IAccessibleCollection<T> {
     clear(): ICollection<T>;
     set(index: number, item: T): ICollection<T>;
 }
+/**
+ Defines a lazily executed query that performs a computation on a sequence of data.
+ @typeparam [T] The type of item being queried.
+ @remarks
+    Not all methods of IQueryable are lazily executed.
+    In particular, methods which don't return IQueryables
+    are expected to have executed the query.
+*/
 interface IQueryable<T> extends IEnumerable<T> {
     forEach(operation: (item: T) => void): IQueryable<T>;
     cast<TElement>(): IQueryable<TElement>;
@@ -315,9 +428,22 @@ interface IQueryable<T> extends IEnumerable<T> {
     execute(): IQueryable<T>;
     result(): T[];
 }
+/**
+ The core JavaScript array.
+ @remarks
+    Array implements IObject, ICollection<T> and IEnumerable<T>.
+    All Objects implement IHashable so arrays can be used as keys in Dictionaries.
+ @seealso IObject, ICollection<T> and IEnumerable<T>, IHashable, Classical.Collections.Dictionary
+*/
 interface Array<T> extends ICollection<T>, IEnumerable<T> {
 }
+/**
+ The core set of collections defined in Classical.
+*/
 declare module Classical.Collections {
+    /**
+     A collection that cannot be changed.
+    */
     class ImmutableCollection<T> implements IAccessibleCollection<T> {
         private _get;
         constructor(elements: IEnumerable<T>);
@@ -368,6 +494,7 @@ declare module Classical.Collections {
         private coalescePredicate(predicate);
     }
     module Enumerable {
+        function empty<T>(): IEnumerable<T>;
         function range(end: number): IEnumerable<number>;
         function range(start: number, end: number): IEnumerable<number>;
         function range(start: number, increment: number, end: number): IEnumerable<number>;
@@ -440,14 +567,26 @@ declare module Classical.Events {
     }
 }
 declare function bind<TModel, TProperty>(model: TModel, selector: (obj: TModel) => TProperty): Classical.Binding.IBinder<Classical.Binding.PropertyUpdate<TProperty>>;
+/**
+ The objects and interfaces used to create objects that can be bound to each other
+ in the sense that when one updates so too does the other.
+ @seealso Classical.Binding.Collections
+*/
 declare module Classical.Binding {
+    /**
+     Defines an object that can be synchronized with or bound to another object.
+     @typeparam [TTargetUpdate] {Update} The type of update consumed by the synchronizable object.
+     @remarks
+        Every object implementing ISynchronizable is meant to have a Synchronizer associated with it.
+     @seealso Classical.Binding.Synchronizer
+    */
     interface ISynchronizable<TTargetUpdate extends Update> extends IObject {
         hasTarget(target: ISynchronizable<TTargetUpdate>): boolean;
         hasSource(source: ISynchronizable<any>): boolean;
         bind(binder: IBinder<TTargetUpdate>): void;
         bind(binder: IComplexBinder<TTargetUpdate>): void;
         unbind(source: ISynchronizable<any>): boolean;
-        observe(registration: (update: TTargetUpdate[], source: any) => void): any;
+        observe2(registration: (update: TTargetUpdate[], source: any) => void): any;
         apply(updates: IEnumerable<TTargetUpdate>): void;
         detach(): void;
     }
@@ -458,18 +597,39 @@ declare module Classical.Binding {
         addSource(source: any): void;
         transferSourcesTo<TUpdate extends Update>(update: TUpdate): TUpdate;
     }
+    /**
+     Defines the manner in which two objects are synchronized.
+     @typeparam [TTargetUpdate] {Update} The type of update consumed by a synchronizable object.
+    */
     interface IBinder<TTargetUpdate extends Update> extends IObject {
         source: ISynchronizable<Update>;
         converter?: IConverter<any, TTargetUpdate>;
         init?: (target: ISynchronizable<TTargetUpdate>, source: ISynchronizable<Update>) => void;
     }
+    /**
+     Defines the manner in which one object is synchronized with multiple sources.
+     @typeparam [TTargetUpdate] {Update} The type of update consumed by a synchronizable object.
+    */
     interface IComplexBinder<TTargetUpdate extends Update> extends IObject {
         sources: ISynchronizable<Update>[];
-        converter: IConverter<any[], TTargetUpdate>;
+        converter: IAggregator<any, TTargetUpdate>;
     }
-    interface IConverter<TSource, TTarget> extends IObject {
-        convert(value: TSource): TTarget;
-        convertBack?(value: TTarget): TSource;
+    /**
+     Defines an object that converts data between two types.
+     @typeparam [TSourceValue] The type of value to convert from.
+     @typeparam [TTargetValue] The type of value to convert to.
+    */
+    interface IConverter<TSourceValue, TTargetValue> extends IObject {
+        convert(source: TSourceValue): TTargetValue;
+        convertBack?(target: TTargetValue): TSourceValue;
+    }
+    /**
+     Defines an object that aggregates a sequence into a single value.
+     @typeparam [TSourceValue] The type of data to aggregate.
+     @typeparam [TTargetValue] The type of data returned by the aggregation.
+    */
+    interface IAggregator<TSourceValue, TTargetValue> extends IObject {
+        convert(sources: IEnumerable<TSourceValue>): TTargetValue;
     }
     class Synchronizer<TTargetUpdate extends Update> implements ISynchronizable<TTargetUpdate> {
         private _updateDepth;
@@ -487,7 +647,7 @@ declare module Classical.Binding {
         bind(binder: IComplexBinder<TTargetUpdate>): void;
         unbind(source: ISynchronizable<any>): boolean;
         apply(updates: IEnumerable<TTargetUpdate>): void;
-        observe(registration: (update: TTargetUpdate[], source: any) => void): void;
+        observe2(registration: (update: TTargetUpdate[], source: any) => void): void;
         detach(): void;
         add(update: TTargetUpdate): void;
         filter(updates: IEnumerable<TTargetUpdate>): TTargetUpdate[];
@@ -512,7 +672,7 @@ declare module Classical.Binding {
         bind(binder: IBinder<PropertyUpdate<TValue>>): any;
         bind(binder: IComplexBinder<PropertyUpdate<TValue>>): void;
         unbind(partner: ISynchronizable<any>): boolean;
-        observe(registration: (update: PropertyUpdate<TValue>[], source: Property<TValue>) => void): void;
+        observe2(registration: (update: PropertyUpdate<TValue>[], source: Property<TValue>) => void): void;
         apply(updates: IEnumerable<PropertyUpdate<TValue>>): void;
         detach(): void;
         private _createComplexBinder(sources, selector);
@@ -531,6 +691,10 @@ declare module Classical.Binding {
         private _getValue();
         private _setValue(value);
     }
+    /**
+     Defines the manner in which two binding properties are synchronized.
+     @typeparam [TValue] The type of the target property value.
+    */
     interface IPropertyBinder<TValue> extends IObject {
         property: Property<any>;
         converter: IConverter<any, TValue>;
@@ -543,6 +707,10 @@ declare module Classical.Binding {
     function setProperty<T>(obj: any, propertyName: string, value: T): void;
     function propertyBinderToBinder<TValue>(propertyBinder: IPropertyBinder<TValue>): IBinder<PropertyUpdate<TValue>>;
 }
+/**
+ A set of collections which can be bound to each other.
+ @seealso Classical.Binding
+*/
 declare module Classical.Binding.Collections {
     class Collection<T> implements ICollection<T>, ISynchronizable<CollectionUpdate<T>> {
         private _items;
@@ -572,7 +740,7 @@ declare module Classical.Binding.Collections {
         bind(binder: IBinder<CollectionUpdate<T>>): void;
         bind(binder: IComplexBinder<CollectionUpdate<T>>): void;
         unbind(source: ISynchronizable<any>): boolean;
-        observe(registration: (update: CollectionUpdate<T>[], source: any) => void): void;
+        observe2(registration: (update: CollectionUpdate<T>[], source: any) => void): void;
         apply(updates: IEnumerable<CollectionUpdate<T>>): void;
         detach(): void;
         toString(): string;
@@ -584,6 +752,10 @@ declare module Classical.Binding.Collections {
         private _applyRemove(updates);
         private _applyRemoveAt(updates);
     }
+    /**
+     Defines the manner in which two binding collections are synchronized.
+     @typeparam [T] The type of item in the target collection.
+    */
     interface ICollectionBinder<T> extends IObject {
         collection: Collection<any>;
         converter?: IConverter<any, T>;

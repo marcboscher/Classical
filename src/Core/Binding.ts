@@ -15,6 +15,11 @@ function bind<TModel, TProperty>(model: TModel, selector: (obj: TModel) => TProp
 
 //#endregion bind
 
+/**
+ The objects and interfaces used to create objects that can be bound to each other
+ in the sense that when one updates so too does the other.
+ @seealso Classical.Binding.Collections
+*/
 module Classical.Binding {
 
     //#region Imports
@@ -28,13 +33,20 @@ module Classical.Binding {
 
     //#region ISynchronizable
 
+    /**
+     Defines an object that can be synchronized with or bound to another object. 
+     @typeparam [TTargetUpdate] {Update} The type of update consumed by the synchronizable object.
+     @remarks 
+        Every object implementing ISynchronizable is meant to have a Synchronizer associated with it.
+     @seealso Classical.Binding.Synchronizer
+    */
     export interface ISynchronizable<TTargetUpdate extends Update> extends IObject {
         hasTarget(target: ISynchronizable<TTargetUpdate>): boolean;
         hasSource(source: ISynchronizable<any>): boolean;
         bind(binder: IBinder<TTargetUpdate>): void;
         bind(binder: IComplexBinder<TTargetUpdate>): void;
         unbind(source: ISynchronizable<any>): boolean;
-        observe(registration: (update: Array<TTargetUpdate>, source: any) => void);
+        observe2(registration: (update: Array<TTargetUpdate>, source: any) => void);
         apply(updates: IEnumerable<TTargetUpdate>): void;
         detach(): void;
 
@@ -98,6 +110,10 @@ module Classical.Binding {
 
     //#region IBinder
 
+    /**
+     Defines the manner in which two objects are synchronized.
+     @typeparam [TTargetUpdate] {Update} The type of update consumed by a synchronizable object.
+    */
     export interface IBinder<TTargetUpdate extends Update> extends IObject {
         source: ISynchronizable<Update>;
         converter?: IConverter<any, TTargetUpdate>;
@@ -108,21 +124,43 @@ module Classical.Binding {
 
     //#region IComplexBinder
 
+    /**
+     Defines the manner in which one object is synchronized with multiple sources.
+     @typeparam [TTargetUpdate] {Update} The type of update consumed by a synchronizable object.
+    */
     export interface IComplexBinder<TTargetUpdate extends Update> extends IObject {
         sources: Array<ISynchronizable<Update>>;
-        converter: IConverter<Array<any>, TTargetUpdate>;
+        converter: IAggregator<any, TTargetUpdate>;
     }
 
     //#endregion IComplexBinder
 
     //#region IConverter
 
-    export interface IConverter<TSource, TTarget> extends IObject {
-        convert(value: TSource): TTarget;
-        convertBack? (value: TTarget): TSource;
+    /**
+     Defines an object that converts data between two types.
+     @typeparam [TSourceValue] The type of value to convert from.
+     @typeparam [TTargetValue] The type of value to convert to.
+    */
+    export interface IConverter<TSourceValue, TTargetValue> extends IObject {
+        convert(source: TSourceValue): TTargetValue;
+        convertBack? (target: TTargetValue): TSourceValue;
     }
 
     //#endregion IConverter
+
+    //#region IComplexConverter
+
+    /**
+     Defines an object that aggregates a sequence into a single value.
+     @typeparam [TSourceValue] The type of data to aggregate.
+     @typeparam [TTargetValue] The type of data returned by the aggregation.
+    */
+    export interface IAggregator<TSourceValue, TTargetValue> extends IObject {
+        convert(sources: IEnumerable<TSourceValue>): TTargetValue;
+    }
+
+    //#endregion IComplexConverter
 
     //#region Synchronizer
 
@@ -276,7 +314,7 @@ module Classical.Binding {
 
         //#region observe
 
-        observe(registration: (update: Array<TTargetUpdate>, source: any) => void) {
+        observe2(registration: (update: Array<TTargetUpdate>, source: any) => void) {
             this._onUpdateEvent.subscribe((host, info) => {
                 registration(info, host);
             });
@@ -400,7 +438,7 @@ module Classical.Binding {
                     return this.target.apply([update]);
                 };
 
-            sourcesQuery.forEach(source => source.observe(bindingHandler));
+            sourcesQuery.forEach(source => source.observe2(bindingHandler));
             bindingHandler();
         }
 
@@ -547,8 +585,8 @@ module Classical.Binding {
 
         //#region observe
 
-        observe(registration: (update: Array<PropertyUpdate<TValue>>, source: Property<TValue>) => void) {
-            this._synchronizer.observe(registration);
+        observe2(registration: (update: Array<PropertyUpdate<TValue>>, source: Property<TValue>) => void) {
+            this._synchronizer.observe2(registration);
         }
 
         //#endregion observe
@@ -587,7 +625,7 @@ module Classical.Binding {
 
         //#region createComplexBinder
 
-        private _createComplexBinder(sources: Array<ISynchronizable<Update>>, selector: (sources: Array<ISynchronizable<Update>>) => TValue): IComplexBinder<PropertyUpdate<TValue>> {
+        private _createComplexBinder(sources: Array<ISynchronizable<Update>>, selector: (sources: IEnumerable<ISynchronizable<Update>>) => TValue): IComplexBinder<PropertyUpdate<TValue>> {
             return {
                 sources: sources,
                 converter: {
@@ -722,6 +760,10 @@ module Classical.Binding {
 
     //#region IPropertyBinder
 
+    /**
+     Defines the manner in which two binding properties are synchronized.
+     @typeparam [TValue] The type of the target property value.
+    */
     export interface IPropertyBinder<TValue> extends IObject {
         property: Property<any>;
         converter: IConverter<any, TValue>;

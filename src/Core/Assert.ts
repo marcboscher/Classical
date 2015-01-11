@@ -1,4 +1,9 @@
 
+/**
+ Assert contains a collection of functions which can each be used to construct a proposition about that application. 
+ If that proposition is false, an exception is thrown containing a message and a stack trace.
+ @seealso Classical.Assert.Exception
+*/
 module Classical.Assert {
 
     import u = Classical.Utilities;
@@ -54,7 +59,9 @@ module Classical.Assert {
                 message, defaultMessage));
     }
 
-    //A message along with a stack trace that is intended to be thrown to indicate an error.
+    /**
+     A message along with a stack trace that is intended to be thrown to indicate an error.
+    */
     export class Exception {
 
         //#region Fields

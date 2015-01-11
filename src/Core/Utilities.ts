@@ -1,4 +1,5 @@
 
+/** An assortment of useful functions for basic type checking and data manipulation. */
 module Classical.Utilities {
 
     //#region Variables
@@ -169,7 +170,7 @@ module Classical.Utilities {
 
     //Returns a string with the first word of the sentence capitalized.
     //The sentence is also guaranteed to end in a period. Empty sentences are ignored.
-    export function sentenceCase(sentence: string, ...exclude: Array<string>) {
+    export function sentenceCase(sentence: string, ...ignore: Array<string>) {
         if (!sentence) return sentence;
         sentence = sentence.trim();
 
@@ -179,7 +180,7 @@ module Classical.Utilities {
         
         var words = sentence.split(' ').query()
                 .where(w => w && w.length > 0),
-            excludeQuery = exclude.query(),
+            excludeQuery = ignore.query(),
             excludedWords = words
                 .dictionary(w => w,
                 w => excludeQuery
@@ -195,20 +196,6 @@ module Classical.Utilities {
     }
 
     //#endregion sentenceCase
-
-    ////#region pascalCase
-
-    ////Takes a sentence and capitalizes all but the first word. 
-    ////If a word is a special case, that casing is used instead.
-    ////Special cases should be specified as lowercase strings, 
-    ////though the actual value of the special case is unconcstrained.
-    //export function pascalCase(sentence: string, specialCases: Classical.Collections.Dictionary<string, string>) {
-    //    if (!sentence) return;
-    //    if (specialCases == null)
-    //        specialCases = new Classical.Collections.Dictionary<string, string>();
-    //}
-
-    ////#endregion pascalCase
 
     //#region getPropertyNames
 

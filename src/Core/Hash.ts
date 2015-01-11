@@ -1,13 +1,41 @@
 
-
-//Hashing functions for JavaScript primitives.
+/**
+ Hash constains the functions for generating hash codes for JavaScript primitives.
+ @seealso Boolean, Number, String
+*/
 module Classical.Hash {
+
+    //#region Imports
+
+    import u = Classical.Utilities;
+
+    //#endregion Imports
+
+    //#region forBoolean
+
+    /*  
+     Returns a numeric hash for a boolean value.
+     @param [key] {boolean} The value to hash
+     @return {number} 1 for true and 0 for false.
+     @remarks null checking is excluded for performance.
+    */ 
+    export function forBoolean(key: boolean): number {
+        return +key;
+    }
+
+    //#endregion forBoolean
 
     //#region forNumber
 
-    //Returns a numeric hash based on Hash.forString.
-    //@param key: the number to hash.
-    //@param seed: an optional seed for generating different hashes.
+    /*  
+     Returns a numeric hash for a numeric value.
+     @param [key] {} The value to hash
+     @param [seed?] {number} A positive integer seed to generate the hash.
+     @return {number} 1 for true and 0 for false.
+     @remarks 
+        Null checking is excluded for performance.
+        The default seed is 37.
+    */ 
     export function forNumber(key: number, seed?: number): number {
         return Hash.forString(key.toString(), seed);
     }
@@ -17,17 +45,19 @@ module Classical.Hash {
     //#region forString
 
     /**
-        * JS Implementation of MurmurHash3 (r136) (as of May 20, 2011)
-        * 
-        * @author <a href="mailto:gary.court@gmail.com">Gary Court</a>
-        * @see http://github.com/garycourt/murmurhash-js
-        * @author <a href="mailto:aappleby@gmail.com">Austin Appleby</a>
-        * @see http://sites.google.com/site/murmurhash/
-        * 
-        * @param {string} key ASCII only
-        * @param {number} seed Positive integer only
-        * @return {number} 32-bit positive integer hash (default 37)
-        */
+     JavaScript Implementation of MurmurHash3 (r136) (as of May 20, 2011)
+     @author <a href="mailto:gary.court@gmail.com">Gary Court</a>
+     @see http://github.com/garycourt/murmurhash-js
+     @author <a href="mailto:aappleby@gmail.com">Austin Appleby</a>
+     @see http://sites.google.com/site/murmurhash/ 
+     @param [key] {string} The string to hash.
+     @param [seed?] {number} A positive integer seed to generate the hash.
+     @return {number} 32-bit positive integer hash 
+     @remarks 
+        Null checking is excluded for performance. 
+        The string must be ASCII only.
+        The default seed is 37.
+    */
     export function forString(key: string, seed?: number): number {
         if (seed === undefined)
             seed = 37;

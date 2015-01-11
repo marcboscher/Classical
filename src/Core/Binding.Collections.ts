@@ -1,4 +1,8 @@
 ﻿
+/**
+ A set of collections which can be bound to each other.
+ @seealso Classical.Binding
+*/
 module Classical.Binding.Collections {
 
     //#region Imports
@@ -203,8 +207,8 @@ module Classical.Binding.Collections {
             return this._synchronizer.unbind(source);
         }
 
-        observe(registration: (update: Array<CollectionUpdate<T>>, source: any) => void) {
-            this._synchronizer.observe(registration);
+        observe2(registration: (update: Array<CollectionUpdate<T>>, source: any) => void) {
+            this._synchronizer.observe2(registration);
         }
 
         apply(updates: IEnumerable<CollectionUpdate<T>>): void {
@@ -238,7 +242,7 @@ module Classical.Binding.Collections {
 
         //#region createComplexBinder
 
-        private _createComplexBinder(sources: Array<ISynchronizable<Update>>, selector: (sources: Array<ISynchronizable<Update>>) => T): IComplexBinder<CollectionUpdate<T>> {
+        private _createComplexBinder(sources: Array<ISynchronizable<Update>>, selector: (sources: IEnumerable<ISynchronizable<Update>>) => T): IComplexBinder<CollectionUpdate<T>> {
             return {
                 sources: sources,
                 converter: {
@@ -343,6 +347,10 @@ module Classical.Binding.Collections {
 
     //#region ICollectionBinder
 
+    /**
+     Defines the manner in which two binding collections are synchronized.
+     @typeparam [T] The type of item in the target collection.
+    */
     export interface ICollectionBinder<T> extends IObject {
         collection: Collection<any>;
         converter?: IConverter<any, T>;

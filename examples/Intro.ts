@@ -1,4 +1,4 @@
-﻿/// <reference path="classical.d.ts" />
+﻿/// <reference path="../Declarations/classical.d.ts" />
 
 module Classical.Introduction {
 

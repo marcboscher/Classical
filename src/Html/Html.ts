@@ -4751,6 +4751,7 @@ module Classical.Html.Elements {
     import events = Classical.Events;
     import b = Classical.Binding;
     import bc = Classical.Binding.Collections;
+    import u = Classical.Utilities;
 
     //#endregion Imports
 
@@ -4889,7 +4890,7 @@ module Classical.Html.Elements {
         * @param [document] The document used to create elements. If unspecified, the global document is used.
         * @returns the decorated DOM node, with data and bindings set.
         */
-        initialize(document: Document = window.document): HtmlNode {
+        initialize(document: Document = global.document): HtmlNode {
             if (this.isInitialized())
                 return this;
 
@@ -7127,7 +7128,7 @@ module Classical.Html.Elements {
         * @param [document] The document used to create elements. If unspecified, the global document is used.
         * @returns the decorated DOM node, with data and bindings set.
         */
-        initialize(document: Document = window.document): HtmlNode {
+        initialize(document: Document = global.document): HtmlNode {
             if (this.isInitialized())
                 return this;
 
@@ -17952,13 +17953,18 @@ module Classical.Html.Elements {
             htmlElement = element.element,
             htmlValue = htmlElement[htmlPropertyName],
             property = new b.Property<HtmlNode>(element);
-        property['htmlValue'] = htmlValue;
+            property['htmlValue'] = htmlValue;
 
-        property.observe((values, host) => {
-            var value = values[0],
+        //Delete me
+        if (!property.observe2)
+            console.log(property);
+
+        property.observe2((values, host) => {
+            var value = values[0].value,
                 currentHtmlValue = htmlElement[htmlPropertyName];
 
-            var valueWasNotChanged = false;
+            var valueWasNotChanged = false,
+                htmlElementProperty = htmlElement[htmlPropertyName];
             try {
                 if (currentHtmlValue !== value) {
                     htmlElement[htmlPropertyName] = value;
@@ -17994,7 +18000,7 @@ module Classical.Html.Elements {
             collectionProperty = new bc.Collection<HtmlNode>(htmlElementChildrenArray.map(node => {
                 return HtmlNode.getHtmlNode(node);
             }));
-        collectionProperty.observe((collection, info) => {
+        collectionProperty.observe2((collection, info) => {
             if (info.action.equals(bc.CollectionUpdateType.Add)) {
                 var oldChild = htmlElementChildren[info.newIndex],
                     newIndex = info.newIndex,
@@ -18041,9 +18047,15 @@ module Classical.Html.Elements {
         var binderPropertyName = propertyName + 'Binder',
             bindingPropertyName = propertyName + 'Property',
             configValue = config[propertyName],
-            configBinder = <b.IBinder<any>>config[binderPropertyName];
+            configBinder = <b.IBinder<any>>config[binderPropertyName],
+            elementPropertyValue = element[propertyName];
 
-        if (configValue !== undefined && !configBinder && isInitializable) {
+        //Kills the loop
+        if (!isInitializable || u.areEqual(elementPropertyValue, configValue))
+            return;
+
+        if (!configBinder &&
+            configValue !== undefined) {
             element[propertyName] = configValue;
         } else if (configBinder) {
             var property = <b.Property<HtmlNode>>element[bindingPropertyName];

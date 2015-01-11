@@ -1,5 +1,5 @@
 
-module Classical.Native.Spec {
+module Classical._Native.Spec {
     describe('Classical', () => {
         describe('Native', () => {
 
@@ -22,8 +22,8 @@ module Classical.Native.Spec {
                         expect('abc'.getHashCode()).toBe('abc'.getHashCode());
                     });
                     it('should return unequal hash codes for some unequal values', () => {
-                        expect(''.getHashCode()).toNotBe('abc'.getHashCode());
-                        expect('abc'.getHashCode()).toNotBe('def'.getHashCode());
+                        expect(''.getHashCode()).not.toBe('abc'.getHashCode());
+                        expect('abc'.getHashCode()).not.toBe('def'.getHashCode());
                     });
                 })
             });
@@ -49,8 +49,8 @@ module Classical.Native.Spec {
                         expect(Number('0').getHashCode()).toBe(Number('0').getHashCode());
                     });
                     it('should return unequal hash codes for some unequal values', () => {
-                        expect(Number('0').getHashCode()).toNotBe(Number('5').getHashCode());
-                        expect(Number('5').getHashCode()).toNotBe(Number('-5').getHashCode());
+                        expect(Number('0').getHashCode()).not.toBe(Number('5').getHashCode());
+                        expect(Number('5').getHashCode()).not.toBe(Number('-5').getHashCode());
                     });
                 })
             });
@@ -75,7 +75,7 @@ module Classical.Native.Spec {
                         expect(false.getHashCode()).toBe(false.getHashCode());
                     });
                     it('should return unequal hash codes for unequal values', () => {
-                        expect(true.getHashCode()).toNotBe(false.getHashCode());
+                        expect(true.getHashCode()).not.toBe(false.getHashCode());
                     });
                 })
             });
@@ -110,7 +110,7 @@ module Classical.Native.Spec {
                     });
                     it('should not be enumerable', () => {
                         for (var property in {}) {
-                            expect(property).toNotBe('equals');
+                            expect(property).not.toBe('equals');
                         }
                     });
                 });
@@ -128,7 +128,7 @@ module Classical.Native.Spec {
                     });
                     it('should not be enumerable', () => {
                         for (var property in {}) {
-                            expect(property).toNotBe('getHashCode');
+                            expect(property).not.toBe('getHashCode');
                         }
                     });
                 });
@@ -139,7 +139,7 @@ module Classical.Native.Spec {
                         expect(Utilities.isNumber(value._hashCode)).toBe(true);
 
                         for (var property in {}) {
-                            expect(property).toNotBe('_hashCode');
+                            expect(property).not.toBe('_hashCode');
                         }
                     });
                 })

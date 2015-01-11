@@ -1,5 +1,18 @@
 
-module Classical.Native {
+//#region global
+
+declare var global;
+if (!global) global = window;
+
+//#endregion global
+
+/**
+ The module that performs manipulation of native JavaScript objects. 
+ @remarks This is the first module of Classical to be initialized.
+ @seealso Object, String, Number, Boolean, Array
+ @private
+*/
+module Classical._Native {
 
     //#region Variables
 
@@ -169,7 +182,7 @@ module Classical.Native {
 
     Object.defineProperty(BooleanPrototype, 'getHashCode', {
         value: function () {
-            return Hash.forNumber(+this);
+            return Hash.forBoolean(this);
         },
         enumerable: false,
         configurable: true,

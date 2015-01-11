@@ -266,6 +266,7 @@ var Classical;
             var events = Classical.Events;
             var b = Classical.Binding;
             var bc = Classical.Binding.Collections;
+            var u = Classical.Utilities;
             var HtmlNode = (function () {
                 function HtmlNode(elementName, config) {
                     this._updating = false;
@@ -316,7 +317,7 @@ var Classical;
                 };
                 HtmlNode.prototype.initialize = function (document) {
                     var _this = this;
-                    if (document === void 0) { document = window.document; }
+                    if (document === void 0) { document = global.document; }
                     if (this.isInitialized())
                         return this;
                     var element = this.createElement(document);
@@ -1545,7 +1546,7 @@ var Classical;
                         this.pasteEvent.subscribe(config.pasteHandler);
                 };
                 HtmlElementContainer.prototype.initialize = function (document) {
-                    if (document === void 0) { document = window.document; }
+                    if (document === void 0) { document = global.document; }
                     if (this.isInitialized())
                         return this;
                     _super.prototype.initialize.call(this);
@@ -6697,9 +6698,11 @@ var Classical;
             function initializeProperty(element, propertyName, htmlPropertyName) {
                 var bindingProperyName = propertyName + 'Property', fieldName = '_' + bindingProperyName, htmlElement = element.element, htmlValue = htmlElement[htmlPropertyName], property = new b.Property(element);
                 property['htmlValue'] = htmlValue;
-                property.observe(function (values, host) {
-                    var value = values[0], currentHtmlValue = htmlElement[htmlPropertyName];
-                    var valueWasNotChanged = false;
+                if (!property.observe2)
+                    console.log(property);
+                property.observe2(function (values, host) {
+                    var value = values[0].value, currentHtmlValue = htmlElement[htmlPropertyName];
+                    var valueWasNotChanged = false, htmlElementProperty = htmlElement[htmlPropertyName];
                     try {
                         if (currentHtmlValue !== value) {
                             htmlElement[htmlPropertyName] = value;
@@ -6721,7 +6724,7 @@ var Classical;
                 var htmlElement = element.getElement(), htmlElementChildren = htmlElement.childNodes, htmlElementChildrenArray = Array.prototype.slice.call(htmlElementChildren), collectionProperty = new bc.Collection(htmlElementChildrenArray.map(function (node) {
                     return HtmlNode.getHtmlNode(node);
                 }));
-                collectionProperty.observe(function (collection, info) {
+                collectionProperty.observe2(function (collection, info) {
                     if (info.action.equals(0 /* Add */)) {
                         var oldChild = htmlElementChildren[info.newIndex], newIndex = info.newIndex, newItem = info.newItem, newElement = newItem.element;
                         if (!newElement) {
@@ -6748,8 +6751,10 @@ var Classical;
                 element['_children'] = collectionProperty;
             }
             function setPropertyFromConfig(element, config, propertyName, isInitializable) {
-                var binderPropertyName = propertyName + 'Binder', bindingPropertyName = propertyName + 'Property', configValue = config[propertyName], configBinder = config[binderPropertyName];
-                if (configValue !== undefined && !configBinder && isInitializable) {
+                var binderPropertyName = propertyName + 'Binder', bindingPropertyName = propertyName + 'Property', configValue = config[propertyName], configBinder = config[binderPropertyName], elementPropertyValue = element[propertyName];
+                if (!isInitializable || u.areEqual(elementPropertyValue, configValue))
+                    return;
+                if (!configBinder && configValue !== undefined) {
                     element[propertyName] = configValue;
                 }
                 else if (configBinder) {
