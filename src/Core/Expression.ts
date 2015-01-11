@@ -1,4 +1,18 @@
-﻿module Classical.Expression {
+﻿
+/**
+ Provides methods which extract expressions from JavaScript code. 
+ @remarks Currently we support extracting the property name from a lambda selector and extracting the arguments from a function.
+ @seealso Classical.Reflection
+ @example
+    import e = Classical.Expression;
+
+    var obj = { property: 'value' };
+    e.getProperty(obj, o => o.property); //returns 'property'
+
+    var func = function(a: string, b: string) { return a + b; }
+    e.getArguments(func); //['a', 'b']
+*/
+module Classical.Expression {
 
     //#region Imports
 

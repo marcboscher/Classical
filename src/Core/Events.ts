@@ -1,7 +1,11 @@
 
 //#region IEvent
 
-//A host notifies registered subscribers that attend an event.
+/**
+ Description of an event which can subscribed to.
+ @typeparam [THost] The object which hosts the event.
+ @typeparam [TInformation] The information required to respond to the event.
+*/
 interface IEvent<THost, TInformation> extends IObject {
     //Subscribe to an event by providing a registration.
     subscribe(registration: (host: THost, info: TInformation) => void): void;
@@ -23,7 +27,12 @@ interface IEvent<THost, TInformation> extends IObject {
 
 //#region IRequest
 
-//A host requests information from registered subscribers.
+/**
+ An event in which subscribers can provide a response through their registration.
+ @typeparam [THost] The object which hosts the event.
+ @typeparam [TInformation] The information required to respond to the event.
+ @typeparam [TResponse] The type of response required from subscribers.
+*/
 interface IRequest<THost, TInformation, TResponse> extends IObject {
     //Subscribe to a request by providing a registration.
     subscribe(registration: (host: THost, info: TInformation) => TResponse): void;
@@ -43,35 +52,15 @@ interface IRequest<THost, TInformation, TResponse> extends IObject {
 
 //#endregion IRequest
 
-//#region IVoteRequest
-
-//A request for a vote among the subscribers.
-interface IVoteRequest<THost, TInformation>
-extends IRequest<THost, TInformation, boolean> {
-
-    //Polls the subscribers and aggregates their vote.
-    poll(info: TInformation): boolean;
-}
-
-//#endregion IVoteRequest
-
-//#region ITallyRequest
-
-//A request which tallies numerical responses from the subscribers.
-interface ITallyRequest<THost, TInformation>
-extends IRequest<THost, TInformation, number> {
-
-    //Returns a tally of the responses of the subscribers.
-    tally(info: TInformation): number;
-}
-
-//#endregion ITallyRequest
-
 module Classical.Events {
 
     //#region Event
 
-    //A host notifies registered subscribers to attend an event.
+    /**
+     Description of an event which can subscribed to.
+     @typeparam [THost] The object which hosts the event.
+     @typeparam [TInformation] The information required to respond to the event.
+    */
     export class Event<THost, TInformation>
         implements IEvent<THost, TInformation> {
 
@@ -125,7 +114,12 @@ module Classical.Events {
 
     //#region Request
 
-    //A host requests information from registered subscribers.
+    /**
+     An event in which subscribers can provide a response through their registration.
+     @typeparam [THost] The object which hosts the event.
+     @typeparam [TInformation] The information required to respond to the event.
+     @typeparam [TResponse] The type of response required from subscribers.
+    */
     export class Request<THost, TInformation, TResponse>
         implements IRequest<THost, TInformation, TResponse> {
 
@@ -134,7 +128,7 @@ module Classical.Events {
 
         //The host of the request, which is generally the object with the event property.
         //TODO: Remove optional argument when the compiler is having trouble with them.
-        constructor(host?: THost) {
+        constructor(host: THost) {
             this._host = host;
         }
 
@@ -186,16 +180,18 @@ module Classical.Events {
 
     //#region TallyRequest
 
-    //A request which tallies numerical responses from the subscribers.
+    /**
+     An request in which subscribers vote with numerical values for the host to tally.
+     @typeparam [THost] The object which hosts the event.
+     @typeparam [TInformation] The information required to respond to the event.
+    */
     export class TallyRequest<THost, TInformation>
-        extends Request<THost, TInformation, number>
-        implements ITallyRequest<THost, TInformation> {
+        extends Request<THost, TInformation, number> {
 
         //Initializes a TallyRequest.
         //TODO: Remove optional argument when the compiler is having trouble with them.
-        constructor(host?: THost) {
-            super();
-            this._host = host;
+        constructor(host: THost) {
+            super(host);
         }
 
         //Returns a tally of the responses of the subscribers.
@@ -212,10 +208,13 @@ module Classical.Events {
 
     //#region VoteRequest
 
-    //A request for a vote among the subscribers.
+    /**
+     An request in which subscribers vote with boolean values for the host to count.
+     @typeparam [THost] The object which hosts the event.
+     @typeparam [TInformation] The information required to respond to the event.
+    */
     export class VoteRequest<THost, TInformation>
-        extends Request<THost, TInformation, boolean>
-        implements IVoteRequest<THost, TInformation> {
+        extends Request<THost, TInformation, boolean> {
 
         //The result returned from a poll in the event of a tie, or if there are no voters.
         _undecidedResult: boolean;
@@ -223,9 +222,8 @@ module Classical.Events {
         //Initializes a VoteRequest.
         //The undecidedResult is the result returned from a poll in the event of a tie, or if there are no voters.
         //TODO: Remove optional argument when the compiler is having trouble with them.
-        constructor(host?: THost, undecidedResult: boolean = null) {
-            super();
-            this._host = host;
+        constructor(host: THost, undecidedResult: boolean = null) {
+            super(host);
             this._undecidedResult = undecidedResult;
         }
 
@@ -258,16 +256,19 @@ module Classical.Events {
 
     //#region UnanimousVoteRequest
 
-    //A request for a unanimous vote among the subscribers.
-    //Every result must be true for the poll to return true.
+    /**
+     A vote request where the result must be unanimous.
+     @typeparam [THost] The object which hosts the event.
+     @typeparam [TInformation] The information required to respond to the event.
+    */
     export class UnanimousVoteRequest<THost, TInformation>
         extends VoteRequest<THost, TInformation> {
 
         //Initializes a UnanimousVoteRequest.
         //The undecidedResult is the result returned from a poll if there are no voters.
         //TODO: Remove optional argument when the compiler is having trouble with them.
-        constructor(host?: THost, undecidedResult: boolean = null) {
-            super();
+        constructor(host: THost, undecidedResult: boolean = null) {
+            super(host);
             this._host = host;
             this._undecidedResult = undecidedResult;
         }

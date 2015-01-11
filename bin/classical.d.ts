@@ -573,11 +573,29 @@ declare module Classical.Collections {
         function forEach<T>(items: IEnumerable<T>, operation: (item?: T) => void): void;
     }
 }
+/**
+ Provides methods which extract expressions from JavaScript code.
+ @remarks Currently we support extracting the property name from a lambda selector and extracting the arguments from a function.
+ @seealso Classical.Reflection
+ @example
+    import e = Classical.Expression;
+
+    var obj = { property: 'value' };
+    e.getProperty(obj, o => o.property); //returns 'property'
+
+    var func = function(a: string, b: string) { return a + b; }
+    e.getArguments(func); //['a', 'b']
+*/
 declare module Classical.Expression {
     function getProperty<TInstance>(instance: TInstance, selector: (instance: TInstance) => any): string;
     function getProperty<TInstance>(selector: (instance: TInstance) => any): string;
     function getArguments(func: Function): string[];
 }
+/**
+ Description of an event which can subscribed to.
+ @typeparam [THost] The object which hosts the event.
+ @typeparam [TInformation] The information required to respond to the event.
+*/
 interface IEvent<THost, TInformation> extends IObject {
     subscribe(registration: (host: THost, info: TInformation) => void): void;
     unsubscribe(registration: (host: THost, info: TInformation) => void): void;
@@ -585,6 +603,12 @@ interface IEvent<THost, TInformation> extends IObject {
     clear(): void;
     count(): number;
 }
+/**
+ An event in which subscribers can provide a response through their registration.
+ @typeparam [THost] The object which hosts the event.
+ @typeparam [TInformation] The information required to respond to the event.
+ @typeparam [TResponse] The type of response required from subscribers.
+*/
 interface IRequest<THost, TInformation, TResponse> extends IObject {
     subscribe(registration: (host: THost, info: TInformation) => TResponse): void;
     unsubscribe(registration: (host: THost, info: TInformation) => TResponse): void;
@@ -592,13 +616,12 @@ interface IRequest<THost, TInformation, TResponse> extends IObject {
     clear(): void;
     count(): number;
 }
-interface IVoteRequest<THost, TInformation> extends IRequest<THost, TInformation, boolean> {
-    poll(info: TInformation): boolean;
-}
-interface ITallyRequest<THost, TInformation> extends IRequest<THost, TInformation, number> {
-    tally(info: TInformation): number;
-}
 declare module Classical.Events {
+    /**
+     Description of an event which can subscribed to.
+     @typeparam [THost] The object which hosts the event.
+     @typeparam [TInformation] The information required to respond to the event.
+    */
     class Event<THost, TInformation> implements IEvent<THost, TInformation> {
         _subscribers: {
             (host: THost, info: TInformation): void;
@@ -611,30 +634,51 @@ declare module Classical.Events {
         clear(): void;
         count(): number;
     }
+    /**
+     An event in which subscribers can provide a response through their registration.
+     @typeparam [THost] The object which hosts the event.
+     @typeparam [TInformation] The information required to respond to the event.
+     @typeparam [TResponse] The type of response required from subscribers.
+    */
     class Request<THost, TInformation, TResponse> implements IRequest<THost, TInformation, TResponse> {
         _subscribers: {
             (host: THost, info: TInformation): TResponse;
         }[];
         _host: THost;
-        constructor(host?: THost);
+        constructor(host: THost);
         subscribe(registration: (host: THost, info: TInformation) => TResponse): void;
         unsubscribe(registration: (host: THost, info: TInformation) => TResponse): void;
         execute(info: TInformation): IEnumerable<TResponse>;
         clear(): void;
         count(): number;
     }
-    class TallyRequest<THost, TInformation> extends Request<THost, TInformation, number> implements ITallyRequest<THost, TInformation> {
-        constructor(host?: THost);
+    /**
+     An request in which subscribers vote with numerical values for the host to tally.
+     @typeparam [THost] The object which hosts the event.
+     @typeparam [TInformation] The information required to respond to the event.
+    */
+    class TallyRequest<THost, TInformation> extends Request<THost, TInformation, number> {
+        constructor(host: THost);
         tally(info: TInformation): number;
     }
-    class VoteRequest<THost, TInformation> extends Request<THost, TInformation, boolean> implements IVoteRequest<THost, TInformation> {
+    /**
+     An request in which subscribers vote with boolean values for the host to count.
+     @typeparam [THost] The object which hosts the event.
+     @typeparam [TInformation] The information required to respond to the event.
+    */
+    class VoteRequest<THost, TInformation> extends Request<THost, TInformation, boolean> {
         _undecidedResult: boolean;
-        constructor(host?: THost, undecidedResult?: boolean);
+        constructor(host: THost, undecidedResult?: boolean);
         subscribe(registration: (host: THost, info: TInformation) => boolean): void;
         poll(info: TInformation): boolean;
     }
+    /**
+     A vote request where the result must be unanimous.
+     @typeparam [THost] The object which hosts the event.
+     @typeparam [TInformation] The information required to respond to the event.
+    */
     class UnanimousVoteRequest<THost, TInformation> extends VoteRequest<THost, TInformation> {
-        constructor(host?: THost, undecidedResult?: boolean);
+        constructor(host: THost, undecidedResult?: boolean);
         poll(info: TInformation): boolean;
     }
 }
