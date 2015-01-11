@@ -3,8 +3,8 @@
 
 function bind<TModel, TProperty>(model: TModel, selector: (obj: TModel) => TProperty): Classical.Binding.IBinder<Classical.Binding.PropertyUpdate<TProperty>> {
     var propertyName = Classical.Expression.getProperty(selector);
-    var property = Classical.Binding.getProperty(model, propertyName);
-    return Classical.Binding.propertyBinderToBinder<TProperty>({
+    var property = Classical.Binding._getProperty(model, propertyName);
+    return Classical.Binding._propertyBinderToBinder<TProperty>({
         property: property,
         converter: {
             convert: x => x,
@@ -56,6 +56,13 @@ module Classical.Binding {
 
     //#region Update
 
+    /**
+     An update that can be performed on an ISynchronizable object. 
+     @remarks 
+        Updates are converted between types to facilitate binding across types.
+        Updates also store their sources so there is an audit trail for objects they have been applied to.
+     @seealso Classical.Binding.Synchronizer.
+    */
     export class Update {
 
         //#region Fields
@@ -164,6 +171,14 @@ module Classical.Binding {
 
     //#region Synchronizer
 
+    /**
+     A utility class which performs most of the heavy lifting of the binding system.
+     @typeparam [TTargetUpdate] {Update} The type of update consumed by the synchronizable object associated with the synchronizer.
+     @remarks 
+        All synchronizable objects are meant to store a reference to a synchronizer. 
+        They should decorate every method of the synchronizer except apply.
+     @seealso Classical.Binding.Synchronizer
+    */
     export class Synchronizer<TTargetUpdate extends Update>
         implements ISynchronizable<TTargetUpdate> {
 
@@ -486,6 +501,15 @@ module Classical.Binding {
 
     //#region Property
 
+    /**
+     A property whose value can be bound to other objects. 
+     @typeparam [TValue] The type of the property value.
+     @remarks 
+        Properties are not meant to be explicitly added to classes. 
+        They gain their utility by replacing simple properties on the object 
+        through the bind method.
+     @seealso bind
+    */
     export class Property<TValue>
         implements ISynchronizable<PropertyUpdate<TValue>> {
 
@@ -565,7 +589,7 @@ module Classical.Binding {
                 currentBinder = this._sourceToBinder(source);
             } else if (arg1.property) /*propertyBinder*/ {
                 var propertyBinder: IPropertyBinder<TValue> = arg1;
-                currentBinder = propertyBinderToBinder<TValue>(arg1);
+                currentBinder = _propertyBinderToBinder<TValue>(arg1);
             } else  /*binder*/ {
                 currentBinder = arg1;
             }
@@ -659,6 +683,14 @@ module Classical.Binding {
 
     //#region ConfirmationProperty
 
+    /**
+     A property whose value can be bound to other objects. Updates will not be applied until explicitly accepted or reflected.
+     @typeparam [TValue] The type of the property value.
+     @remarks 
+        This property is a solution to the problem that arises when an object is bound to a form, and the form is cancelled. 
+        An object composed of confirmation propreties can have its state accepted or rejected, much like the form.
+     @seealso Classical.Binding.Property
+    */
     export class ConfirmationProperty<TValue>
         extends Property<TValue> {
 
@@ -773,6 +805,11 @@ module Classical.Binding {
 
     //#region PropertyUpdate
 
+    /**
+     A specialized update used as a convenience when synchronizing two binding properties. 
+     The properties can have different value types.
+     @typeparam [TValue] The type of the property value.
+    */
     export class PropertyUpdate<TValue> extends Update {
         value: TValue;
         constructor(value: TValue, sources: IEnumerable<any> = []) {
@@ -787,15 +824,21 @@ module Classical.Binding {
 
     //#region Functions
 
-    export function getProperty<T>(obj: any, propertyName: string): Property<T> {
+    /**
+     @internal
+    */
+    export function _getProperty<T>(obj: any, propertyName: string): Property<T> {
         var value = obj[propertyName];
         if (!value.getType().isAssignableTo(typeOf(Property)))
-            setProperty(obj, propertyName, value);
+            _setProperty(obj, propertyName, value);
 
         return objectToPropertyMap.getValue(obj).getValue(propertyName);
     }
 
-    export function setProperty<T>(obj: any, propertyName: string, value: T): void {
+    /**
+     @internal
+    */
+    export function _setProperty<T>(obj: any, propertyName: string, value: T): void {
         if (!objectToPropertyMap.containsKey(obj))
             objectToPropertyMap.add(obj, new cc.Dictionary<string, Property<T>>());
 
@@ -818,7 +861,10 @@ module Classical.Binding {
         propertyMap.getValue(propertyName).value = value;
     }
 
-    export function propertyBinderToBinder<TValue>(propertyBinder: IPropertyBinder<TValue>): IBinder<PropertyUpdate<TValue>> {
+    /**
+     @internal
+    */
+    export function _propertyBinderToBinder<TValue>(propertyBinder: IPropertyBinder<TValue>): IBinder<PropertyUpdate<TValue>> {
         var converter: IConverter<Update, PropertyUpdate<TValue>> = null,
             valueConverter = propertyBinder.converter;
 

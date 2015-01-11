@@ -199,6 +199,13 @@ declare function moduleOf(ctor: IFunction): Classical.Reflection.Module;
  The core set of collections defined in Classical.
 */
 declare module Classical.Reflection {
+    /**
+     An enumeration of the various properties that apply to the
+     language construct metadata described by the reflection api.
+     @seealso
+        Classical.Reflection.Type.getProperties,
+        Classical.Reflection.Type.getMethods
+    */
     enum Modifier {
         Public = 0,
         Protected = 1,
@@ -206,11 +213,34 @@ declare module Classical.Reflection {
         Instance = 3,
         Static = 4,
     }
+    /**
+     The public modifier
+     @seealso Classical.Reflection.Modifier
+    */
     var Public: Modifier;
+    /**
+     The protected modifier
+     @seealso Classical.Reflection.Modifier
+    */
     var Protected: Modifier;
+    /**
+     The private modifier
+     @seealso Classical.Reflection.Modifier
+    */
     var Private: Modifier;
+    /**
+     The instance modifier
+     @seealso Classical.Reflection.Modifier
+    */
     var Instance: Modifier;
+    /**
+     The static modifier
+     @seealso Classical.Reflection.Modifier
+    */
     var Static: Modifier;
+    /**
+     A description of the metadata associated with in a module.
+    */
     class Module {
         private _name;
         private _fullName;
@@ -242,6 +272,10 @@ declare module Classical.Reflection {
         private static _isModule(moduleCandidate, moduleName?);
         private static _isType(typeCandidate);
     }
+    /**
+     A description of the metadata associated with in a class.
+     @seealso getType
+    */
     class Type {
         private _ctor;
         private _base;
@@ -280,6 +314,10 @@ declare module Classical.Reflection {
         private _isValidProperty(property, modifiers);
         static getType(ctor: IFunction): Type;
     }
+    /**
+     A description of the metadata associated with in a member of a class.
+     @abstract
+    */
     class Member {
         private _name;
         private _declaringType;
@@ -289,6 +327,9 @@ declare module Classical.Reflection {
         isStatic: boolean;
         constructor(password: number, name: string, declaringType: Type, isStatic: boolean);
     }
+    /**
+     A description of the metadata associated with in a property of a class.
+    */
     class Property extends Member {
         private _canWrite;
         private _canRead;
@@ -308,6 +349,9 @@ declare module Classical.Reflection {
         getValue(instance: any): any;
         setValue(instance: any, value: any): void;
     }
+    /**
+     A description of the metadata associated with in a field of a class.
+    */
     class Field extends Property {
         isPublic: boolean;
         isPrivate: boolean;
@@ -316,11 +360,20 @@ declare module Classical.Reflection {
         getValue(instance: any): any;
         setValue(instance: any, value: any): void;
     }
+    /**
+     A description of the metadata associated with in a variable of a module.
+    */
     class Variable extends Property {
         private _module;
         module: Module;
         constructor(password: number, name: string, module: Module);
     }
+    /**
+     A description of the metadata associated with in a method of a class.
+     @remarks
+        In JavaScript methods are properties of type function.
+        Therefore a Method is a Property.
+    */
     class Method extends Property {
         private _underlyingFunction;
         private _parameters;
@@ -329,9 +382,15 @@ declare module Classical.Reflection {
         getParameters(): IQueryable<Parameter>;
         private _initializeParameters();
     }
+    /**
+     A description of the metadata associated with in a function of a module.
+    */
     class Function extends Method {
         constructor(password: number, name: string, canWrite: boolean, underlyingFunction: IFunction);
     }
+    /**
+     A description of the metadata associated with in a parameter of a function.
+    */
     class Parameter {
         private _name;
         private _position;
@@ -442,7 +501,8 @@ interface Array<T> extends ICollection<T>, IEnumerable<T> {
 */
 declare module Classical.Collections {
     /**
-     A collection that cannot be changed.
+     An accessible collection that is immutable.
+     @typeparam [T] Type parameter of the class
     */
     class ImmutableCollection<T> implements IAccessibleCollection<T> {
         private _get;
@@ -454,6 +514,14 @@ declare module Classical.Collections {
         array(): T[];
         count(): number;
     }
+    /**
+     Defines a lazily executed query that performs a computation on a sequence of data.
+     @typeparam [T] The type of item being queried.
+     @remarks
+        Not all methods of IQueryable are lazily executed.
+        In particular, methods which don't return IQueryables
+        are expected to have executed the query.
+    */
     class Queryable<T> implements IQueryable<T> {
         _enumerable: IEnumerable<T>;
         constructor(enumerable: IEnumerable<T>);
@@ -493,6 +561,10 @@ declare module Classical.Collections {
         result(): T[];
         private coalescePredicate(predicate);
     }
+    /**
+     A collection of utilities for working with objects that implement IEnumerable<T>
+     @seealso IEnumerable<T>
+    */
     module Enumerable {
         function empty<T>(): IEnumerable<T>;
         function range(end: number): IEnumerable<number>;
@@ -590,6 +662,13 @@ declare module Classical.Binding {
         apply(updates: IEnumerable<TTargetUpdate>): void;
         detach(): void;
     }
+    /**
+     An update that can be performed on an ISynchronizable object.
+     @remarks
+        Updates are converted between types to facilitate binding across types.
+        Updates also store their sources so there is an audit trail for objects they have been applied to.
+     @seealso Classical.Binding.Synchronizer.
+    */
     class Update {
         private _sources;
         constructor(sources: IEnumerable<any>);
@@ -631,6 +710,14 @@ declare module Classical.Binding {
     interface IAggregator<TSourceValue, TTargetValue> extends IObject {
         convert(sources: IEnumerable<TSourceValue>): TTargetValue;
     }
+    /**
+     A utility class which performs most of the heavy lifting of the binding system.
+     @typeparam [TTargetUpdate] {Update} The type of update consumed by the synchronizable object associated with the synchronizer.
+     @remarks
+        All synchronizable objects are meant to store a reference to a synchronizer.
+        They should decorate every method of the synchronizer except apply.
+     @seealso Classical.Binding.Synchronizer
+    */
     class Synchronizer<TTargetUpdate extends Update> implements ISynchronizable<TTargetUpdate> {
         private _updateDepth;
         private _updates;
@@ -657,6 +744,15 @@ declare module Classical.Binding {
         private _executeUpdates(groupUpdate);
         private _executeOnUpdate(updates);
     }
+    /**
+     A property whose value can be bound to other objects.
+     @typeparam [TValue] The type of the property value.
+     @remarks
+        Properties are not meant to be explicitly added to classes.
+        They gain their utility by replacing simple properties on the object
+        through the bind method.
+     @seealso bind
+    */
     class Property<TValue> implements ISynchronizable<PropertyUpdate<TValue>> {
         updating: boolean;
         private _value;
@@ -678,6 +774,14 @@ declare module Classical.Binding {
         private _createComplexBinder(sources, selector);
         private _sourceToBinder(source);
     }
+    /**
+     A property whose value can be bound to other objects. Updates will not be applied until explicitly accepted or reflected.
+     @typeparam [TValue] The type of the property value.
+     @remarks
+        This property is a solution to the problem that arises when an object is bound to a form, and the form is cancelled.
+        An object composed of confirmation propreties can have its state accepted or rejected, much like the form.
+     @seealso Classical.Binding.Property
+    */
     class ConfirmationProperty<TValue> extends Property<TValue> {
         private _newValue;
         private hasAccepted;
@@ -699,19 +803,37 @@ declare module Classical.Binding {
         property: Property<any>;
         converter: IConverter<any, TValue>;
     }
+    /**
+     A specialized update used as a convenience when synchronizing two binding properties.
+     The properties can have different value types.
+     @typeparam [TValue] The type of the property value.
+    */
     class PropertyUpdate<TValue> extends Update {
         value: TValue;
         constructor(value: TValue, sources?: IEnumerable<any>);
     }
-    function getProperty<T>(obj: any, propertyName: string): Property<T>;
-    function setProperty<T>(obj: any, propertyName: string, value: T): void;
-    function propertyBinderToBinder<TValue>(propertyBinder: IPropertyBinder<TValue>): IBinder<PropertyUpdate<TValue>>;
+    /**
+     @internal
+    */
+    function _getProperty<T>(obj: any, propertyName: string): Property<T>;
+    /**
+     @internal
+    */
+    function _setProperty<T>(obj: any, propertyName: string, value: T): void;
+    /**
+     @internal
+    */
+    function _propertyBinderToBinder<TValue>(propertyBinder: IPropertyBinder<TValue>): IBinder<PropertyUpdate<TValue>>;
 }
 /**
  A set of collections which can be bound to each other.
  @seealso Classical.Binding
 */
 declare module Classical.Binding.Collections {
+    /**
+     A collection whose items can be bound and synchronized with other objects.
+     @typeparam [T] The type of item in the collection.
+    */
     class Collection<T> implements ICollection<T>, ISynchronizable<CollectionUpdate<T>> {
         private _items;
         private _synchronizer;
@@ -760,6 +882,10 @@ declare module Classical.Binding.Collections {
         collection: Collection<any>;
         converter?: IConverter<any, T>;
     }
+    /**
+     A specialized update used as a convenience when synchronizing two binding collections.
+     @typeparam [TValue] The type of the property value.
+    */
     class CollectionUpdate<T> extends Update {
         type: CollectionUpdateType;
         oldValue: T;

@@ -332,7 +332,8 @@ module Classical.Collections {
     //#region ImmutableCollection
 
     /**
-     A collection that cannot be changed.
+     An accessible collection that is immutable.
+     @typeparam [T] Type parameter of the class
     */
     export class ImmutableCollection<T> implements IAccessibleCollection<T> {
 
@@ -419,7 +420,14 @@ module Classical.Collections {
 
     //#region Queryable
 
-    //Supports lazily evaluated querying of collections.
+    /**
+     Defines a lazily executed query that performs a computation on a sequence of data.
+     @typeparam [T] The type of item being queried.
+     @remarks 
+        Not all methods of IQueryable are lazily executed.
+        In particular, methods which don't return IQueryables 
+        are expected to have executed the query.
+    */
     export class Queryable<T>
         implements IQueryable<T> {
 
@@ -1129,6 +1137,10 @@ module Classical.Collections {
 
     //#region Enumerable
 
+    /**
+     A collection of utilities for working with objects that implement IEnumerable<T>
+     @seealso IEnumerable<T>
+    */
     export module Enumerable {
 
         //#region empty

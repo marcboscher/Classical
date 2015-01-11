@@ -14,6 +14,10 @@ module Classical.Binding.Collections {
 
     //#region Collection
 
+    /**
+     A collection whose items can be bound and synchronized with other objects. 
+     @typeparam [T] The type of item in the collection.
+    */
     export class Collection<T>
         implements ICollection<T>, ISynchronizable<CollectionUpdate<T>>  {
 
@@ -360,6 +364,10 @@ module Classical.Binding.Collections {
 
     //#region CollectionUpdate
 
+    /**
+     A specialized update used as a convenience when synchronizing two binding collections. 
+     @typeparam [TValue] The type of the property value.
+    */
     export class CollectionUpdate<T> extends Update {
 
         //#region Fields

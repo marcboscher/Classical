@@ -511,6 +511,13 @@ module Classical.Reflection {
 
     //#region Modifier
 
+    /**
+     An enumeration of the various properties that apply to the 
+     language construct metadata described by the reflection api. 
+     @seealso 
+        Classical.Reflection.Type.getProperties, 
+        Classical.Reflection.Type.getMethods
+    */
     export enum Modifier {
         Public,
         Protected,
@@ -519,10 +526,34 @@ module Classical.Reflection {
         Static,
     }
 
+    /**
+     The public modifier
+     @seealso Classical.Reflection.Modifier
+    */
     export var Public = Modifier.Public;
+
+    /**
+     The protected modifier
+     @seealso Classical.Reflection.Modifier
+    */
     export var Protected = Modifier.Protected;
+
+    /**
+     The private modifier
+     @seealso Classical.Reflection.Modifier
+    */
     export var Private = Modifier.Private;
+
+    /**
+     The instance modifier
+     @seealso Classical.Reflection.Modifier
+    */
     export var Instance = Modifier.Instance;
+
+    /**
+     The static modifier
+     @seealso Classical.Reflection.Modifier
+    */
     export var Static = Modifier.Static;
 
     var defaultModifier = [Public, Instance];
@@ -531,6 +562,11 @@ module Classical.Reflection {
 
     //#region Module
 
+    //#region Modifier
+
+    /**
+     A description of the metadata associated with in a module.
+    */
     export class Module {
 
         //#region Fields
@@ -891,7 +927,10 @@ module Classical.Reflection {
 
     //#region Type
 
-    //A cached wrapper around a constructor to provide easy access to type information.
+    /**
+     A description of the metadata associated with in a class.
+     @seealso getType
+    */
     export class Type {
 
         //#region Fields
@@ -1373,6 +1412,10 @@ module Classical.Reflection {
 
     //#region Member
 
+    /**
+     A description of the metadata associated with in a member of a class.
+     @abstract
+    */
     export class Member {
 
         //#region Fields
@@ -1429,6 +1472,9 @@ module Classical.Reflection {
 
     //#region Property
 
+    /**
+     A description of the metadata associated with in a property of a class.
+    */
     export class Property extends Member {
 
         //#region Fields
@@ -1601,6 +1647,9 @@ module Classical.Reflection {
 
     //#region Field
 
+    /**
+     A description of the metadata associated with in a field of a class.
+    */
     export class Field extends Property {
 
         //#region Properties
@@ -1709,6 +1758,9 @@ module Classical.Reflection {
 
     //#region Variable
 
+    /**
+     A description of the metadata associated with in a variable of a module.
+    */
     export class Variable extends Property {
 
         //#region Fields
@@ -1744,6 +1796,12 @@ module Classical.Reflection {
 
     //#region Method
 
+    /**
+     A description of the metadata associated with in a method of a class.
+     @remarks 
+        In JavaScript methods are properties of type function. 
+        Therefore a Method is a Property.
+    */
     export class Method extends Property {
 
         //#region Fields
@@ -1823,6 +1881,9 @@ module Classical.Reflection {
 
     //#region Function
 
+    /**
+     A description of the metadata associated with in a function of a module.
+    */
     export class Function extends Method {
 
         //#region Constructors
@@ -1838,6 +1899,9 @@ module Classical.Reflection {
 
     //#region Parameter
 
+    /**
+     A description of the metadata associated with in a parameter of a function.
+    */
     export class Parameter {
 
         //#region Fields
