@@ -75,8 +75,6 @@ If you're a TypeScript wonk like we are, open up the bin, give the type declarat
 
 We'd love to hear from you! Please ping us if you have any questions or feedback:
 doug.rubino@gmail.com
-
-[Let us know if it helps you be more productive!](https://www.changetip.com/tipme/dougrubino)
  
 ## Installation
 _[PM> Install-Package Classical](https://www.nuget.org/packages/Classical/)_
@@ -265,11 +263,11 @@ Documentation in the form of tutorials and code comments are in progress...
             email: doug.rubino@gmail.com
             twitter: dougrubino
     
-         I imagined and designed Classical.js, but it would not exist if not for the hard work
-         and ninja-like engineering of Chris Klimas, especially given that Classical served as
-         his introduction to JavaScript. His metaprogramming skills and his willingness to 
-         dive deep into the multi-environmental complexities of JavaScript are two of the 
-         reasons why Classical.js is and will continue to be great.
+         I imagined and designed Classical.js, but it could not exist if not for the hard work,
+         dedication and ninja-like coding chops of a software engineer named Chris Klimas. 
+         Classical was his introduction to JavaScript. Despite that, his metaprogramming skills 
+         and his willingness to dive deep into the complexities of the many JavaScript 
+         environments is a huge part of why Classical is and will continue to be great.
         */
     }
 	    
