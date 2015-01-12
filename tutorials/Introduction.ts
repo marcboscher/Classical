@@ -20,7 +20,7 @@ module Classical.Tutorial.Introduction {
 
     class Response {
         get first() { return "Get it?" }
-        get second() { return "Get it!" }
+        get second() { return "Got it!" }
         get third() { return "Good" }
     }
 
@@ -169,8 +169,10 @@ module Classical.Tutorial.Introduction {
         email: doug.rubino@gmail.com
         twitter: dougrubino
 
-     Classical.js was imagined and designed by me, but it would not exist if not for the extremely talented Chris Klimas. 
-     His knowledge of metaprogramming and his willingness to dive deep into the multi-environmental complexities of JavaScript 
-     are two of the reasons why Classical.js is and will continue to be great.
+      I imagined and designed Classical.js, but it could not exist if not for the hard work,
+      dedication and ninja-like coding chops of a software engineer named Chris Klimas. 
+      Classical was his introduction to JavaScript. Despite that, his metaprogramming skills 
+      and his willingness to dive deep into the complexities of the many JavaScript 
+      environments is a huge part of why Classical is and will continue to be great.
     */
 }
