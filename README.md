@@ -108,7 +108,7 @@ Documentation in the form of tutorials and code comments are in progress...
     
         class Response {
             get first() { return "Get it?" }
-            get second() { return "Get it!" }
+            get second() { return "Got it!" }
             get third() { return "Good" }
         }
     
@@ -274,7 +274,7 @@ Documentation in the form of tutorials and code comments are in progress...
 //Console Output
 //
 //    Get it?
-//    Get it!
+//    Got it!
 //    Good
 //    
 //    Queryable.result
