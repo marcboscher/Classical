@@ -1,6 +1,6 @@
 # Classical
 ####The TypeScript BCL 
-*Version 0.1*
+*Version 0.2*
 
 ## Introduction
 TypeScript was released. Now we have classes, modules, type annotations, generics and type inference on the web. We even have an ES6 preview! And we have all the design-time tooling that comes along with it. Life is good.
@@ -85,303 +85,239 @@ _[PM> Install-Package Classical](https://www.nuget.org/packages/Classical/)_
 ## Getting Started
 
 Start out by exploring the modules in the code below. 
-Tutorials, code comments and documentation soon to come...
+Documentation in the form of tutorials and code comments are in progress...
 
 ```javascript
-	module Classical.Introduction {
-	
-	    import Assert = Classical.Assert;
-	    import Expression = Classical.Expression;
-	    import u = Utilities;
-	    import r = Classical.Reflection;
-	    import e = Classical.Events;
-	    import b = Classical.Binding;
-	    import cc = Classical.Collections;
-	    import bc = Classical.Binding.Collections;
-	
-	    //1. Read through the Classical.js code below
-	    //2. Inspect the results in the browser console
-	    //3. Explore each of the modules above using intellisense
-	    //4. Have fun!
-	
-	    //Array extensions
-	    export var array = []
-	        .add(0).add(0.5).add(1)
-	        .addRange([1.5, 2, 2.5])
-	        .set(6, 3)
-	        .query()
-	        .concat(
-	        cc.Enumerable
-	        .range(3.5, .5, 10))
-	        .where(x => x < 5)
-	        .select(x => Math.round(x * 2))
-	        .array();
-	
-	    //Query Comprehension
-	    export var aggregation =
-	        array.query()
-	        .sum(x =>
-	            Math.pow(Math.sin(x), 2) +
-	            Math.pow(Math.cos(x), 2)) /
-	        array.length;
-	
-	    //Query Information
-	    export var queryType = typeOf(cc.Queryable);
-	    export var queryMethods = queryType
-	        .getMethods(r.Modifier.Public, r.Modifier.Instance)
-	        .dictionary(
-	            m => m.name,
-	            m => u.format('{0}({1})',
-	                m.name,
-	                m.getParameters()
-	                .select(p => p.name)
-	                .array()));
-	
-	    //Reflection Classes
-	    export var reflectionModule = moduleOf(r.Type);
-	    export var reflectionClasses = reflectionModule
-	        .getTypes().select(t => t.name)
-	        .array();
-	
-	    //Type Members
-	    export var typeType = queryType.getType();
-	    export var typeMembers = typeType
-	        .getProperties(r.Modifier.Public, r.Modifier.Instance, r.Modifier.Static)
-	        .select(m => m.name)
-	        .array();
-	}
-	
-	document.addEventListener('DOMContentLoaded', () => {
-	    title('array variable:');
-	    log(intro.array);
-	    newline();
-	
-	    title('array aggregation:');
-	    log(intro.aggregation);
-	    newline();
-	
-	    title('query.select:');
-	    log(intro.queryMethods.getValue('select'));
-	    newline();
-	
-	    title('query methods:')
-	    log(intro.queryMethods.keys.array())
-	    newline();
-	
-	    title('query method signatures:')
-	    log(intro.queryMethods.values.array())
-	    newline();
-	
-	    title('reflection classes:')
-	    log(intro.reflectionClasses);
-	    newline();
-	
-	    title('type members:')
-	    log(intro.typeMembers);
-	    newline();
-	});
-	
-	//Display Utilities
-	var intro = Classical.Introduction;
-	var toScreen = (value: any, element: string = 'div', visible: boolean = true) => {
-	    var div = document.createElement(element);
-	    div.innerHTML = value;
-	    if (!visible)
-	        div.style.visibility = "hidden";
-	    document.body.appendChild(div);
-	};
-	var log = (value, element?) => {
-	    if (!element)
-	        element = 'div';
-	    value && value.getType().isAssignableTo(typeOf(Array)) ?
-	    printArray(value) :
-	    toScreen(value, element);
-	    return '';
-	};
-	var title = value => log(value, 'b');
-	var printArray = (array: Array<string>) => {
-	    array = array.query().orderBy(i => i).array();
-	    toScreen('value = [');
-	    array.forEach((item, index) => {
-	        if (index !== array.length - 1)
-	            item += ',';
-	        toScreen(space(5) + item);
-	    });
-	    toScreen(']');
-	};
-	var newline = () => toScreen('visible', 'div', false);
-	var space = n => Classical.Collections.Enumerable.range(n).query()
-	    .select(x => '&nbsp;').aggregate((x, y) => x + y);
+
+    module Classical.Tutorial.Introduction {
+
+        import Assert = Classical.Assert;
+        import Expression = Classical.Expression;
+        import u = Utilities;
+        import r = Classical.Reflection;
+        import e = Classical.Events;
+        import b = Classical.Binding;
+        import cc = Classical.Collections;
+        import bc = Classical.Binding.Collections;
+        var section = () => console.log(" ");
+
+        section(); /* 
+         In this tutorial, we'll cover the basics of Classical.js and how to get started using it.
+         Follow along in the browser while we show you how to write basic Classical. When necessary, 
+         we'll use the console for demonstration. Therefore, the easiest way to follow along is with 
+         breakpoints on each example.
+        */
+
+        class Response {
+            get first() { return "Get it?" }
+            get second() { return "Get it!" }
+            get third() { return "Good" }
+        }
+
+        var response = new Response();
+        response
+            .getType()
+            .getProperties()
+            .where(property => property.declaringType === typeOf(Response))
+            .orderBy(property => property.name)
+            .forEach(property => console.log(property.getValue(response)));
+
+        section(); /* 
+         So what is Classical.js and how does it affect your life?
+     
+         Classical is a base class library for TypeScript. TypeScript is version of JavaScript 
+         that includes a type system and a compiler to verify the correctness of code. These
+         are much beloved and incredibly efficient tools for some developers. Others find them
+         unnecessary bulky and overly complicated. Classical is designed for developers of the 
+         who can appreciate the benefits of TypeScript.
+     
+         Languages with type systems are referred to as languages that are statically typed. They
+         require the programmer to specify quite a bit of information of the type of data he or she 
+         is expecting at any point in the codebase. In return, the compiler and the developer tools 
+         built for TypeScript can have a much deeper understanding of your code. They can tell you 
+         when a property or method exists, if a variable is assigned the wrong type, rename identifiers, 
+         scaffold interfaces and method overloads and much more...
+     
+         TypeScript takes the dynamic and functional aspects of JavaScript and combines them with the 
+         static and object-oriented aspects of languages liek Java and C#. The result is a powerful 
+         combination. Classical is meant to provide a set of base tools for building complex JavaScript 
+         frameworks by leveraging the power of the all of the programming paradigms contained within the 
+         language. We love all aspects of TypeScript. It is fair to say that some parts of the library
+         are deeply dynamic code exposed for use in a clean, statically typed shell.
+     
+         TypeScript tooling is capable of telling you what methods and properties exist on an object. 
+         They also provide an extremely precise means of auto completion. This is information a 
+         JavaScript developer would otherwise have to memorize and JavaScript tool developers would 
+         have to approximate. As a base class library for TypeScript, Classical tends to contain complex
+         apis. For instance, here are the members that are contained on the 
+         Queryable object:
+        */
+
+        typeOf(cc.Queryable)
+            .getProperties(r.Public, r.Private, r.Instance, r.Static)
+            .where(p => p.declaringType === typeOf(cc.Queryable))
+            .forEach(p => console.log('Queryable.' + p.name));
+
+        section(); /* 
+         Now that's no competition for the jQuery function, but the static and instance members of the 
+         jQuery function represent virtually the entire jQuery API! The Queryable class is just one member 
+         of a larger ecosystem of modules, classes, interfaces, functions and variables.
+        */
+    
+        section(); /* 
+         One of the most obvious tools missing in the JavaScript runtime is a doubly-generic dictionary. 
+         This is ironic, as almost everything is an object in JavaScript and JavaScript objects are basically 
+         just dictionaries. 
+     
+         This is indeed true, but they have several crippling weaknesses. For instance, JavaScript objects 
+         can only store strings as keys. Any other type is coerced into a string when assigned as a property.
+         Furthermore, certain properties like 'constructor' can potentially collide with dictionary keys. To 
+         solve this problem, we needed to implement a more traditional dictionary build on top of a data 
+         structure called a hash table. To do this, we needed a notion of hashing, so that is the first thing 
+         that was implemented in Classical. 
+     
+         When using Classical, all objects, including the primitives, have what's known as a hash code. A hash 
+         code is an integer that is used to partially identify the object or value. It is not unique, and should 
+         not be used as a GUID. Hash codes must be well distributed over the total object set, meaning that if two
+         similar objects are stored in a dictionary, they should still have a low probability of collision. A key 
+         value pair is stored in a bucket that is the modulus of the keys hash code and a prime number, which 
+         minimizes collisions. Object equality is used to find the key value pair once in the bucket. This two step 
+         process is what makes dictionary lookup fast.
+
+         Notice that all objects in JavaScript have hash codes. 
+        */
+
+        function printHashCode<T extends IObject>(type: string, value: T) {
+            console.log(u.format("{0} hash code for value {1}: {2}",
+                type,
+                value.is(Array) ?
+                    '[' + value + ']' :
+                    value.toString(),
+                value.getHashCode()));
+        }
+
+        printHashCode('Boolean', true);
+        printHashCode('Number', -223.148);
+        printHashCode('String', 'gobbledygook');
+        printHashCode('Array', [1, 2, 3]); 
+
+        section(); /* 
+         It is critical that hash codes do not change through the duration of an objects lifetime. Hash codes can change 
+         for equivalent objects on subsequent script executions, but notice that they do not change within a single 
+         execution of the script.
+        */
+
+        function printHashCodeAgain<T extends IHashable>(type: string, value: T) {
+            console.log(u.format("{0} hash code for value {1} is the same as before: {2}", type, value, value.getHashCode()));
+        }
+
+        printHashCodeAgain('Boolean', true);
+        printHashCodeAgain('Number', -223.148);
+        printHashCodeAgain('String', 'gobbledygook');
+        printHashCodeAgain('Array', [1, 2, 3]);
+
+        section(); /* 
+         This allows us to use any object as a dictionary key. The dictionary below, called constructor map, uses 
+         types as keys and functions as values. 
+        */
+
+        var constructorMap = new cc.Dictionary<r.Type, Function>()
+            .add(typeOf(Boolean), Boolean)
+            .add(typeOf(Number), Number)
+            .add(typeOf(String), String)
+            .add(typeOf(Array), Array);
+
+        constructorMap.query()
+            .orderBy(pair => pair.key.name)
+            .skip(1).take(3).concat(
+            constructorMap.query()
+            .orderBy(pair => pair.key.name)
+            .take(1))
+            .forEach(pair => {
+                var type = pair.key,
+                typeName = type.name,
+                ctor = pair.value,
+                space = cc.Enumerable
+                    .range(1, 8 - typeName.length).query()
+                    .select(n => ' ')
+                    .aggregate((a, b) => a + b),
+                ctorView = ctor.toString()
+                    .replace('[native code]',
+                        u.format('/* {0}s are created here */',
+                            typeName));
+        console.log(u.format('{0} Type {1} =>  {2}',
+            typeName, space, ctorView));
+    });
+
+    section(); /* 
+     The code above should demonstrate that there's more to Classical that just dictionaries and hash codes, but those 
+     will be explain in future tutorials.
+
+     For now, please enjoy our humble toolset. If you have any questions, complaints, feature requests (or compliments - we love compliments) 
+     feel free to reach out to me:
+
+        email: doug.rubino@gmail.com
+        twitter: dougrubino
+
+     Classical.js was imagined and designed by me, but it would not exist if not for the extremely talented Chris Klimas. 
+     His knowledge of metaprogramming and his willingness to dive deep into the multi-environmental complexities of JavaScript 
+     are two of the reasons why Classical.js is and will continue to be great.
+    */
+}
 	    
 //Console Output
 //
-//   array variable:
-//   value = [
-//         0,
-//         1,
-//         2,
-//         3,
-//         4,
-//         5,
-//         6,
-//         7,
-//         8,
-//         9
-//   ]
-//
-//   array aggregation:
-//   1
-//   query.select:
-//   select(selector)
-//   query methods:
-//   value = [
-//         aggregate,
-//         array,
-//         as,
-//         at,
-//         cast,
-//         coalescePredicate,
-//         concat,
-//         constructor,
-//         count,
-//         dictionary,
-//         distinct,
-//         equals,
-//         execute,
-//         first,
-//         firstOrDefault,
-//         forEach,
-//         getEnumerator,
-//         getHashCode,
-//         getType,
-//         hasAny,
-//         hasNone,
-//         hasOwnProperty,
-//         is,
-//         isPrototypeOf,
-//         last,
-//         lastOrDefault,
-//         max,
-//         min,
-//         orderBy,
-//         orderByDescending,
-//         propertyIsEnumerable,
-//         query,
-//         result,
-//         reverse,
-//         select,
-//         selectMany,
-//         single,
-//         singleOrDefault,
-//         skip,
-//         sum,
-//         take,
-//         toLocaleString,
-//         toString,
-//         unwatch,
-//         valueOf,
-//         watch,
-//         where
-//   ]
-//
-//   query method signatures:
-//   value = [
-//         aggregate(accumulator,seed),
-//         array(),
-//         as(),
-//         at(index),
-//         cast(),
-//         coalescePredicate(predicate),
-//         concat(other),
-//         constructor(),
-//         count(),
-//         dictionary(keySelector,valueSelector),
-//         distinct(),
-//         equals(other),
-//         execute(),
-//         first(predicate),
-//         firstOrDefault(predicate),
-//         forEach(operation),
-//         getEnumerator(),
-//         getHashCode(),
-//         getType(),
-//         hasAny(predicate),
-//         hasNone(predicate),
-//         hasOwnProperty(),
-//         is(type),
-//         isPrototypeOf(),
-//         last(predicate),
-//         lastOrDefault(predicate),
-//         max(selector),
-//         min(selector),
-//         orderBy(selector,comparison),
-//         orderByDescending(selector,comparison),
-//         propertyIsEnumerable(),
-//         query(),
-//         result(),
-//         reverse(),
-//         select(selector),
-//         selectMany(selector),
-//         single(predicate),
-//         singleOrDefault(predicate),
-//         skip(count),
-//         sum(selector),
-//         take(count),
-//         toLocaleString(),
-//         toString(),
-//         unwatch(propertyName),
-//         valueOf(),
-//         watch(propertyName,handler),
-//         where(predicate)
-//   ]
-//
-//   reflection classes:
-//   value = [
-//         Field,
-//         Function,
-//         Member,
-//         Method,
-//         Module,
-//         Parameter,
-//         Property,
-//         Type,
-//         Variable
-//   ]
-//
-//   type members:
-//   value = [
-//         as,
-//         base,
-//         constructor,
-//         ctor,
-//         equals,
-//         fullName,
-//         getField,
-//         getFields,
-//         getHashCode,
-//         getMethod,
-//         getMethods,
-//         getProperties,
-//         getProperty,
-//         getType,
-//         hasOwnProperty,
-//         is,
-//         isAssignableFrom,
-//         isAssignableTo,
-//         isPrimitive,
-//         isPrivate,
-//         isProtected,
-//         isPrototypeOf,
-//         isPublic,
-//         module,
-//         name,
-//         propertyIsEnumerable,
-//         prototype,
-//         toLocaleString,
-//         toString,
-//         unwatch,
-//         valueOf,
-//         watch
-//   ]
+//    Get it?
+//    Get it!
+//    Good
+//    
+//    Queryable.result
+//    Queryable.coalescePredicate
+//    Queryable.singleOrDefault
+//    Queryable.at
+//    Queryable.selectMany
+//    Queryable.orderBy
+//    Queryable.cast
+//    Queryable.where
+//    Queryable.dictionary
+//    Queryable.firstOrDefault
+//    Queryable.query
+//    Queryable.select
+//    Queryable.hasNone
+//    Queryable.last
+//    Queryable.array
+//    Queryable.single
+//    Queryable.execute
+//    Queryable.distinct
+//    Queryable.aggregate
+//    Queryable.reverse
+//    Queryable.take
+//    Queryable.forEach
+//    Queryable.min
+//    Queryable.first
+//    Queryable.hasAny
+//    Queryable.lastOrDefault
+//    Queryable.count
+//    Queryable.orderByDescending
+//    Queryable.max
+//    Queryable.sum
+//    Queryable.concat
+//    Queryable.skip
+//    Queryable.getEnumerator
+//      
+//    Boolean hash code for value true: 1
+//    Number hash code for value -223.148: 2430547004
+//    String hash code for value gobbledygook: 2743965310
+//    Array hash code for value [1,2,3]: 1512328010
+//    
+//    Boolean hash code for value true is the same as before: 1
+//    Number hash code for value -223.148 is the same as before: 2430547004
+//    String hash code for value gobbledygook is the same as before: 2743965310
+//    Array hash code for value 1,2,3 is the same as before: 1144941953
+//    
+//    Boolean Type   =>  function Boolean() { /* Booleans are created here */ }
+//    Number Type    =>  function Number() { /* Numbers are created here */ }
+//    String Type    =>  function String() { /* Strings are created here */ }
+//    Array Type     =>  function Array() { /* Arrays are created here */ }
 ```
 
