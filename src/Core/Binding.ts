@@ -46,7 +46,7 @@ module Classical.Binding {
         bind(binder: IBinder<TTargetUpdate>): void;
         bind(binder: IComplexBinder<TTargetUpdate>): void;
         unbind(source: ISynchronizable<any>): boolean;
-        observe2(registration: (update: Array<TTargetUpdate>, source: any) => void);
+        track(registration: (update: Array<TTargetUpdate>, source: any) => void);
         apply(updates: IEnumerable<TTargetUpdate>): void;
         detach(): void;
 
@@ -329,7 +329,7 @@ module Classical.Binding {
 
         //#region observe
 
-        observe2(registration: (update: Array<TTargetUpdate>, source: any) => void) {
+        track(registration: (update: Array<TTargetUpdate>, source: any) => void) {
             this._onUpdateEvent.subscribe((host, info) => {
                 registration(info, host);
             });
@@ -453,7 +453,7 @@ module Classical.Binding {
                     return this.target.apply([update]);
                 };
 
-            sourcesQuery.forEach(source => source.observe2(bindingHandler));
+            sourcesQuery.forEach(source => source.track(bindingHandler));
             bindingHandler();
         }
 
@@ -609,8 +609,8 @@ module Classical.Binding {
 
         //#region observe
 
-        observe2(registration: (update: Array<PropertyUpdate<TValue>>, source: Property<TValue>) => void) {
-            this._synchronizer.observe2(registration);
+        track(registration: (update: Array<PropertyUpdate<TValue>>, source: Property<TValue>) => void) {
+            this._synchronizer.track(registration);
         }
 
         //#endregion observe

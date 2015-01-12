@@ -530,7 +530,7 @@ module Classical.Binding.Spec {
                             executed = false;
 
                         bindTwoWay(second, first);
-                        second.observe2(updates => {
+                        second.track(updates => {
                             expect(updates.length).toBe(1);
                             expect(updates.query().single().value).toBe(second.value);
                             executed = true
@@ -554,7 +554,7 @@ module Classical.Binding.Spec {
                             executed = false;
 
                         bindOneWay(second, first);
-                        second.observe2(updates => {
+                        second.track(updates => {
                             expect(updates.length).toBe(1);
                             expect(updates.query().single().value).toBe(second.value);
                             executed = true
@@ -579,7 +579,7 @@ module Classical.Binding.Spec {
                             executed = false;
 
                         bindOneWay(second, first);
-                        second.observe2(updates => {
+                        second.track(updates => {
                             expect(updates.length).toBe(1);
                             expect(updates.query().single().value).toBe(second.value);
                             executed = true
@@ -1074,8 +1074,8 @@ module Classical.Binding.Spec {
 
         //#region observe
 
-        observe2(registration: (update: Array<IntegerUpdate>, source: Integer) => void) {
-            this._synchronizer.observe2(registration);
+        track(registration: (update: Array<IntegerUpdate>, source: Integer) => void) {
+            this._synchronizer.track(registration);
         }
 
         //#endregion observe

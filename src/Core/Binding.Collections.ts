@@ -72,9 +72,10 @@ module Classical.Binding.Collections {
 
         //Adds an item to the collection.
         add(item: T): ICollection<T> {
+            var index = this._items.length;
             this._add(
                 new CollectionUpdate<T>().create(
-                    CollectionUpdateType.Add, null, item, null));
+                    CollectionUpdateType.Add, null, item, index));
 
             return this;
         }
@@ -211,8 +212,8 @@ module Classical.Binding.Collections {
             return this._synchronizer.unbind(source);
         }
 
-        observe2(registration: (update: Array<CollectionUpdate<T>>, source: any) => void) {
-            this._synchronizer.observe2(registration);
+        track(registration: (update: Array<CollectionUpdate<T>>, source: any) => void) {
+            this._synchronizer.track(registration);
         }
 
         apply(updates: IEnumerable<CollectionUpdate<T>>): void {

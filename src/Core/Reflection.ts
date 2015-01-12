@@ -1080,15 +1080,15 @@ module Classical.Reflection {
 
         //#endregion Constructors
 
-        //#region Methods
-
-        //#region toString
+        //#region Base Class Overrides
 
         toString(): string {
             return this.name;
         }
 
-        //#endregion toString
+        //#endregion Base Class Overrides
+
+        //#region Methods
 
         //#region equals
 
@@ -1466,6 +1466,14 @@ module Classical.Reflection {
         }
 
         //#endregion Constructors
+
+        //#region Base Class Overrides
+
+        toString(): string {
+            return this.name;   
+        }
+
+        //#endregion Base Class Overrides
     }
 
     //#endregion Member
@@ -1942,6 +1950,14 @@ module Classical.Reflection {
         }
 
         //#endregion Constructors
+
+        //#region Base Class Overrides
+
+        toString(): string {
+            return this.name;
+        }
+
+        //#endregion Base Class Overrides
     }
 
     //#endregion Parameter

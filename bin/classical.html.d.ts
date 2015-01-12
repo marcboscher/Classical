@@ -6331,7 +6331,7 @@ declare module Classical.Html {
     @param [node] The node to initialize.
     returns a fully initialized HtmlNode.
     */
-    function create<TNode extends Elements.HtmlNode>(node: TNode): TNode;
+    function create<TNode extends Elements.HtmlNode>(node: TNode, append?: boolean, appendTo?: Node): TNode;
     /**
     * Decorates the specified element, or looks up the existing decorator.
     * @param [elementID] The id of the element to decorate.

@@ -326,6 +326,7 @@ declare module Classical.Reflection {
         declaringType: Type;
         isStatic: boolean;
         constructor(password: number, name: string, declaringType: Type, isStatic: boolean);
+        toString(): string;
     }
     /**
      A description of the metadata associated with in a property of a class.
@@ -397,6 +398,7 @@ declare module Classical.Reflection {
         name: string;
         position: number;
         constructor(password: number, name: string, position: number);
+        toString(): string;
     }
 }
 /**
@@ -702,7 +704,7 @@ declare module Classical.Binding {
         bind(binder: IBinder<TTargetUpdate>): void;
         bind(binder: IComplexBinder<TTargetUpdate>): void;
         unbind(source: ISynchronizable<any>): boolean;
-        observe2(registration: (update: TTargetUpdate[], source: any) => void): any;
+        track(registration: (update: TTargetUpdate[], source: any) => void): any;
         apply(updates: IEnumerable<TTargetUpdate>): void;
         detach(): void;
     }
@@ -778,7 +780,7 @@ declare module Classical.Binding {
         bind(binder: IComplexBinder<TTargetUpdate>): void;
         unbind(source: ISynchronizable<any>): boolean;
         apply(updates: IEnumerable<TTargetUpdate>): void;
-        observe2(registration: (update: TTargetUpdate[], source: any) => void): void;
+        track(registration: (update: TTargetUpdate[], source: any) => void): void;
         detach(): void;
         add(update: TTargetUpdate): void;
         filter(updates: IEnumerable<TTargetUpdate>): TTargetUpdate[];
@@ -812,7 +814,7 @@ declare module Classical.Binding {
         bind(binder: IBinder<PropertyUpdate<TValue>>): any;
         bind(binder: IComplexBinder<PropertyUpdate<TValue>>): void;
         unbind(partner: ISynchronizable<any>): boolean;
-        observe2(registration: (update: PropertyUpdate<TValue>[], source: Property<TValue>) => void): void;
+        track(registration: (update: PropertyUpdate<TValue>[], source: Property<TValue>) => void): void;
         apply(updates: IEnumerable<PropertyUpdate<TValue>>): void;
         detach(): void;
         private _createComplexBinder(sources, selector);
@@ -906,7 +908,7 @@ declare module Classical.Binding.Collections {
         bind(binder: IBinder<CollectionUpdate<T>>): void;
         bind(binder: IComplexBinder<CollectionUpdate<T>>): void;
         unbind(source: ISynchronizable<any>): boolean;
-        observe2(registration: (update: CollectionUpdate<T>[], source: any) => void): void;
+        track(registration: (update: CollectionUpdate<T>[], source: any) => void): void;
         apply(updates: IEnumerable<CollectionUpdate<T>>): void;
         detach(): void;
         toString(): string;

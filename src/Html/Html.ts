@@ -7085,27 +7085,32 @@ module Classical.Html.Elements {
                 text = config.text,
                 textBinder = config.textBinder,
                 child = config.child,
+                children = config.children || [],
+                childrenBinder = config.childrenBinder,
                 isTextDefined = Utilities.isDefined(text),
                 isTextBinderDefined = Utilities.isDefined(textBinder),
                 isChildDefined = Utilities.isDefined(child),
-                isChildrenBinderDefined = Utilities.isDefined(config.childrenBinder);
+                isChildrenDefined = Utilities.isDefined(children),
+                isChildrenBinderDefined = Utilities.isDefined(childrenBinder);
 
-            Assert.isFalse((isTextDefined || isTextBinderDefined) && isChildrenBinderDefined,
-                'The text and textBinder properties cannot be specifed in conjuction with the childrenBinder. Add a text node as the first element of the source collection instead.');
-            Assert.isFalse(isChildDefined && isChildrenBinderDefined,
-                'The child property cannot be specifed in conjuction with the childrenBinder. Add the child node as the first element of the source collection instead.');
+            Assert.isFalse(isTextDefined && isTextBinderDefined,
+                'The text and textBinder properties cannot be specifed at the same time.');
+            Assert.isFalse(isChildrenDefined && isChildrenBinderDefined,
+                'The children and childrenBinder properties cannot be specifed at the same time.');
+            Assert.isFalse((isChildrenDefined || isChildrenBinderDefined) && isChildDefined,
+                'The child property is a shorthand for the first child of the children collection. Add it explicitly if you are specifying children.');
+            Assert.isFalse(isChildrenBinderDefined && (isTextDefined || isTextBinderDefined || isChildDefined),
+                'The text and child properties are children. If binding to the children of an element, specify all childing in the binding collection.');
 
-            if (isTextDefined || isTextBinderDefined || isChildDefined) {
-                config.children = config.children || [];
-                var children = config.children;
-                if (isChildDefined)
-                    children.unshift(child);
-                if (isTextDefined && !isTextBinderDefined)
-                    children.unshift(Html.text(text));
-                if (isTextBinderDefined)
-                    children.unshift(Html.text(textBinder));
-            }
+            if (isChildDefined)
+                children.unshift(child);
+            if (isTextBinderDefined)
+                children.unshift(Html.text(textBinder));
+            if (isTextDefined)
+                children.unshift(Html.text(text));
 
+            config.children = children;
+            config.childrenBinder = childrenBinder;
             setChildrenPropertyFromConfig(this, config);
 
 			if(config.copyHandler)
@@ -7117,6 +7122,11 @@ module Classical.Html.Elements {
 			if(config.pasteHandler)
 				this.pasteEvent.subscribe(config.pasteHandler);
 
+
+            children.query().forEach(e => {
+                if (!e.isInitialized)
+                    e.initialize(document);
+            });
         }
 
         //#endregion configure
@@ -17956,10 +17966,10 @@ module Classical.Html.Elements {
             property['htmlValue'] = htmlValue;
 
         //Delete me
-        if (!property.observe2)
+        if (!property.track)
             console.log(property);
 
-        property.observe2((values, host) => {
+        property.track((values, host) => {
             var value = values[0].value,
                 currentHtmlValue = htmlElement[htmlPropertyName];
 
@@ -18000,37 +18010,40 @@ module Classical.Html.Elements {
             collectionProperty = new bc.Collection<HtmlNode>(htmlElementChildrenArray.map(node => {
                 return HtmlNode.getHtmlNode(node);
             }));
-        collectionProperty.observe2((collection, info) => {
-            if (info.action.equals(bc.CollectionUpdateType.Add)) {
-                var oldChild = htmlElementChildren[info.newIndex],
-                    newIndex = info.newIndex,
-                    newItem = info.newItem,
-                    newElement = newItem.element;
+        collectionProperty.track((collection, info) => {
+            collection.forEach(propertyUpdate => {
+                var action = propertyUpdate.type;
+                if (action.equals(bc.CollectionUpdateType.Add)) {
+                    var oldChild = htmlElementChildren[propertyUpdate.index],
+                        newIndex = propertyUpdate.index,
+                        newItem = propertyUpdate.newValue,
+                        newElement = newItem.element;
 
-                if (!newElement) {
-                    newItem.initialize();
-                    newElement = newItem.element;
+                    if (!newElement) {
+                        newItem.initialize();
+                        newElement = newItem.element;
+                    }
+
+                    Assert.isTrue(htmlElementChildren.length <= newIndex,
+                        'The index of the element to add is out of range of the HtmlNode.');
+
+                    (<any>element)._updating = true;
+                    if (!oldChild)
+                        htmlElement.appendChild(newElement);
+                    else
+                        htmlElement.replaceChild(newElement, oldChild);
+
+                } else if (action.equals(bc.CollectionUpdateType.Remove)) {
+                    var oldChild = htmlElementChildren[info.oldIndex];
+                    Assert.isDefined(oldChild,
+                        'The element to remove could not be found.');
+
+                    (<any>element)._updating = true;
+                    htmlElement.removeChild(oldChild);
+                } else {
+                    Assert.isInvalid('The CollectionAction was not recognized.');
                 }
-
-                Assert.isTrue(htmlElementChildren.length <= newIndex,
-                    'The index of the element to add is out of range of the HtmlNode.');
-
-                (<any>element)._updating = true;
-                if (!oldChild)
-                    htmlElement.appendChild(newElement);
-                else
-                    htmlElement.replaceChild(newElement, oldChild);
-                    
-            } else if (info.action.equals(bc.CollectionUpdateType.Remove)) {
-                var oldChild = htmlElementChildren[info.oldIndex];
-                Assert.isDefined(oldChild,
-                    'The element to remove could not be found.');
-
-                (<any>element)._updating = true;
-                htmlElement.removeChild(oldChild);
-            } else {
-                Assert.isInvalid('The CollectionAction was not recognized.');
-            }
+            });
         });
 
         element['_children'] = collectionProperty;
@@ -18299,11 +18312,35 @@ module Classical.Html {
     @param [node] The node to initialize.
     returns a fully initialized HtmlNode. 
     */
-    export function create<TNode extends Elements.HtmlNode>(node: TNode): TNode {
-        Assert.isDefined(node, 'The HtmlNode was not defined');
-        node.initialize();
+    export function create<TNode extends Elements.HtmlNode>(
+        node: TNode,
+        append: boolean = true,
+        appendTo: Node = null): TNode {
 
+        Assert.isDefined(node, 'The HtmlNode was not defined');
+        if (node.isInitialized())
+            return;
+        
+        if (!append || appendTo) {
+            node.initialize();
+            if (appendTo)
+                appendTo.appendChild(node.element);
+
+            return node;
+        }
+
+        addToBody(node);
         return node;
+    }
+
+    function addToBody<TNode extends Elements.HtmlNode>(node: TNode) {
+        if (!document.body) {
+            setInterval(() => addToBody(node));
+            return;
+        }
+
+        node.initialize();
+        document.body.appendChild(node.element);
     }
 
     //#endregion create
@@ -18344,8 +18381,8 @@ module Classical.Html {
     export function text(content: any): Elements.TextNode {
         if (!Utilities.isDefined(content))
             content = '';
-        if (Utilities.isString(content) || !content.bind) {
-            if (!content.bind)
+        if (Utilities.isString(content) || !content.source) {
+            if (!content.source)
                 content = content.toString();
 
             return new Elements.TextNode({ text: <string>content });
