@@ -138,7 +138,7 @@ Documentation in the form of tutorials and code comments are in progress...
          more.
          
          TypeScript takes the dynamic and functional aspects of JavaScript and combines them 
-         with the static and object-oriented aspects of languages liek Java and C#. The result 
+         with the static and object-oriented aspects of languages like Java and C#. The result 
          is a powerful combination. Classical is meant to provide a set of base tools for 
          building complex JavaScript frameworks by leveraging the power of the all of the 
          programming paradigms contained within the language. We love all aspects of 
